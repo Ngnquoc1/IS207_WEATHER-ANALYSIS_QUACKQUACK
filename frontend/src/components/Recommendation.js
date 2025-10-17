@@ -7,7 +7,14 @@ import './Recommendation.css';
  */
 const Recommendation = ({ recommendation }) => {
     if (!recommendation) {
-        return null;
+        return (
+            <div className="recommendation-card">
+                <h2 className="section-title">Gợi Ý Thông Minh</h2>
+                <div className="no-recommendation">
+                    <p>Không có khuyến nghị đặc biệt cho thời tiết hiện tại.</p>
+                </div>
+            </div>
+        );
     }
 
     // Split recommendations by double newline (each recommendation is separated)
@@ -15,7 +22,7 @@ const Recommendation = ({ recommendation }) => {
 
     return (
         <div className="recommendation-card">
-            <h2>💡 Khuyến Nghị</h2>
+            <h2 className="section-title">Gợi Ý Thông Minh</h2>
             
             <div className="recommendation-content">
                 {recommendations.map((item, index) => (

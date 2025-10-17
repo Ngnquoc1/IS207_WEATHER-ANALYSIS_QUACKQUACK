@@ -1,16 +1,68 @@
 .recommendation-card {
-    background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+    background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-    color: #2d3436;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    color: white;
+    transition: all 0.3s ease;
 }
 
 .recommendation-card h2 {
     margin: 0 0 20px 0;
     font-size: 24px;
     font-weight: 700;
+    color: #00cec9;
+    text-align: left;
+}
+
+.theme-light .recommendation-card h2 {
+    color: #00b894;
+}
+
+.recommendation-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-left: 4px solid #74b9ff;
+    backdrop-filter: blur(10px);
+}
+
+/* Light theme */
+.theme-light .recommendation-card {
+    background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
     color: #2d3436;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.theme-light .recommendation-card h2 {
+    color: #2d3436;
+}
+
+.theme-light .recommendation-item {
+    background: rgba(255, 255, 255, 0.7);
+    border-left: 4px solid #fdcb6e;
+}
+
+/* No Recommendation State */
+.no-recommendation {
+    text-align: left;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.theme-light .no-recommendation {
+    background: rgba(0, 0, 0, 0.02);
+    backdrop-filter: none;
+}
+
+.no-recommendation p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+    margin: 0;
+}
+
+.theme-light .no-recommendation p {
+    color: rgba(0, 0, 0, 0.6);
 }
 
 .recommendation-content {
@@ -20,12 +72,12 @@
 }
 
 .recommendation-item {
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.1);
     padding: 18px;
     border-radius: 12px;
     font-size: 15px;
     line-height: 1.6;
-    border-left: 4px solid #fdcb6e;
+    border-left: 4px solid #74b9ff;
     backdrop-filter: blur(10px);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -39,7 +91,7 @@
     margin-top: 20px;
     padding-top: 20px;
     border-top: 2px solid rgba(255, 255, 255, 0.5);
-    text-align: center;
+    text-align: left;
     opacity: 0.8;
 }
 

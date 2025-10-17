@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { fetchWeatherData } from '../services/weatherService';
+import { useLocation } from 'react-router-dom';
+import { fetchWeatherData, getCurrentLocation } from '../services/weatherService';
+import Header from '../components/Header';
 import CurrentWeather from '../components/CurrentWeather';
 import HourlyForecastChart from '../components/HourlyForecastChart';
-import DailyForecast from '../components/DailyForecast';
 import AnomalyDisplay from '../components/AnomalyDisplay';
 import Recommendation from '../components/Recommendation';
 import LocationComparator from '../components/LocationComparator';
@@ -13,33 +14,59 @@ import './DashboardPage.css';
  * Main dashboard that displays all weather information and components
  */
 const DashboardPage = () => {
-    // State for selected location (default: Dĩ An)
-    const [location, setLocation] = useState({
-        name: 'Dĩ An',
-        lat: 10.98,
-        lon: 106.75
-    });
+    const location = useLocation();
+    // State for selected location (default: null - will be set to user's location)
+    const [selectedLocation, setSelectedLocation] = useState(null);
 
     // State for weather data
     const [weatherData, setWeatherData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [locationError, setLocationError] = useState(null);
 
-    // State for location input
-    const [locationInput, setLocationInput] = useState({
-        name: 'Dĩ An',
-        lat: '10.98',
-        lon: '106.75'
-    });
+
+    // Get user's current location on component mount or handle location from router state
+    useEffect(() => {
+        const initializeLocation = async () => {
+            try {
+                setLoading(true);
+                setLocationError(null);
+                
+                // Check if location data was passed from SearchPage
+                if (location.state?.selectedLocation) {
+                    setSelectedLocation(location.state.selectedLocation);
+                    return;
+                }
+                
+                // Try to get user's current location
+                const currentLocation = await getCurrentLocation();
+                setSelectedLocation(currentLocation);
+            } catch (err) {
+                console.error('Error getting current location:', err);
+                setLocationError(err.message);
+                
+                // Fallback to default location (Dĩ An)
+                const defaultLocation = {
+                    name: 'Dĩ An',
+                    lat: 10.98,
+                    lon: 106.75
+                };
+                setSelectedLocation(defaultLocation);
+            }
+        };
+
+        initializeLocation();
+    }, [location.state]);
 
     // Fetch weather data when component mounts or location changes
     useEffect(() => {
+        if (!selectedLocation) return; // Don't fetch if location is not set yet
         const loadWeatherData = async () => {
             setLoading(true);
             setError(null);
 
             try {
-                const data = await fetchWeatherData(location.lat, location.lon);
+                const data = await fetchWeatherData(selectedLocation.lat, selectedLocation.lon);
                 setWeatherData(data);
             } catch (err) {
                 setError('Không thể tải dữ liệu thời tiết. Vui lòng thử lại sau.');
@@ -50,101 +77,59 @@ const DashboardPage = () => {
         };
 
         loadWeatherData();
-    }, [location]);
+    }, [selectedLocation]);
 
-    // Handle location change
-    const handleLocationChange = (e) => {
-        e.preventDefault();
-        setLocation({
-            name: locationInput.name,
-            lat: parseFloat(locationInput.lat),
-            lon: parseFloat(locationInput.lon)
-        });
-    };
 
-    // Pre-defined locations for quick access
-    const quickLocations = [
-        { name: 'Dĩ An', lat: 10.98, lon: 106.75 },
-        { name: 'Hồ Chí Minh', lat: 10.82, lon: 106.63 },
-        { name: 'Hà Nội', lat: 21.03, lon: 105.85 },
-        { name: 'Đà Nẵng', lat: 16.07, lon: 108.22 },
-        { name: 'Nha Trang', lat: 12.24, lon: 109.19 },
-        { name: 'Đà Lạt', lat: 11.94, lon: 108.44 }
-    ];
-
-    const handleQuickLocation = (loc) => {
-        setLocationInput({
-            name: loc.name,
-            lat: loc.lat.toString(),
-            lon: loc.lon.toString()
-        });
-        setLocation(loc);
+    // Handle location selection from Header dropdown
+    const handleLocationSelect = async (locationData) => {
+        try {
+            setLoading(true);
+            setError(null);
+            setLocationError(null);
+            
+            setSelectedLocation(locationData);
+            
+            // Fetch weather data for the selected location
+            const data = await fetchWeatherData(locationData.lat, locationData.lon);
+            setWeatherData(data);
+        } catch (err) {
+            console.error('Error fetching weather data:', err);
+            setError('Không thể tải dữ liệu thời tiết. Vui lòng thử lại.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="dashboard-page">
-            {/* Header */}
-            <header className="dashboard-header">
-                <div className="header-content">
-                    <h1>🌤️ Weather Analysis Dashboard</h1>
-                    <p className="header-subtitle">Phân tích và dự báo thời tiết chi tiết</p>
-                </div>
-            </header>
+            {/* Header with Dropdown */}
+            <Header 
+                onLocationSelect={handleLocationSelect}
+                currentLocation={selectedLocation}
+            />
 
-            {/* Location Search */}
-            <div className="location-search-section">
-                <form onSubmit={handleLocationChange} className="location-form">
-                    <div className="form-group">
-                        <input
-                            type="text"
-                            placeholder="Tên địa điểm"
-                            value={locationInput.name}
-                            onChange={(e) => setLocationInput({ ...locationInput, name: e.target.value })}
-                            className="location-input"
-                        />
-                        <input
-                            type="number"
-                            step="any"
-                            placeholder="Vĩ độ"
-                            value={locationInput.lat}
-                            onChange={(e) => setLocationInput({ ...locationInput, lat: e.target.value })}
-                            className="location-input small"
-                        />
-                        <input
-                            type="number"
-                            step="any"
-                            placeholder="Kinh độ"
-                            value={locationInput.lon}
-                            onChange={(e) => setLocationInput({ ...locationInput, lon: e.target.value })}
-                            className="location-input small"
-                        />
-                        <button type="submit" className="search-button">
-                            🔍 Tìm kiếm
-                        </button>
+            {/* Location Error Alert */}
+            {locationError && (
+                <div className="location-error-banner">
+                    <div className="error-icon">⚠️</div>
+                    <div className="error-content">
+                        <p>{locationError}</p>
+                        <p className="error-note">Đang sử dụng vị trí mặc định: Dĩ An</p>
                     </div>
-                </form>
-
-                {/* Quick Location Buttons */}
-                <div className="quick-locations">
-                    <span className="quick-label">Địa điểm nhanh:</span>
-                    {quickLocations.map((loc, index) => (
-                        <button
-                            key={index}
-                            onClick={() => handleQuickLocation(loc)}
-                            className={`quick-button ${location.name === loc.name ? 'active' : ''}`}
-                        >
-                            📍 {loc.name}
-                        </button>
-                    ))}
                 </div>
-            </div>
+            )}
 
             {/* Main Content */}
             <main className="dashboard-content">
                 {loading && (
                     <div className="loading-container">
                         <div className="loading-spinner"></div>
-                        <p>Đang tải dữ liệu thời tiết cho {location.name}...</p>
+                        <p>
+                            {location ? 
+                                `Đang tải dữ liệu thời tiết cho ${location.name}...` : 
+                                'Đang lấy vị trí hiện tại...'
+                            }
+                        </p>
                     </div>
                 )}
 
@@ -170,23 +155,27 @@ const DashboardPage = () => {
                             </p>
                         </div>
 
-                        {/* Anomaly Alert (if exists) */}
-                        <AnomalyDisplay anomalyData={weatherData.anomaly} />
-
-                        {/* Current Weather & Recommendations Row */}
-                        <div className="grid-row two-columns">
+                        {/* Section 1: Current Weather */}
+                        <div className="grid-row">
                             <CurrentWeather data={weatherData.current_weather} />
-                            <Recommendation recommendation={weatherData.recommendation} />
                         </div>
 
                         {/* Hourly Forecast Chart */}
                         <div className="grid-row">
-                            <HourlyForecastChart data={weatherData.hourly_forecast} />
+                            <HourlyForecastChart 
+                                data={weatherData.hourly_forecast} 
+                                dailyData={weatherData.daily_forecast}
+                            />
                         </div>
 
-                        {/* Daily Forecast */}
+                        {/* Section 2: Anomaly Analysis */}
                         <div className="grid-row">
-                            <DailyForecast data={weatherData.daily_forecast} />
+                            <AnomalyDisplay anomalyData={weatherData.anomaly} />
+                        </div>
+
+                        {/* Section 3: Smart Recommendations */}
+                        <div className="grid-row">
+                            <Recommendation recommendation={weatherData.recommendation} />
                         </div>
 
                         {/* Location Comparator */}

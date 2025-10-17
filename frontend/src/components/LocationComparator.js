@@ -10,6 +10,7 @@ import {
     Legend
 } from 'chart.js';
 import { fetchComparisonData } from '../services/weatherService';
+import { useTheme } from '../contexts/ThemeContext';
 import './LocationComparator.css';
 
 // Register Chart.js components
@@ -27,6 +28,8 @@ ChartJS.register(
  * Allows users to compare weather between two locations
  */
 const LocationComparator = () => {
+    const { isDark } = useTheme();
+    
     const [location1, setLocation1] = useState({
         name: 'Dĩ An',
         lat: '10.98',
@@ -121,19 +124,41 @@ const LocationComparator = () => {
                         size: 14,
                         weight: '600'
                     },
-                    padding: 15
+                    padding: 15,
+                    color: isDark ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)'
                 }
             },
             tooltip: {
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                backgroundColor: isDark ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                titleColor: isDark ? 'white' : 'black',
+                bodyColor: isDark ? 'white' : 'black',
+                borderColor: isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)',
+                borderWidth: 1,
                 padding: 12
             }
         },
         scales: {
+            x: {
+                ticks: {
+                    color: isDark ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)',
+                    font: {
+                        size: 12
+                    }
+                },
+                grid: {
+                    color: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                }
+            },
             y: {
                 beginAtZero: true,
+                ticks: {
+                    color: isDark ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)',
+                    font: {
+                        size: 12
+                    }
+                },
                 grid: {
-                    color: 'rgba(0, 0, 0, 0.05)'
+                    color: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
                 }
             }
         }

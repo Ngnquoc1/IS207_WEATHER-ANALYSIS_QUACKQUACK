@@ -4,9 +4,12 @@ A comprehensive weather analysis dashboard built with Laravel (backend) and Reac
 
 ## 🌟 Features
 
+- **Modern Header with Location Dropdown**: Dark theme header with dropdown location selector and theme toggle
+- **Dark/Light Mode**: Toggle between dark and light themes with persistent settings
 - **Current Weather Display**: Real-time weather conditions with temperature, humidity, wind speed, and more
-- **24-Hour Forecast**: Interactive chart showing hourly temperature trends
-- **7-Day Forecast**: Daily weather predictions with UV index and precipitation data
+- **Interactive Forecast Tabs**: Switch between 24-hour chart and 7-day forecast list
+- **24-Hour Forecast Chart**: Dual-axis chart showing temperature trends and rain probability
+- **7-Day Forecast List**: Card-based daily weather predictions with color-coded conditions
 - **Anomaly Detection**: Automatically detects unusual temperature patterns by comparing with 30-day historical averages
 - **Smart Recommendations**: AI-powered suggestions based on weather conditions (UV protection, clothing advice, etc.)
 - **Location Comparison**: Side-by-side weather comparison between two locations with interactive charts
@@ -15,25 +18,31 @@ A comprehensive weather analysis dashboard built with Laravel (backend) and Reac
 ## 🛠️ Technology Stack
 
 ### Backend
+
 - **Laravel 10**: PHP framework for API endpoints
 - **Guzzle HTTP**: For making API requests to Open-Meteo
 - **Open-Meteo API**: Free weather data source (no API key required)
 
 ### Frontend
+
 - **ReactJS**: Modern JavaScript library for building UI
-- **Chart.js**: For creating beautiful, interactive charts
+- **React Context**: For theme management (dark/light mode)
+- **Chart.js**: For creating beautiful, interactive charts with dual-axis support
 - **D3.js**: For advanced data visualizations
 - **Axios**: For HTTP requests to Laravel backend
+- **CSS3**: Modern styling with backdrop-filter, gradients, and animations
 
 ## 📋 Prerequisites
 
 ### Backend Requirements
+
 - PHP >= 8.1
 - Composer
 - Laravel 10
 - MySQL/PostgreSQL (optional, for future extensions)
 
 ### Frontend Requirements
+
 - Node.js >= 16.x
 - npm or yarn
 
@@ -42,33 +51,39 @@ A comprehensive weather analysis dashboard built with Laravel (backend) and Reac
 ### Part 1: Backend Setup (Laravel)
 
 1. **Navigate to the backend directory:**
+
    ```bash
    cd backend
    ```
 
 2. **Install Composer dependencies:**
+
    ```bash
    composer install
    ```
 
 3. **Create environment file:**
+
    ```bash
    cp .env.example .env
    ```
 
 4. **Generate application key:**
+
    ```bash
    php artisan key:generate
    ```
 
 5. **Install Guzzle HTTP client:**
+
    ```bash
    composer require guzzlehttp/guzzle
    ```
 
 6. **Configure CORS (for API access from React):**
-   
+
    Edit `config/cors.php`:
+
    ```php
    'paths' => ['api/*'],
    'allowed_methods' => ['*'],
@@ -81,36 +96,42 @@ A comprehensive weather analysis dashboard built with Laravel (backend) and Reac
    ```
 
 7. **Start Laravel development server:**
+
    ```bash
    php artisan serve
    ```
-   
+
    The backend will be available at `http://localhost:8000`
 
 ### Part 2: Frontend Setup (React)
 
 1. **Navigate to the frontend directory:**
+
    ```bash
    cd frontend
    ```
 
 2. **Install npm dependencies:**
+
    ```bash
    npm install
    ```
 
 3. **Configure API endpoint:**
-   
+
    Open `src/services/weatherService.js` and update the API base URL if needed:
+
    ```javascript
-   const API_BASE_URL = 'http://localhost:8000/api';
+   const API_BASE_URL =
+     "http://localhost:8000/api"
    ```
 
 4. **Start React development server:**
+
    ```bash
    npm start
    ```
-   
+
    The frontend will open automatically at `http://localhost:3000`
 
 ## 📁 Project Structure
@@ -159,21 +180,26 @@ weatherPrj/
 ### Backend API Endpoints
 
 #### 1. Get Weather Data
+
 ```
 GET /api/weather/{lat}/{lon}
 ```
+
 **Description**: Fetches comprehensive weather data including current conditions, forecasts, anomaly detection, and recommendations.
 
 **Parameters**:
+
 - `lat` (float): Latitude coordinate
 - `lon` (float): Longitude coordinate
 
 **Example**:
+
 ```bash
 GET http://localhost:8000/api/weather/10.98/106.75
 ```
 
 **Response**:
+
 ```json
 {
     "location": {
@@ -200,28 +226,32 @@ GET http://localhost:8000/api/weather/10.98/106.75
 ```
 
 #### 2. Compare Locations
+
 ```
 POST /api/weather/comparison
 ```
+
 **Description**: Compares weather conditions between two locations.
 
 **Request Body**:
+
 ```json
 {
-    "location1": {
-        "lat": 10.98,
-        "lon": 106.75,
-        "name": "Dĩ An"
-    },
-    "location2": {
-        "lat": 21.03,
-        "lon": 105.85,
-        "name": "Hà Nội"
-    }
+  "location1": {
+    "lat": 10.98,
+    "lon": 106.75,
+    "name": "Dĩ An"
+  },
+  "location2": {
+    "lat": 21.03,
+    "lon": 105.85,
+    "name": "Hà Nội"
+  }
 }
 ```
 
 **Response**:
+
 ```json
 {
     "location1": {...},
@@ -237,14 +267,18 @@ POST /api/weather/comparison
 ## 🎯 Key Features Explained
 
 ### Anomaly Detection Algorithm
+
 The system detects temperature anomalies by:
+
 1. Collecting historical data from the past 30 days
 2. Calculating the average maximum temperature
 3. Comparing the current temperature with the average
 4. Flagging as anomaly if the difference exceeds 5°C
 
 ### Smart Recommendations
+
 The recommendation engine analyzes multiple weather parameters:
+
 - **UV Index**: Suggests sun protection measures
 - **Temperature**: Advises on clothing and hydration
 - **Weather Conditions**: Warns about rain, storms, fog, etc.
@@ -253,16 +287,51 @@ The recommendation engine analyzes multiple weather parameters:
 
 ## 🎨 UI Components
 
-1. **CurrentWeather**: Displays real-time weather with large temperature display and details
-2. **HourlyForecastChart**: Interactive line chart showing 24-hour temperature trends
-3. **DailyForecast**: Card-based 7-day forecast with weather icons
-4. **AnomalyDisplay**: Animated alert box for temperature anomalies
-5. **Recommendation**: Smart suggestions based on current conditions
-6. **LocationComparator**: Side-by-side comparison with table and chart
+1. **Header**: Modern dark theme header with location dropdown and theme toggle
+2. **CurrentWeather**: Displays real-time weather with large temperature display and details
+3. **ForecastTabs**: Interactive tabs switching between 24h chart and 7-day forecast list
+4. **24h Chart**: Dual-axis chart showing temperature trends and rain probability
+5. **7-Day Forecast**: Card-based daily forecast with color-coded weather conditions (integrated in ForecastTabs)
+6. **AnomalyDisplay**: Animated alert box for temperature anomalies
+7. **Recommendation**: Smart suggestions based on current conditions
+8. **LocationComparator**: Side-by-side comparison with table and chart
 
-## 🌐 Quick Location Presets
+## 🌙 Theme System
 
-The dashboard includes quick access buttons for popular Vietnamese locations:
+### Dark Mode (Default)
+
+- **Header**: Dark gradient background (`#1a1a2e` → `#16213e`)
+- **Dashboard**: Dark gradient background with backdrop blur effects
+- **Cards**: Semi-transparent with glass morphism effect
+- **Text**: White and light colors for contrast
+
+### Light Mode
+
+- **Header**: Purple gradient background (`#667eea` → `#764ba2`)
+- **Dashboard**: Light gradient background (`#f5f7fa` → `#c3cfe2`)
+- **Cards**: White background with subtle shadows
+- **Text**: Dark colors for readability
+
+### Theme Features
+
+- **Persistent**: Theme preference saved in localStorage
+- **Smooth Transitions**: All theme changes have 0.3s animations
+- **Toggle Button**: Easy switching with 🌙/☀️ icons
+- **Auto-apply**: Theme applied automatically on page load
+
+## 🌐 Location Selection
+
+### Header Dropdown Features
+
+- **Search Functionality**: Type to search for cities
+- **Current Location**: Auto-detect user's current position
+- **Quick Presets**: Popular Vietnamese locations in dropdown
+- **Custom Coordinates**: Manual lat/lon input with validation
+
+### Quick Location Presets
+
+The dropdown includes quick access to popular Vietnamese locations:
+
 - Dĩ An (10.98, 106.75)
 - Hồ Chí Minh (10.82, 106.63)
 - Hà Nội (21.03, 105.85)
@@ -270,16 +339,27 @@ The dashboard includes quick access buttons for popular Vietnamese locations:
 - Nha Trang (12.24, 109.19)
 - Đà Lạt (11.94, 108.44)
 
+### Location Features
+
+- **Auto-detection**: Uses browser geolocation API
+- **Validation**: Checks coordinate ranges (-90 to 90 for lat, -180 to 180 for lon)
+- **Error Handling**: Graceful fallback to default location
+- **Persistent Selection**: Remembers last selected location
+
 ## 🔧 Configuration
 
 ### Changing the API Base URL
+
 Edit `frontend/src/services/weatherService.js`:
+
 ```javascript
-const API_BASE_URL = 'http://your-backend-url/api';
+const API_BASE_URL = "http://your-backend-url/api"
 ```
 
 ### Modifying Anomaly Detection Threshold
+
 Edit `backend/app/Http/Controllers/WeatherController.php`:
+
 ```php
 // Change the threshold value (default is 5°C)
 if (abs($difference) > 5) {
@@ -290,17 +370,21 @@ if (abs($difference) > 5) {
 ## 🐛 Troubleshooting
 
 ### CORS Issues
+
 If you encounter CORS errors:
+
 1. Make sure Laravel's CORS middleware is properly configured
 2. Check that `allowed_origins` includes your React app's URL
 3. Clear browser cache and restart both servers
 
 ### API Connection Failed
+
 1. Verify Laravel server is running on `http://localhost:8000`
 2. Check the API_BASE_URL in weatherService.js
 3. Ensure no firewall is blocking the connection
 
 ### Chart Not Displaying
+
 1. Make sure Chart.js is properly installed: `npm install chart.js react-chartjs-2`
 2. Check browser console for errors
 3. Verify data format matches Chart.js requirements
@@ -308,6 +392,7 @@ If you encounter CORS errors:
 ## 📱 Responsive Design
 
 The dashboard is fully responsive and optimized for:
+
 - Desktop (1920x1080 and above)
 - Laptop (1366x768)
 - Tablet (768x1024)
@@ -316,6 +401,7 @@ The dashboard is fully responsive and optimized for:
 ## 🚀 Production Deployment
 
 ### Backend (Laravel)
+
 1. Set up a production server (Apache/Nginx)
 2. Configure environment variables
 3. Run `composer install --optimize-autoloader --no-dev`
@@ -324,6 +410,7 @@ The dashboard is fully responsive and optimized for:
 6. Run `php artisan route:cache`
 
 ### Frontend (React)
+
 1. Build the production bundle: `npm run build`
 2. Deploy the `build` folder to your hosting service
 3. Update API_BASE_URL to your production backend URL
