@@ -42,6 +42,35 @@ export const fetchWeatherData = async (lat, lon) => {
 };
 
 /**
+ * Fetch weather data for multiple cities in bulk (for RainMap)
+ * This reduces API calls from 24 individual requests to 1 bulk request
+ * @returns {Promise} - Bulk weather data for all major cities
+ */
+export const fetchBulkWeatherData = async () => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/weather/bulk`, {
+            timeout: 30000, // 30 second timeout for bulk request
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching bulk weather data:', error);
+        if (error.code === 'ECONNABORTED') {
+            throw new Error('Bulk request timeout - please try again');
+        } else if (error.response?.status === 404) {
+            throw new Error('Bulk weather endpoint not found');
+        } else if (error.response?.status >= 500) {
+            throw new Error('Server error - please try again later');
+        } else {
+            throw new Error('Failed to fetch bulk weather data');
+        }
+    }
+};
+
+/**
  * Compare weather data between two locations
  * @param {Object} location1 - First location {lat, lon, name}
  * @param {Object} location2 - Second location {lat, lon, name}
@@ -104,6 +133,9 @@ export const getCurrentLocation = () => {
                     case error.TIMEOUT:
                         errorMessage = 'Yêu cầu vị trí đã hết thời gian chờ';
                         break;
+                    default:
+                        errorMessage = 'Lỗi không xác định khi lấy vị trí';
+                        break;
                 }
                 reject(new Error(errorMessage));
             },
@@ -145,6 +177,7 @@ const getLocationName = async (lat, lon) => {
 
 const weatherService = {
     fetchWeatherData,
+    fetchBulkWeatherData,
     fetchComparisonData,
     getCurrentLocation
 };

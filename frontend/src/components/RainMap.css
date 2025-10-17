@@ -1,0 +1,361 @@
+.rain-map-container {
+  padding: 20px;
+  border-radius: 12px;
+  margin: 20px 0;
+  transition: all 0.3s ease;
+}
+
+.rain-map-container.theme-dark {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  border: 1px solid #4a5568;
+}
+
+.rain-map-container.theme-light {
+  background-color: #ffffff;
+  color: #2d3748;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.map-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.map-header h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: inherit;
+}
+
+.map-header p {
+  margin: 0;
+  opacity: 0.7;
+  font-size: 0.9rem;
+  color: inherit;
+}
+
+.demo-warning {
+  margin-top: 10px;
+  padding: 10px 15px;
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  color: #856404;
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: pulse 2s infinite;
+}
+
+.theme-dark .demo-warning {
+  background-color: #664d03;
+  border-color: #997404;
+  color: #ffda6a;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.map-legend {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.map-legend.theme-dark {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.map-legend h4 {
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+  color: inherit;
+}
+
+.legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.legend-item span {
+  font-size: 0.9rem;
+  color: inherit;
+}
+
+.rain-map {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 2px solid #e2e8f0;
+}
+
+.theme-dark .rain-map {
+  border-color: #4a5568;
+}
+
+.tooltip-content {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #2d3748;
+}
+
+.popup-content {
+  min-width: 200px;
+}
+
+.popup-content h3 {
+  margin: 0 0 15px 0;
+  font-size: 1.2rem;
+  color: #2d3748;
+}
+
+.weather-details {
+  margin-bottom: 15px;
+}
+
+.weather-details p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+.view-details-btn {
+  width: 100%;
+  padding: 8px 16px;
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  font-weight: 500;
+}
+
+.view-details-btn:hover {
+  background-color: #3182ce;
+  transform: translateY(-1px);
+}
+
+.selected-location-info {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.theme-dark .selected-location-info {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.selected-location-info h3 {
+  margin: 0 0 15px 0;
+  font-size: 1.3rem;
+  color: inherit;
+}
+
+.location-details p {
+  margin: 8px 0;
+  font-size: 0.95rem;
+  color: inherit;
+}
+
+.navigate-btn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #48bb78;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.navigate-btn:hover {
+  background-color: #38a169;
+  transform: translateY(-1px);
+}
+
+.map-info {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-left: 4px solid #4299e1;
+}
+
+.theme-dark .map-info {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.map-info p {
+  margin: 5px 0;
+  font-size: 0.85rem;
+  color: inherit;
+  opacity: 0.8;
+}
+
+.map-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  gap: 15px;
+  color: inherit;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #4299e1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.theme-dark .loading-spinner {
+  border-color: #4a5568;
+  border-top-color: #4299e1;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.map-loading p {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  text-align: center;
+}
+
+/* Leaflet popup customization */
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.leaflet-popup-tip {
+  background: white;
+}
+
+/* Leaflet tooltip customization */
+.leaflet-tooltip {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.leaflet-tooltip-top:before {
+  border-top-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .rain-map-container {
+    padding: 15px;
+    margin: 10px 0;
+  }
+  
+  .legend-items {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .map-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .rain-map {
+    height: 400px !important;
+  }
+  
+  .selected-location-info {
+    padding: 15px;
+  }
+  
+  .map-info {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rain-map-container {
+    padding: 10px;
+  }
+  
+  .map-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .rain-map {
+    height: 350px !important;
+  }
+  
+  .legend-item {
+    font-size: 0.8rem;
+  }
+  
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+/* Animation for markers */
+.rain-map .leaflet-interactive {
+  transition: all 0.2s ease;
+}
+
+.rain-map .leaflet-interactive:hover {
+  transform: scale(1.1);
+  filter: brightness(1.2);
+}
+
+/* Custom scrollbar for popup content */
+.popup-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.popup-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.popup-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.popup-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

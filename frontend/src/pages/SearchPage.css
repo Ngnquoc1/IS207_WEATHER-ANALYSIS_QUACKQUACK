@@ -255,6 +255,8 @@
 /* Map Section */
 .map-section {
     height: fit-content;
+    display: flex;
+    flex-direction: column;
 }
 
 .map-card {

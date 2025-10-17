@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
+import RainMap from '../components/RainMap'; // eslint-disable-line no-unused-vars
 import './SearchPage.css';
 
 const SearchPage = () => {
@@ -49,20 +50,6 @@ const SearchPage = () => {
         }, 1000);
     };
 
-    // Handle map click
-    const handleMapClick = (event) => {
-        const rect = event.currentTarget.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-        
-        // Convert pixel coordinates to lat/lon
-        const lat = 90 - (y / rect.height) * 180;
-        const lon = (x / rect.width) * 360 - 180;
-        
-        setCustomLat(lat.toFixed(4));
-        setCustomLon(lon.toFixed(4));
-        setError('');
-    };
 
     // Handle location selection and navigate to dashboard
     const handleSelectLocation = () => {
@@ -195,63 +182,7 @@ const SearchPage = () => {
 
                     {/* Right Column - Map */}
                     <div className="map-section">
-                        <div className="map-card">
-                            <h2>Bản Đồ Thế Giới</h2>
-                            <p className="map-instruction">
-                                Click vào bản đồ để chọn vị trí
-                            </p>
-                            
-                            <div 
-                                className="world-map"
-                                onClick={handleMapClick}
-                            >
-                                <div className="map-overlay">
-                                    <div className="map-grid">
-                                        {/* Grid lines for better UX */}
-                                        {Array.from({ length: 9 }, (_, i) => (
-                                            <div key={`h-${i}`} className="grid-line horizontal" style={{ top: `${i * 12.5}%` }} />
-                                        ))}
-                                        {Array.from({ length: 17 }, (_, i) => (
-                                            <div key={`v-${i}`} className="grid-line vertical" style={{ left: `${i * 6.25}%` }} />
-                                        ))}
-                                    </div>
-                                    
-                                    {/* Map markers for major cities */}
-                                    <div className="city-markers">
-                                        {[
-                                            { name: 'Hà Nội', lat: 21.0285, lon: 105.8542 },
-                                            { name: 'Tokyo', lat: 35.6762, lon: 139.6503 },
-                                            { name: 'New York', lat: 40.7128, lon: -74.0060 },
-                                            { name: 'London', lat: 51.5074, lon: -0.1278 },
-                                            { name: 'Paris', lat: 48.8566, lon: 2.3522 },
-                                            { name: 'Sydney', lat: -33.8688, lon: 151.2093 }
-                                        ].map((city) => {
-                                            const x = ((city.lon + 180) / 360) * 100;
-                                            const y = ((90 - city.lat) / 180) * 100;
-                                            return (
-                                                <div
-                                                    key={city.name}
-                                                    className="city-marker"
-                                                    style={{ left: `${x}%`, top: `${y}%` }}
-                                                    title={city.name}
-                                                />
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="map-legend">
-                                <div className="legend-item">
-                                    <div className="legend-dot"></div>
-                                    <span>Thành phố lớn</span>
-                                </div>
-                                <div className="legend-item">
-                                    <div className="legend-cross"></div>
-                                    <span>Click để chọn</span>
-                                </div>
-                            </div>
-                        </div>
+                        <RainMap isDark={isDark} />
                     </div>
                 </div>
             </div>
