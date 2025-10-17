@@ -3,7 +3,7 @@ import axios from 'axios';
 // Base URL for the Laravel backend API
 // Automatically detect environment and use appropriate URL
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-    ? '/api'  // Use relative path for Docker deployment
+    ? 'http://backend:80/api'  // Use backend container name for Docker deployment
     : 'http://localhost:8000/api';  // Use localhost for development
 
 /**
@@ -19,11 +19,25 @@ const API_BASE_URL = process.env.NODE_ENV === 'production'
  */
 export const fetchWeatherData = async (lat, lon) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/weather/${lat}/${lon}`);
+        const response = await axios.get(`${API_BASE_URL}/weather/${lat}/${lon}`, {
+            timeout: 10000, // 10 second timeout
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching weather data:', error);
-        throw error;
+        if (error.code === 'ECONNABORTED') {
+            throw new Error('Request timeout - please try again');
+        } else if (error.response?.status === 404) {
+            throw new Error('Weather data not found for this location');
+        } else if (error.response?.status >= 500) {
+            throw new Error('Server error - please try again later');
+        } else {
+            throw new Error('Failed to fetch weather data');
+        }
     }
 };
 
@@ -110,8 +124,13 @@ export const getCurrentLocation = () => {
  */
 const getLocationName = async (lat, lon) => {
     try {
-        // Using Open-Meteo's reverse geocoding API
-        const response = await axios.get(`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=vi`);
+        // Using Open-Meteo's reverse geocoding API with timeout
+        const response = await axios.get(`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=vi`, {
+            timeout: 5000, // 5 second timeout
+            headers: {
+                'Accept': 'application/json',
+            }
+        });
         
         if (response.data.results && response.data.results.length > 0) {
             const location = response.data.results[0];
@@ -119,8 +138,8 @@ const getLocationName = async (lat, lon) => {
         }
         return null;
     } catch (error) {
-        console.error('Error getting location name:', error);
-        return null;
+        console.warn('Reverse geocoding failed, using coordinates:', error.message);
+        return null; // Return null to use coordinates fallback
     }
 };
 

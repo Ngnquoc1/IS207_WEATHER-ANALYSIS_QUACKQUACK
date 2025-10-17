@@ -74,7 +74,7 @@ class WeatherController extends Controller
                 'longitude' => $lon,
                 'current' => 'temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,precipitation',
                 'hourly' => 'temperature_2m,weather_code,precipitation_probability',
-                'daily' => 'weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_sum',
+                'daily' => 'weather_code,temperature_2m_max,temperature_2m_min,temperature_2m_mean,precipitation_sum,precipitation_probability_max,rain_sum,showers_sum,snowfall_sum,windspeed_10m_max,winddirection_10m_dominant,pressure_msl_max,pressure_msl_min,pressure_msl_mean,relative_humidity_2m_max,relative_humidity_2m_min,relative_humidity_2m_mean,uv_index_max,uv_index_clear_sky_max',
                 'timezone' => 'auto',
                 'past_days' => 30,
                 'forecast_days' => 7
@@ -201,7 +201,7 @@ class WeatherController extends Controller
             'latitude' => $lat,
             'longitude' => $lon,
             'current' => 'temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,precipitation',
-            'daily' => 'weather_code,temperature_2m_max,temperature_2m_min,uv_index_max',
+            'daily' => 'weather_code,temperature_2m_max,temperature_2m_min,temperature_2m_mean,precipitation_sum,precipitation_probability_max,rain_sum,showers_sum,snowfall_sum,windspeed_10m_max,winddirection_10m_dominant,pressure_msl_max,pressure_msl_min,pressure_msl_mean,relative_humidity_2m_max,relative_humidity_2m_min,relative_humidity_2m_mean,uv_index_max,uv_index_clear_sky_max',
             'timezone' => 'auto',
             'forecast_days' => 1
         ];
@@ -287,12 +287,43 @@ class WeatherController extends Controller
         for ($i = $startIndex; $i < $totalDays; $i++) {
             $forecast[] = [
                 'date' => $daily['time'][$i],
-                'max_temperature' => round($daily['temperature_2m_max'][$i], 1),
-                'min_temperature' => round($daily['temperature_2m_min'][$i], 1),
                 'weather_code' => $daily['weather_code'][$i],
                 'weather_description' => $this->getWeatherDescription($daily['weather_code'][$i]),
-                'uv_index' => $daily['uv_index_max'][$i] ?? 0,
-                'precipitation_sum' => $daily['precipitation_sum'][$i] ?? 0
+                
+                // Nhiệt độ
+                'temperature_2m_max' => round($daily['temperature_2m_max'][$i], 1),
+                'temperature_2m_min' => round($daily['temperature_2m_min'][$i], 1),
+                'temperature_2m_mean' => isset($daily['temperature_2m_mean'][$i]) ? round($daily['temperature_2m_mean'][$i], 1) : null,
+                
+                // Mưa
+                'precipitation_sum' => round($daily['precipitation_sum'][$i] ?? 0, 1),
+                'precipitation_probability_max' => $daily['precipitation_probability_max'][$i] ?? 0,
+                'rain_sum' => round($daily['rain_sum'][$i] ?? 0, 1),
+                'showers_sum' => round($daily['showers_sum'][$i] ?? 0, 1),
+                'snowfall_sum' => round($daily['snowfall_sum'][$i] ?? 0, 1),
+                
+                // Gió
+                'windspeed_10m_max' => round($daily['windspeed_10m_max'][$i] ?? 0, 1),
+                'winddirection_10m_dominant' => $daily['winddirection_10m_dominant'][$i] ?? 0,
+                
+                // Áp suất
+                'pressure_msl_max' => round($daily['pressure_msl_max'][$i] ?? 0, 1),
+                'pressure_msl_min' => round($daily['pressure_msl_min'][$i] ?? 0, 1),
+                'pressure_msl_mean' => isset($daily['pressure_msl_mean'][$i]) ? round($daily['pressure_msl_mean'][$i], 1) : null,
+                
+                // Độ ẩm
+                'relative_humidity_2m_max' => $daily['relative_humidity_2m_max'][$i] ?? 0,
+                'relative_humidity_2m_min' => $daily['relative_humidity_2m_min'][$i] ?? 0,
+                'relative_humidity_2m_mean' => isset($daily['relative_humidity_2m_mean'][$i]) ? $daily['relative_humidity_2m_mean'][$i] : null,
+                
+                // UV
+                'uv_index_max' => round($daily['uv_index_max'][$i] ?? 0, 1),
+                'uv_index_clear_sky_max' => round($daily['uv_index_clear_sky_max'][$i] ?? 0, 1),
+                
+                // Backward compatibility
+                'max_temperature' => round($daily['temperature_2m_max'][$i], 1),
+                'min_temperature' => round($daily['temperature_2m_min'][$i], 1),
+                'uv_index' => round($daily['uv_index_max'][$i] ?? 0, 1)
             ];
         }
 

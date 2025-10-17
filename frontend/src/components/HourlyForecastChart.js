@@ -12,6 +12,7 @@ import {
     Legend,
     Filler
 } from 'chart.js';
+import { Modal } from './common';
 import './HourlyForecastChart.css';
 
 // Register Chart.js components
@@ -33,6 +34,8 @@ ChartJS.register(
  */
 const HourlyForecastChart = ({ data, dailyData }) => {
     const [activeTab, setActiveTab] = useState('24h');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedDay, setSelectedDay] = useState(null);
 
     if (!data || data.length === 0) {
         return (
@@ -78,6 +81,71 @@ const HourlyForecastChart = ({ data, dailyData }) => {
         if (code >= 51 && code <= 82) return '#87CEEB'; // Rain - Light Blue
         if (code >= 95 && code <= 99) return '#FF6347'; // Storm - Red
         return '#FFFFFF'; // Default - White
+    };
+
+    // Handle day click to open modal
+    const handleDayClick = (day) => {
+        setSelectedDay(day);
+        setIsModalOpen(true);
+    };
+
+    // Close modal
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedDay(null);
+    };
+
+    // Get detailed weather information for modal
+    const getDetailedWeatherInfo = (day) => {
+        if (!day) return null;
+        
+        return {
+            date: formatDate(day.date),
+            weather: getWeatherDescription(day.weather_code),
+            weatherColor: getWeatherColor(day.weather_code),
+            
+            // Nhiệt độ chi tiết theo Open-Meteo API
+            temperature: {
+                max: day.temperature_2m_max || day.max_temperature,
+                min: day.temperature_2m_min || day.min_temperature,
+                mean: day.temperature_2m_mean || Math.round(((day.temperature_2m_max || day.max_temperature) + (day.temperature_2m_min || day.min_temperature)) / 2)
+            },
+            
+            // Mưa chi tiết theo Open-Meteo API
+            precipitation: {
+                sum: day.precipitation_sum || 0,
+                probability: day.precipitation_probability_max || 0,
+                rain: day.rain_sum || 0,
+                showers: day.showers_sum || 0,
+                snowfall: day.snowfall_sum || 0
+            },
+            
+            // Gió chi tiết theo Open-Meteo API
+            wind: {
+                speed: day.windspeed_10m_max || day.wind_speed_max || 0,
+                direction: day.winddirection_10m_dominant || day.wind_direction_dominant || 0
+            },
+            
+            // Áp suất theo Open-Meteo API
+            pressure: {
+                max: day.pressure_msl_max || 0,
+                min: day.pressure_msl_min || 0,
+                mean: day.pressure_msl_mean || 0
+            },
+            
+            // Độ ẩm chi tiết theo Open-Meteo API
+            humidity: {
+                max: day.relative_humidity_2m_max || day.relative_humidity_max || 0,
+                min: day.relative_humidity_2m_min || 0,
+                mean: day.relative_humidity_2m_mean || 0
+            },
+            
+            // UV chi tiết theo Open-Meteo API
+            uv: {
+                max: day.uv_index_max || day.uv_index || 0,
+                clearSky: day.uv_index_clear_sky_max || 0
+            }
+        };
     };
 
     // 24h Chart Data
@@ -247,7 +315,11 @@ const HourlyForecastChart = ({ data, dailyData }) => {
                     <div className="tab-panel">
                         <div className="daily-forecast-list">
                             {dailyData && dailyData.map((day, index) => (
-                                <div key={index} className="daily-forecast-item">
+                                <div 
+                                    key={index} 
+                                    className="daily-forecast-item clickable"
+                                    onClick={() => handleDayClick(day)}
+                                >
                                     <div className="day-info">
                                         <h3>{formatDate(day.date)}</h3>
                                         <span 
@@ -258,12 +330,15 @@ const HourlyForecastChart = ({ data, dailyData }) => {
                                         </span>
                                     </div>
                                     <div className="temperature-info">
-                                        <span className="temp-high">{day.temperature_max}°C</span>
+                                        <span className="temp-high">{day.temperature_2m_max || day.max_temperature}°C</span>
                                         <span className="temp-separator">/</span>
-                                        <span className="temp-low">{day.temperature_min}°C</span>
+                                        <span className="temp-low">{day.temperature_2m_min || day.min_temperature}°C</span>
                                     </div>
                                     <div className="rain-info">
-                                        Mưa: {day.precipitation_probability}%
+                                        Mưa: {day.precipitation_probability_max || day.precipitation_probability || 0}%
+                                    </div>
+                                    <div className="click-hint">
+                                        👆 Nhấn để xem chi tiết
                                     </div>
                                 </div>
                             ))}
@@ -271,6 +346,150 @@ const HourlyForecastChart = ({ data, dailyData }) => {
                     </div>
                 )}
             </div>
+
+            {/* Day Details Modal */}
+            <Modal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                title={selectedDay ? formatDate(selectedDay.date) : ''}
+                size="large"
+            >
+                {selectedDay && (() => {
+                    const details = getDetailedWeatherInfo(selectedDay);
+                    return (
+                        <div className="day-details-modal">
+                            {/* Weather Overview */}
+                            <div className="weather-overview">
+                                <div className="weather-icon">
+                                    <span 
+                                        className="weather-condition-large"
+                                        style={{ color: details.weatherColor }}
+                                    >
+                                        {details.weather}
+                                    </span>
+                                </div>
+                                <div className="temperature-overview">
+                                    <div className="temp-main">{details.temperature.mean}°C</div>
+                                    <div className="temp-range">
+                                        {details.temperature.max}°C / {details.temperature.min}°C
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Detailed Information Grid */}
+                            <div className="details-grid">
+                                <div className="detail-item">
+                                    <div className="detail-label">🌡️ Nhiệt độ</div>
+                                    <div className="detail-value">
+                                        <div>Cao nhất: {details.temperature.max}°C</div>
+                                        <div>Thấp nhất: {details.temperature.min}°C</div>
+                                        <div>Trung bình: {details.temperature.mean}°C</div>
+                                    </div>
+                                </div>
+
+                                <div className="detail-item">
+                                    <div className="detail-label">🌧️ Mưa</div>
+                                    <div className="detail-value">
+                                        <div>Khả năng: {details.precipitation.probability}%</div>
+                                        <div>Tổng lượng: {details.precipitation.sum}mm</div>
+                                        <div>Mưa rào: {details.precipitation.rain}mm</div>
+                                        <div>Mưa phùn: {details.precipitation.showers}mm</div>
+                                        <div>Tuyết: {details.precipitation.snowfall}mm</div>
+                                    </div>
+                                </div>
+
+                                <div className="detail-item">
+                                    <div className="detail-label">💨 Gió</div>
+                                    <div className="detail-value">
+                                        <div>Tốc độ tối đa: {details.wind.speed} km/h</div>
+                                        <div>Hướng chủ đạo: {details.wind.direction}°</div>
+                                    </div>
+                                </div>
+
+                                <div className="detail-item">
+                                    <div className="detail-label">💧 Độ ẩm</div>
+                                    <div className="detail-value">
+                                        {details.humidity.max > 0 ? (
+                                            <>
+                                                <div>Tối đa: {details.humidity.max}%</div>
+                                                <div>Tối thiểu: {details.humidity.min}%</div>
+                                                <div>Trung bình: {details.humidity.mean}%</div>
+                                            </>
+                                        ) : (
+                                            <div style={{color: '#999', fontStyle: 'italic'}}>Dữ liệu độ ẩm chưa có</div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="detail-item">
+                                    <div className="detail-label">🌬️ Áp suất</div>
+                                    <div className="detail-value">
+                                        {details.pressure.max > 0 ? (
+                                            <>
+                                                <div>Tối đa: {details.pressure.max} hPa</div>
+                                                <div>Tối thiểu: {details.pressure.min} hPa</div>
+                                                <div>Trung bình: {details.pressure.mean} hPa</div>
+                                            </>
+                                        ) : (
+                                            <div style={{color: '#999', fontStyle: 'italic'}}>Dữ liệu áp suất chưa có</div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="detail-item">
+                                    <div className="detail-label">☀️ Chỉ số UV</div>
+                                    <div className="detail-value">
+                                        <div>Tối đa: {details.uv.max}</div>
+                                        <div>Trời quang: {details.uv.clearSky}</div>
+                                        <div className={`uv-level uv-${details.uv.max <= 2 ? 'low' : details.uv.max <= 5 ? 'moderate' : details.uv.max <= 7 ? 'high' : details.uv.max <= 10 ? 'very-high' : 'extreme'}`}>
+                                            {details.uv.max <= 2 ? 'Thấp' : details.uv.max <= 5 ? 'Trung bình' : details.uv.max <= 7 ? 'Cao' : details.uv.max <= 10 ? 'Rất cao' : 'Cực cao'}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="detail-item">
+                                    <div className="detail-label">📊 Tổng quan</div>
+                                    <div className="detail-value">
+                                        <div>Điều kiện: {details.weather}</div>
+                                        <div>Ngày: {details.date}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Recommendations */}
+                            <div className="recommendations">
+                                <h4>💡 Khuyến nghị</h4>
+                                <ul>
+                                    {details.temperature.max > 30 && (
+                                        <li>🌡️ Nhiệt độ cao, nên mặc quần áo mát mẻ và uống nhiều nước</li>
+                                    )}
+                                    {details.precipitation.probability > 50 && (
+                                        <li>☔ Khả năng mưa cao, nên mang theo ô hoặc áo mưa</li>
+                                    )}
+                                    {details.precipitation.sum > 10 && (
+                                        <li>🌧️ Lượng mưa lớn, tránh đi đường ngập nước</li>
+                                    )}
+                                    {details.uv.max > 6 && (
+                                        <li>☀️ Chỉ số UV cao, nên sử dụng kem chống nắng</li>
+                                    )}
+                                    {details.wind.speed > 20 && (
+                                        <li>💨 Gió mạnh, cẩn thận khi đi đường</li>
+                                    )}
+                                    {details.temperature.min < 15 && (
+                                        <li>🧥 Nhiệt độ thấp vào sáng sớm, nên mặc áo ấm</li>
+                                    )}
+                                    {details.humidity.max > 80 && (
+                                        <li>💧 Độ ẩm cao, có thể gây khó chịu</li>
+                                    )}
+                                    {details.pressure.mean < 1000 && (
+                                        <li>🌬️ Áp suất thấp, có thể ảnh hưởng đến sức khỏe</li>
+                                    )}
+                                </ul>
+                            </div>
+                        </div>
+                    );
+                })()}
+            </Modal>
         </div>
     );
 };
