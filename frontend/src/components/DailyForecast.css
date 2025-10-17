@@ -1,0 +1,141 @@
+.daily-forecast {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.daily-forecast.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+}
+
+.daily-forecast h2 {
+    margin: 0 0 25px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+}
+
+.forecast-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+}
+
+.forecast-card {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.forecast-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-date {
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.card-icon {
+    font-size: 48px;
+    margin: 10px 0;
+}
+
+.card-description {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 12px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-temps {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #333;
+}
+
+.temp-max {
+    color: #f44336;
+}
+
+.temp-min {
+    color: #2196f3;
+}
+
+.temp-divider {
+    margin: 0 5px;
+    color: #999;
+    font-weight: 400;
+}
+
+.card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.uv-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+    display: inline-block;
+}
+
+.precipitation {
+    font-size: 12px;
+    color: #2196f3;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .daily-forecast {
+        padding: 20px 15px;
+    }
+
+    .forecast-cards {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 12px;
+    }
+
+    .forecast-card {
+        padding: 15px 10px;
+    }
+
+    .card-icon {
+        font-size: 40px;
+    }
+
+    .card-temps {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .forecast-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

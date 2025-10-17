@@ -1,0 +1,121 @@
+.anomaly-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.anomaly-alert.hot {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+    color: white;
+    border-left: 5px solid #ff4757;
+}
+
+.anomaly-alert.cold {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border-left: 5px solid #2e86de;
+}
+
+.anomaly-icon {
+    font-size: 48px;
+    line-height: 1;
+}
+
+.anomaly-content {
+    flex: 1;
+}
+
+.anomaly-title {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.anomaly-message {
+    margin: 0 0 20px 0;
+    font-size: 16px;
+    line-height: 1.5;
+    opacity: 0.95;
+}
+
+.anomaly-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 15px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.stat-label {
+    font-size: 12px;
+    opacity: 0.85;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.stat-value.highlight {
+    font-size: 22px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .anomaly-alert {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .anomaly-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .anomaly-icon {
+        font-size: 40px;
+    }
+
+    .anomaly-title {
+        font-size: 18px;
+    }
+
+    .anomaly-message {
+        font-size: 14px;
+    }
+}
