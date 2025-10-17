@@ -469,22 +469,179 @@ class WeatherController extends Controller
     }
 
     /**
-     * Find the current hour index in the hourly data array
+     * Get weather data for multiple cities in bulk
+     * This endpoint reduces API calls by fetching data for all cities at once
      *
-     * @param array $times
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getBulkWeatherData(Request $request)
+    {
+        try {
+            // Define major cities with their coordinates
+            $majorCities = [
+                ['name' => 'Hà Nội', 'lat' => 21.0285, 'lon' => 105.8542, 'country' => 'Vietnam'],
+                ['name' => 'TP.HCM', 'lat' => 10.8231, 'lon' => 106.6297, 'country' => 'Vietnam'],
+                ['name' => 'Đà Nẵng', 'lat' => 16.0544, 'lon' => 108.2022, 'country' => 'Vietnam'],
+                ['name' => 'Tokyo', 'lat' => 35.6762, 'lon' => 139.6503, 'country' => 'Japan'],
+                ['name' => 'Seoul', 'lat' => 37.5665, 'lon' => 126.9780, 'country' => 'South Korea'],
+                ['name' => 'Beijing', 'lat' => 39.9042, 'lon' => 116.4074, 'country' => 'China'],
+                ['name' => 'Shanghai', 'lat' => 31.2304, 'lon' => 121.4737, 'country' => 'China'],
+                ['name' => 'New York', 'lat' => 40.7128, 'lon' => -74.0060, 'country' => 'USA'],
+                ['name' => 'Los Angeles', 'lat' => 34.0522, 'lon' => -118.2437, 'country' => 'USA'],
+                ['name' => 'London', 'lat' => 51.5074, 'lon' => -0.1278, 'country' => 'UK'],
+                ['name' => 'Paris', 'lat' => 48.8566, 'lon' => 2.3522, 'country' => 'France'],
+                ['name' => 'Berlin', 'lat' => 52.5200, 'lon' => 13.4050, 'country' => 'Germany'],
+                ['name' => 'Rome', 'lat' => 41.9028, 'lon' => 12.4964, 'country' => 'Italy'],
+                ['name' => 'Sydney', 'lat' => -33.8688, 'lon' => 151.2093, 'country' => 'Australia'],
+                ['name' => 'Melbourne', 'lat' => -37.8136, 'lon' => 144.9631, 'country' => 'Australia'],
+                ['name' => 'Mumbai', 'lat' => 19.0760, 'lon' => 72.8777, 'country' => 'India'],
+                ['name' => 'Delhi', 'lat' => 28.7041, 'lon' => 77.1025, 'country' => 'India'],
+                ['name' => 'Dubai', 'lat' => 25.2048, 'lon' => 55.2708, 'country' => 'UAE'],
+                ['name' => 'São Paulo', 'lat' => -23.5505, 'lon' => -46.6333, 'country' => 'Brazil'],
+                ['name' => 'Mexico City', 'lat' => 19.4326, 'lon' => -99.1332, 'country' => 'Mexico'],
+                ['name' => 'Cairo', 'lat' => 30.0444, 'lon' => 31.2357, 'country' => 'Egypt'],
+                ['name' => 'Bangkok', 'lat' => 13.7563, 'lon' => 100.5018, 'country' => 'Thailand'],
+                ['name' => 'Singapore', 'lat' => 1.3521, 'lon' => 103.8198, 'country' => 'Singapore'],
+                ['name' => 'Jakarta', 'lat' => -6.2088, 'lon' => 106.8456, 'country' => 'Indonesia']
+            ];
+
+            $client = new Client([
+                'timeout' => 30, // Increased timeout for bulk request
+                'verify' => false
+            ]);
+
+            $bulkData = [];
+            $errors = [];
+
+            // Process cities in batches to avoid overwhelming the API
+            $batchSize = 5;
+            $batches = array_chunk($majorCities, $batchSize);
+
+            foreach ($batches as $batchIndex => $batch) {
+                $promises = [];
+                
+                foreach ($batch as $city) {
+                    $promises[$city['name']] = $this->createWeatherPromise($client, $city);
+                }
+
+                // Execute batch requests
+                try {
+                    $responses = \GuzzleHttp\Promise\Utils::settle($promises)->wait();
+                    
+                    foreach ($responses as $cityName => $response) {
+                        if ($response['state'] === 'fulfilled') {
+                            $weatherData = json_decode($response['value']->getBody(), true);
+                            $cityData = $this->findCityByName($majorCities, $cityName);
+                            
+                            $bulkData[] = [
+                                'name' => $cityData['name'],
+                                'lat' => $cityData['lat'],
+                                'lon' => $cityData['lon'],
+                                'country' => $cityData['country'],
+                                'precipitation' => $weatherData['current']['precipitation'] ?? 0,
+                                'temperature' => round($weatherData['current']['temperature_2m'] ?? 0, 1),
+                                'humidity' => $weatherData['current']['relative_humidity_2m'] ?? 0,
+                                'wind_speed' => round($weatherData['current']['wind_speed_10m'] ?? 0, 1),
+                                'weather_description' => $this->getWeatherDescription($weatherData['current']['weather_code'] ?? 0)
+                            ];
+                        } else {
+                            $errors[] = [
+                                'city' => $cityName,
+                                'error' => $response['reason']->getMessage()
+                            ];
+                        }
+                    }
+                } catch (\Exception $e) {
+                    Log::error("Batch {$batchIndex} failed: " . $e->getMessage());
+                    $errors[] = [
+                        'batch' => $batchIndex,
+                        'error' => $e->getMessage()
+                    ];
+                }
+
+                // Small delay between batches to be respectful to the API
+                if ($batchIndex < count($batches) - 1) {
+                    usleep(200000); // 200ms delay
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $bulkData,
+                'total_cities' => count($bulkData),
+                'errors' => $errors,
+                'timestamp' => now()->toISOString()
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Bulk Weather API Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => 'Failed to fetch bulk weather data',
+                'message' => 'An error occurred while fetching weather data for multiple cities',
+                'timestamp' => now()->toISOString()
+            ], 500);
+        }
+    }
+
+    /**
+     * Create a promise for weather data request
+     *
+     * @param Client $client
+     * @param array $city
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    private function createWeatherPromise($client, $city)
+    {
+        $apiUrl = "https://api.open-meteo.com/v1/forecast";
+        $params = [
+            'latitude' => $city['lat'],
+            'longitude' => $city['lon'],
+            'current' => 'temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,precipitation',
+            'timezone' => 'auto'
+        ];
+
+        return $client->getAsync($apiUrl, ['query' => $params]);
+    }
+
+    /**
+     * Find city data by name
+     *
+     * @param array $cities
+     * @param string $name
+     * @return array|null
+     */
+    private function findCityByName($cities, $name)
+    {
+        foreach ($cities as $city) {
+            if ($city['name'] === $name) {
+                return $city;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Find the index of the current hour in hourly forecast data
+     *
+     * @param array $timeArray
      * @return int
      */
-    private function findCurrentHourIndex($times)
+    private function findCurrentHourIndex($timeArray)
     {
         $currentTime = now();
         
-        foreach ($times as $index => $time) {
-            $timeObj = \Carbon\Carbon::parse($time);
-            if ($timeObj >= $currentTime) {
+        foreach ($timeArray as $index => $time) {
+            $forecastTime = \Carbon\Carbon::parse($time);
+            
+            // If forecast time is within the next hour, use this index
+            if ($forecastTime->isAfter($currentTime) || $forecastTime->diffInMinutes($currentTime) <= 60) {
                 return $index;
             }
         }
         
+        // Fallback: return 0 if no suitable time found
         return 0;
     }
 }
