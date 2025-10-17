@@ -1,8 +1,10 @@
 import axios from 'axios';
 
 // Base URL for the Laravel backend API
-// Change this to match your Laravel backend URL
-const API_BASE_URL = 'http://localhost:8000/api';
+// Automatically detect environment and use appropriate URL
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+    ? '/api'  // Use relative path for Docker deployment
+    : 'http://localhost:8000/api';  // Use localhost for development
 
 /**
  * Weather Service
