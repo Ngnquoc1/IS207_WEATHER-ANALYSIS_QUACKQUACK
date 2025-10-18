@@ -9,7 +9,10 @@ services:
     environment:
       - APP_ENV=production
       - APP_DEBUG=false
+      - APP_URL=http://backend
     restart: unless-stopped
+    networks:
+      - weather-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/api/weather/10.98/106.75"]
       interval: 30s
@@ -22,10 +25,14 @@ services:
     container_name: weather-frontend
     ports:
       - "3000:80"
+    environment:
+      - REACT_APP_API_URL=/api
     depends_on:
       backend:
         condition: service_healthy
     restart: unless-stopped
+    networks:
+      - weather-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost"]
       interval: 30s
@@ -44,3 +51,9 @@ services:
       - backend
       - frontend
     restart: unless-stopped
+    networks:
+      - weather-network
+
+networks:
+  weather-network:
+    driver: bridge

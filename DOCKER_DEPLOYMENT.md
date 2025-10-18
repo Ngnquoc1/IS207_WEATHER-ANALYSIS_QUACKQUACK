@@ -1,264 +1,171 @@
-# Weather Dashboard - Docker Hub Deployment
+# Docker Deployment Guide
 
-This guide explains how to deploy the Weather Analysis Dashboard using Docker images from Docker Hub.
+## 🐳 Docker Images Overview
 
-## 🐳 Quick Start
+This project uses Docker containers to deploy the Weather Analysis application with the following architecture:
 
-### Prerequisites
+- **Backend**: Laravel API server (PHP 8.2 + Nginx)
+- **Frontend**: React application served by Nginx
+- **Proxy**: Nginx reverse proxy for routing and CORS handling
 
-- Docker and Docker Compose installed
-- Internet connection to pull images from Docker Hub
+## 📦 Available Images
 
-### Deploy from Docker Hub
+- `dung317/weather-backend:latest` - Laravel API backend
+- `dung317/weather-frontend:latest` - React frontend application
 
-1. **Clone the repository:**
+## 🚀 Quick Start
 
-   ```bash
-   git clone https://github.com/your-username/weather-dashboard.git
-   cd weather-dashboard
-   ```
-
-2. **Deploy using Docker Hub images:**
-
-   ```bash
-   chmod +x deploy-from-hub.sh
-   ./deploy-from-hub.sh
-   ```
-
-3. **Access the application:**
-   - Main app: http://localhost
-   - Backend API: http://localhost/api
-   - Direct backend: http://localhost:8000
-   - Direct frontend: http://localhost:3000
-
-## 🔧 Manual Deployment
-
-### Using Docker Compose
-
-1. **Pull and start services:**
-
-   ```bash
-   docker-compose up -d
-   ```
-
-2. **Check status:**
-
-   ```bash
-   docker-compose ps
-   ```
-
-3. **View logs:**
-   ```bash
-   docker-compose logs -f
-   ```
-
-### Using Docker Commands
-
-1. **Pull images:**
-
-   ```bash
-   docker pull dungnq2/weather-backend:latest
-   docker pull dungnq2/weather-frontend:latest
-   ```
-
-2. **Run backend:**
-
-   ```bash
-   docker run -d --name weather-backend \
-     -p 8000:80 \
-     -e APP_ENV=production \
-     -e APP_DEBUG=false \
-     dungnq2/weather-backend:latest
-   ```
-
-3. **Run frontend:**
-   ```bash
-   docker run -d --name weather-frontend \
-     -p 3000:80 \
-     --link weather-backend:backend \
-     dungnq2/weather-frontend:latest
-   ```
-
-## 📊 Service Architecture
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Nginx Proxy   │────│   Frontend      │────│   Backend       │
-│   (Port 80)     │    │   (Port 3000)   │    │   (Port 8000)   │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
-
-## 🔍 Health Checks
-
-The containers include health checks:
-
-- **Backend**: `curl -f http://localhost/api/weather/10.98/106.75`
-- **Frontend**: `curl -f http://localhost`
-
-Check health status:
+### Option 1: Using Docker Compose (Recommended)
 
 ```bash
-docker ps --format "table {{.Names}}\t{{.Status}}"
+# Clone the repository
+git clone <your-repo-url>
+cd IS207_WEATHER-ANALYSIS_QUACKQUACK
+
+# Quick deploy (pulls latest images and starts services)
+./quick-deploy.sh
 ```
 
-## 📝 Environment Variables
+### Option 2: Manual Docker Compose
+
+```bash
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+## 🔧 Building and Pushing Images
+
+### Build and Push Script
+
+```bash
+# Build both images and push to Docker Hub
+./build-and-push.sh
+```
+
+### Manual Build Process
+
+```bash
+# Build backend image
+cd backend
+docker build -t dung317/weather-backend:latest .
+docker push dung317/weather-backend:latest
+
+# Build frontend image
+cd ../frontend
+docker build -t dung317/weather-frontend:latest .
+docker push dung317/weather-frontend:latest
+```
+
+## 🌐 Service URLs
+
+After deployment, the following endpoints are available:
+
+- **Main Application**: http://localhost
+- **Backend API**: http://localhost/api
+- **Health Check**: http://localhost/health
+- **Backend Direct**: http://localhost:8000
+- **Frontend Direct**: http://localhost:3000
+
+## 🔍 Troubleshooting
+
+### Check Service Status
+
+```bash
+# View running containers
+docker-compose ps
+
+# View logs for all services
+docker-compose logs -f
+
+# View logs for specific service
+docker-compose logs -f backend
+docker-compose logs -f frontend
+docker-compose logs -f nginx
+```
+
+### Common Issues
+
+1. **Port Conflicts**: Make sure ports 80, 3000, and 8000 are not in use
+2. **CORS Issues**: The nginx proxy handles CORS automatically
+3. **Service Not Ready**: Wait for health checks to pass (up to 40 seconds)
+
+### Reset Everything
+
+```bash
+# Stop and remove all containers, networks, and volumes
+docker-compose down -v
+
+# Remove images (optional)
+docker rmi dung317/weather-backend:latest dung317/weather-frontend:latest
+
+# Start fresh
+./quick-deploy.sh
+```
+
+## 📋 Environment Variables
 
 ### Backend Environment
 
 - `APP_ENV=production`
 - `APP_DEBUG=false`
-- `APP_KEY=base64:your-app-key-here`
+- `APP_URL=http://backend`
 
 ### Frontend Environment
 
-- `NODE_ENV=production`
+- `REACT_APP_API_URL=/api`
 
-## 🚀 Scaling
+## 🔒 Security Features
 
-### Scale Frontend
+- CORS properly configured for cross-origin requests
+- Rate limiting on API endpoints
+- Security headers (X-Frame-Options, X-Content-Type-Options, etc.)
+- Health checks for all services
 
-```bash
-docker-compose up -d --scale frontend=3
-```
+## 📊 Monitoring
 
-### Load Balancer Configuration
+### Health Checks
 
-Update `docker/nginx-proxy.conf` to add multiple backend instances:
+All services include health checks:
 
-```nginx
-upstream backend {
-    server backend:80;
-    server backend2:80;
-    server backend3:80;
-}
-```
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-1. **Port already in use:**
-
-   ```bash
-   # Check what's using the port
-   lsof -i :80
-   # Kill the process
-   kill -9 <PID>
-   ```
-
-2. **Container won't start:**
-
-   ```bash
-   # Check logs
-   docker-compose logs backend
-   docker-compose logs frontend
-   ```
-
-3. **API not responding:**
-
-   ```bash
-   # Test API directly
-   curl http://localhost/api/weather/10.98/106.75
-   ```
-
-4. **Frontend can't connect to backend:**
-   - Check if backend container is running
-   - Verify network connectivity
-   - Check CORS configuration
-
-### Debug Commands
-
-```bash
-# Enter container
-docker-compose exec backend bash
-docker-compose exec frontend sh
-
-# Check container resources
-docker stats
-
-# Inspect container
-docker inspect weather-backend
-
-# Check network
-docker network ls
-docker network inspect weather-network
-```
-
-## 🔄 Updates
-
-### Update to Latest Version
-
-```bash
-# Pull latest images
-docker-compose pull
-
-# Restart with new images
-docker-compose up -d
-```
-
-### Rollback
-
-```bash
-# Use specific version
-docker-compose down
-docker-compose up -d --image dungnq2/weather-backend:v1.0.0
-```
-
-## 📈 Monitoring
+- **Backend**: Tests API endpoint `/api/weather/10.98/106.75`
+- **Frontend**: Tests main page availability
+- **Nginx**: Custom health endpoint at `/health`
 
 ### Logs
 
-```bash
-# All services
-docker-compose logs -f
+Logs are available for all services:
 
-# Specific service
-docker-compose logs -f backend
-docker-compose logs -f frontend
-```
+- Backend: Laravel logs + Nginx access/error logs
+- Frontend: Nginx access/error logs
+- Proxy: Nginx access/error logs
 
-### Metrics
+## 🚀 Production Deployment
 
-```bash
-# Container stats
-docker stats
+For production deployment:
 
-# Resource usage
-docker system df
-```
+1. **Update image tags** in `docker-compose.yml` to specific versions
+2. **Configure environment variables** for your production environment
+3. **Set up SSL/TLS** certificates if needed
+4. **Configure monitoring** and logging
+5. **Set up backup** strategies for data persistence
 
-## 🔒 Security
+## 📝 Development vs Production
 
-### Production Security Checklist
+### Development
 
-- [ ] Use HTTPS (SSL certificates)
-- [ ] Set strong APP_KEY
-- [ ] Configure firewall
-- [ ] Regular security updates
-- [ ] Monitor logs for suspicious activity
+- Frontend connects directly to `http://localhost:8000/api`
+- Backend runs with debug mode enabled
+- Hot reloading available
 
-### SSL Configuration
+### Production
 
-1. Obtain SSL certificates
-2. Update `docker/nginx-proxy.conf`:
-   ```nginx
-   server {
-       listen 443 ssl;
-       ssl_certificate /etc/nginx/ssl/cert.pem;
-       ssl_certificate_key /etc/nginx/ssl/key.pem;
-       # ... rest of config
-   }
-   ```
-
-## 📞 Support
-
-For issues or questions:
-
-1. Check the logs: `docker-compose logs -f`
-2. Verify configuration
-3. Check Docker Hub images: https://hub.docker.com/r/dungnq2/weather-backend
-4. Create an issue in the repository
-
----
-
-**Happy Weather Tracking! 🌤️**
+- Frontend connects through nginx proxy at `/api`
+- Backend runs in production mode
+- Optimized builds and caching
+- Health checks and monitoring
