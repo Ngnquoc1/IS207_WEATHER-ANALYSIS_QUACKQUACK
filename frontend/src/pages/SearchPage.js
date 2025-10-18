@@ -182,7 +182,14 @@ const SearchPage = () => {
 
                     {/* Right Column - Map */}
                     <div className="map-section">
-                        <RainMap isDark={isDark} />
+                        <RainMap 
+                            isDark={isDark} 
+                            onLocationSelect={(location) => {
+                                setCustomLat(location.lat.toString());
+                                setCustomLon(location.lon.toString());
+                                setError('');
+                            }}
+                        />
                     </div>
                 </div>
             </div>
