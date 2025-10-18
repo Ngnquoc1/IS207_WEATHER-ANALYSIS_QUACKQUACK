@@ -2,9 +2,8 @@ import axios from 'axios';
 
 // Base URL for the Laravel backend API
 // Automatically detect environment and use appropriate URL
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-    ? 'http://backend:80/api'  // Use backend container name for Docker deployment
-    : 'http://localhost:8000/api';  // Use localhost for development
+const API_BASE_URL = "http://localhost:8000/api"
+// const API_BASE_URL = "http://backend:80/api"
 
 /**
  * Weather Service
@@ -156,21 +155,12 @@ export const getCurrentLocation = () => {
  */
 const getLocationName = async (lat, lon) => {
     try {
-        // Using Open-Meteo's reverse geocoding API with timeout
-        const response = await axios.get(`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=vi`, {
-            timeout: 5000, // 5 second timeout
-            headers: {
-                'Accept': 'application/json',
-            }
-        });
-        
-        if (response.data.results && response.data.results.length > 0) {
-            const location = response.data.results[0];
-            return location.name || location.admin1 || location.country;
-        }
-        return null;
+        // For now, return a simple location name based on coordinates
+        // In production, you might want to implement this on the backend
+        // to avoid CORS issues with external APIs
+        return `Vị trí (${lat.toFixed(2)}, ${lon.toFixed(2)})`;
     } catch (error) {
-        console.warn('Reverse geocoding failed, using coordinates:', error.message);
+        console.warn('Location name generation failed:', error.message);
         return null; // Return null to use coordinates fallback
     }
 };

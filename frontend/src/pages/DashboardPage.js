@@ -149,9 +149,9 @@ const DashboardPage = () => {
                         <div className="current-location-banner">
                             <h2>📍 {location.name}</h2>
                             <p>
-                                Vĩ độ: {weatherData.location.latitude}° | 
-                                Kinh độ: {weatherData.location.longitude}° | 
-                                Múi giờ: {weatherData.location.timezone}
+                                Vĩ độ: {weatherData.location?.latitude}° | 
+                                Kinh độ: {weatherData.location?.longitude}° | 
+                                Múi giờ: {weatherData.location?.timezone}
                             </p>
                         </div>
 

@@ -8,7 +8,7 @@ import './AnomalyDisplay.css';
 const AnomalyDisplay = ({ anomalyData }) => {
   
     // Use mock data for now, fallback to real data if available
-    const displayData = anomalyData;
+    const displayData = anomalyData || {};
     const hasAnomaly = displayData && displayData.is_anomaly;
 
     return (
