@@ -28,7 +28,7 @@
 
 /* Modal Container */
 .modal-container {
-  background: white;
+  background: var(--modal-bg, white);
   border-radius: 12px;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   max-height: 90vh;
@@ -60,22 +60,22 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #e5e7eb;
-  background-color: #f9fafb;
+  border-bottom: 1px solid var(--modal-border, #e5e7eb);
+  background-color: var(--modal-header-bg, #f9fafb);
 }
 
 .modal-title {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--modal-text, #111827);
 }
 
 .modal-close-button {
   background: none;
   border: none;
   font-size: 24px;
-  color: #6b7280;
+  color: var(--modal-text-secondary, #6b7280);
   cursor: pointer;
   padding: 4px;
   border-radius: 4px;
@@ -88,8 +88,8 @@
 }
 
 .modal-close-button:hover {
-  background-color: #f3f4f6;
-  color: #374151;
+  background-color: var(--modal-hover-bg, #f3f4f6);
+  color: var(--modal-text-hover, #374151);
 }
 
 .modal-close-button:focus {

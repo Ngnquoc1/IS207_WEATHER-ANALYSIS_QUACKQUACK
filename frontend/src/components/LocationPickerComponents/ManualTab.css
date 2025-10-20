@@ -1,0 +1,210 @@
+/* ManualTab Component Styles */
+
+/* Manual Tab Container */
+.manual-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 0 0 8px 8px;
+  margin-top: 60px;
+}
+
+.theme-dark .manual-tab {
+  background: #2d2d2d;
+}
+
+/* Manual Input Form */
+.manual-input-form {
+  padding: 40px;
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.input-group {
+  margin-bottom: 24px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.theme-dark .input-group label {
+  color: #fff;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background: white;
+  color: #333;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.input-group input::placeholder {
+  color: #999;
+  font-size: 14px;
+}
+
+.theme-dark .input-group input {
+  background: #4d4d4d;
+  border-color: #666;
+  color: #fff;
+}
+
+.theme-dark .input-group input:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+.theme-dark .input-group input::placeholder {
+  color: #aaa;
+}
+
+/* Search Button */
+.search-button {
+  width: 100%;
+  padding: 18px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.search-button:hover:not(:disabled) {
+  background: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+.search-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.search-button:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.theme-dark .search-button {
+  background: #0d6efd;
+}
+
+.theme-dark .search-button:hover:not(:disabled) {
+  background: #0b5ed7;
+}
+
+/* Selected Location Display */
+.selected-location {
+  margin-top: 24px;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.theme-dark .selected-location {
+  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+}
+
+.selected-location h3 {
+  margin: 0 0 15px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.location-info {
+  margin-bottom: 20px;
+}
+
+.location-info p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.location-info strong {
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.select-button {
+  width: 100%;
+  padding: 12px 24px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.select-button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+/* Error Message */
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 16px 0;
+  border: 1px solid #f5c6cb;
+  font-size: 14px;
+}
+
+.theme-dark .error-message {
+  background-color: #2d1b1b;
+  color: #f8d7da;
+  border-color: #721c24;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .manual-input-form {
+    padding: 24px;
+  }
+  
+  .input-group input {
+    padding: 14px;
+    font-size: 16px;
+  }
+  
+  .search-button {
+    padding: 16px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .manual-input-form {
+    padding: 20px;
+  }
+}

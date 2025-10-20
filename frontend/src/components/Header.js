@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
+import SearchModal from './SearchModal';
 import './Header.css';
 
 /**
@@ -9,9 +9,9 @@ import './Header.css';
  */
 const Header = ({ onLocationSelect, currentLocation }) => {
     const { toggleTheme, isDark } = useTheme();
-    const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
     const dropdownRef = useRef(null);
 
     // Quick location presets
@@ -138,7 +138,7 @@ const Header = ({ onLocationSelect, currentLocation }) => {
                                     className="dropdown-item custom-location-button"
                                     onClick={() => {
                                         setIsDropdownOpen(false);
-                                        navigate('/search');
+                                        setIsSearchModalOpen(true);
                                     }}
                                 >
                                     🗺️ Chọn vị trí tùy chỉnh
@@ -162,6 +162,13 @@ const Header = ({ onLocationSelect, currentLocation }) => {
                     </button>
                 </div>
             </div>
+
+            {/* Search Modal */}
+            <SearchModal 
+                isOpen={isSearchModalOpen}
+                onClose={() => setIsSearchModalOpen(false)}
+                onLocationSelect={onLocationSelect}
+            />
         </header>
     );
 };
