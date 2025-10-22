@@ -5,6 +5,16 @@
     box-sizing: border-box;
 }
 
+/* Leaflet Map Reset - Ensure proper map tile colors globally */
+.leaflet-container img {
+    filter: none !important;
+    mix-blend-mode: normal !important;
+}
+
+.leaflet-container {
+    background-color: #fff !important; 
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
         'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',

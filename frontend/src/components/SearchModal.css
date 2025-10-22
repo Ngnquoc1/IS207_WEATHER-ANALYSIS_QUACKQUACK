@@ -1,0 +1,316 @@
+/* SearchModal.css - Styles for the Search Modal */
+.search-modal .modal-container {
+    max-width: 1200px;
+    width: 95vw;
+    height: 90vh;
+    max-height: 800px;
+}
+
+/* Dark theme styles - Apply to modal-overlay */
+.modal-overlay.search-modal.theme-dark {
+    --text-primary: rgba(255, 255, 255, 0.9);
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.6);
+    --bg-primary: rgba(255, 255, 255, 0.1);
+    --bg-secondary: rgba(255, 255, 255, 0.05);
+    --border-primary: rgba(255, 255, 255, 0.2);
+    --border-secondary: rgba(255, 255, 255, 0.3);
+    --accent-color: #74b9ff;
+    --accent-hover: #0984e3;
+    --error-color: #e74c3c;
+    --success-color: rgba(116, 185, 255, 0.1);
+    --success-border: rgba(116, 185, 255, 0.3);
+    
+    /* Modal specific variables */
+    --modal-bg: rgba(30, 30, 30, 0.95);
+    --modal-header-bg: rgba(40, 40, 40, 0.95);
+    --modal-border: rgba(255, 255, 255, 0.2);
+    --modal-text: rgba(255, 255, 255, 0.9);
+    --modal-text-secondary: rgba(255, 255, 255, 0.7);
+    --modal-text-hover: rgba(255, 255, 255, 0.8);
+    --modal-hover-bg: rgba(255, 255, 255, 0.1);
+}
+
+/* Light theme styles - Apply to modal-overlay */
+.modal-overlay.search-modal.theme-light {
+    --text-primary: #333;
+    --text-secondary: rgba(0, 0, 0, 0.6);
+    --text-muted: rgba(0, 0, 0, 0.5);
+    --bg-primary: rgba(255, 255, 255, 0.9);
+    --bg-secondary: rgba(255, 255, 255, 0.8);
+    --border-primary: rgba(0, 0, 0, 0.1);
+    --border-secondary: rgba(0, 0, 0, 0.2);
+    --accent-color: #74b9ff;
+    --accent-hover: #0984e3;
+    --error-color: #e74c3c;
+    --success-color: rgba(116, 185, 255, 0.1);
+    --success-border: rgba(116, 185, 255, 0.3);
+    
+    /* Modal specific variables */
+    --modal-bg: rgba(255, 255, 255, 0.95);
+    --modal-header-bg: rgba(249, 250, 251, 0.95);
+    --modal-border: rgba(0, 0, 0, 0.1);
+    --modal-text: #111827;
+    --modal-text-secondary: #6b7280;
+    --modal-text-hover: #374151;
+    --modal-hover-bg: #f3f4f6;
+}
+
+/* Fallback styles for when theme is not applied - Default to light theme */
+.search-modal {
+    --text-primary: #333;
+    --text-secondary: rgba(0, 0, 0, 0.6);
+    --text-muted: rgba(0, 0, 0, 0.5);
+    --bg-primary: rgba(255, 255, 255, 0.9);
+    --bg-secondary: rgba(255, 255, 255, 0.8);
+    --border-primary: rgba(0, 0, 0, 0.1);
+    --border-secondary: rgba(0, 0, 0, 0.2);
+    --accent-color: #74b9ff;
+    --accent-hover: #0984e3;
+    --error-color: #e74c3c;
+    --success-color: rgba(116, 185, 255, 0.1);
+    --success-border: rgba(116, 185, 255, 0.3);
+    
+    /* Modal specific variables */
+    --modal-bg: rgba(255, 255, 255, 0.95);
+    --modal-header-bg: rgba(249, 250, 251, 0.95);
+    --modal-border: rgba(0, 0, 0, 0.1);
+    --modal-text: #111827;
+    --modal-text-secondary: #6b7280;
+    --modal-text-hover: #374151;
+    --modal-hover-bg: #f3f4f6;
+}
+
+.search-modal-content {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    height: 100%;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-card, .quick-locations-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-card h2, .quick-locations-card h3 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+}
+
+.coordinate-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input-group label {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.input-group input {
+    padding: 0.75rem;
+    border: 1px solid var(--border-secondary);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: border-color 0.2s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(116, 185, 255, 0.3);
+}
+
+.input-group input::placeholder {
+    color: var(--text-muted);
+}
+
+.input-group small {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.error-message {
+    background: rgba(231, 76, 60, 0.2);
+    border: 1px solid rgba(231, 76, 60, 0.4);
+    color: var(--error-color);
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.search-button, .select-button {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.search-button:hover, .select-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.4);
+}
+
+.search-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.selected-location {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--success-color);
+    border-radius: 8px;
+    border: 1px solid var(--success-border);
+}
+
+.selected-location h3 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.location-info p {
+    margin: 0.5rem 0;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.location-info strong {
+    color: var(--text-primary);
+}
+
+.quick-locations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem;
+}
+
+.quick-location-btn {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quick-location-btn:hover {
+    background: rgba(116, 185, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.map-section {
+    background: var(--bg-primary);
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid var(--border-primary);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.map-controls {
+    margin-bottom: 1rem;
+}
+
+.map-controls h3 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+.map-type-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.map-type-selector label {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.map-type-select {
+    padding: 0.5rem;
+    border: 1px solid var(--border-secondary);
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.map-type-select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(116, 185, 255, 0.3);
+}
+
+.map-type-select option {
+    background: #333;
+    color: var(--text-primary);
+}
+
+.search-modal.theme-light .map-type-select option {
+    background: white;
+    color: #333;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .search-modal .modal-container {
+        width: 95vw;
+        height: 95vh;
+        max-height: none;
+    }
+    
+    .content-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .quick-locations-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
