@@ -28,6 +28,23 @@ const newsService = {
   async deleteStory(id) {
     const response = await axios.delete(`/stories/${id}`);
     return response.data;
+  },
+
+  async getHotStories(limit = 5) {
+    const response = await axios.get('/stories/hot', {
+      params: { limit }
+    });
+    return response.data;
+  },
+
+  async updateStoryStatus(id, statusData) {
+    const response = await axios.put(`/stories/${id}/status`, statusData);
+    return response.data;
+  },
+
+  async checkStoriesExist(urls) {
+    const response = await axios.post('/stories/check', { urls });
+    return response.data;
   }
 };
 

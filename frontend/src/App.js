@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
 import DashboardPage from './pages/DashboardPage';
+import StoriesPage from './pages/StoriesPage';
 import AdminPage from './pages/AdminPage';
 import AdminStoriesPage from './pages/AdminStoriesPage';
 import AdminLayout from './pages/AdminLayout';
@@ -56,6 +57,10 @@ function App() {
                         <Route 
                             path="/dashboard" 
                             element={<DashboardPage />}
+                        />
+                        <Route 
+                            path="/stories" 
+                            element={<StoriesPage />}
                         />
                     </Routes>
                 </div>

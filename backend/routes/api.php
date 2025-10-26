@@ -47,12 +47,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // Stories routes - available to all authenticated users
     Route::prefix('stories')->group(function () {
         Route::get('/', [StoryController::class, 'getStories']);
+        Route::get('/hot', [StoryController::class, 'getHotStories']);
         
         // Admin only routes
         Route::middleware('role:admin')->group(function () {
             Route::get('/statistics', [StoryController::class, 'getStoryStatistics']);
             Route::get('/search', [StoryController::class, 'searchNews']);
+            Route::post('/check', [StoryController::class, 'checkStoriesExist']);
             Route::post('/', [StoryController::class, 'createStory']);
+            Route::put('/{id}/status', [StoryController::class, 'updateStoryStatus']);
             Route::delete('/{id}', [StoryController::class, 'deleteStory']);
         });
     });

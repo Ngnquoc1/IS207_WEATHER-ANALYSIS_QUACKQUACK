@@ -121,6 +121,7 @@ class StoryController extends Controller
         
         $statistics = [
             'total' => $totalStories,
+            'hot_count' => Story::where('is_active', true)->where('is_hot', true)->count(),
             'by_category' => [
                 'warning' => Story::where('is_active', true)->where('category', 'warning')->count(),
                 'info' => Story::where('is_active', true)->where('category', 'info')->count(),
@@ -135,6 +136,29 @@ class StoryController extends Controller
     }
 
     /**
+     * Check which stories already exist in database
+     */
+    public function checkStoriesExist(Request $request)
+    {
+        $request->validate([
+            'urls' => 'required|array',
+            'urls.*' => 'required|url'
+        ]);
+
+        $urls = $request->urls;
+        
+        // Get existing URLs from database
+        $existingUrls = Story::whereIn('url', $urls)
+            ->pluck('url')
+            ->toArray();
+        
+        return response()->json([
+            'success' => true,
+            'existing_urls' => $existingUrls
+        ]);
+    }
+
+    /**
      * Delete a story
      */
     public function deleteStory(Request $request, $id)
@@ -145,6 +169,45 @@ class StoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Story deleted successfully'
+        ]);
+    }
+
+    /**
+     * Update story hot status
+     */
+    public function updateStoryStatus(Request $request, $id)
+    {
+        $request->validate([
+            'is_hot' => 'required|boolean',
+        ]);
+
+        $story = Story::findOrFail($id);
+        $story->is_hot = $request->is_hot;
+        $story->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Story hot status updated successfully',
+            'story' => $story
+        ]);
+    }
+
+    /**
+     * Get hot stories
+     */
+    public function getHotStories(Request $request)
+    {
+        $limit = $request->get('limit', 5);
+        
+        $stories = Story::where('is_active', true)
+            ->where('is_hot', true)
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+        
+        return response()->json([
+            'success' => true,
+            'stories' => $stories
         ]);
     }
 }

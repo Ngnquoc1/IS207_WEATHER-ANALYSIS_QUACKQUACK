@@ -29,12 +29,19 @@ const StoryManagement = () => {
   // Statistics state
   const [statistics, setStatistics] = useState({
     total: 0,
+    hot_count: 0,
     by_category: {
       warning: 0,
       info: 0,
       normal: 0
     }
   });
+
+  // Hot stories state
+  const [hotStories, setHotStories] = useState([]);
+
+  // Existing URLs state
+  const [existingUrls, setExistingUrls] = useState([]);
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) {
@@ -46,8 +53,17 @@ const StoryManagement = () => {
     setMessage('');
     try {
       const response = await newsService.searchNews(searchTerm);
-      setArticles(response.articles || []);
-      if (response.articles && response.articles.length === 0) {
+      const articles = response.articles || [];
+      
+      // Check which articles already exist
+      if (articles.length > 0) {
+        const urls = articles.map(a => a.url);
+        const checkResponse = await newsService.checkStoriesExist(urls);
+        setExistingUrls(checkResponse.existing_urls || []);
+      }
+      
+      setArticles(articles);
+      if (articles.length === 0) {
         setMessage('Không tìm thấy bài viết nào');
       }
     } catch (error) {
@@ -60,6 +76,13 @@ const StoryManagement = () => {
 
   // Toggle select article
   const toggleSelectArticle = (article) => {
+    // Don't allow selection if article already exists
+    if (isArticleExists(article.url)) {
+      setMessage('Bài viết này đã được thêm vào hệ thống!');
+      setTimeout(() => setMessage(''), 3000);
+      return;
+    }
+    
     const isSelected = selectedArticles.some(a => a.url === article.url);
     
     if (isSelected) {
@@ -135,10 +158,15 @@ const StoryManagement = () => {
     return selectedArticles.some(a => a.url === url);
   };
 
+  const isArticleExists = (url) => {
+    return existingUrls.includes(url);
+  };
+
   // Load current stories on mount
   useEffect(() => {
     loadCurrentStories(1);
     loadStatistics();
+    loadHotStories();
   }, []);
 
   // Load statistics
@@ -193,6 +221,36 @@ const StoryManagement = () => {
     loadCurrentStories(page);
   };
 
+  // Load hot stories
+  const loadHotStories = async () => {
+    try {
+      const response = await newsService.getHotStories(5);
+      setHotStories(response.stories || []);
+    } catch (error) {
+      console.error('Error loading hot stories:', error);
+    }
+  };
+
+  // Toggle hot status
+  const toggleHotStatus = async (storyId) => {
+    try {
+      const story = currentStories.find(s => s.id === storyId);
+      const newValue = !story.is_hot;
+      
+      await newsService.updateStoryStatus(storyId, { is_hot: newValue });
+      
+      loadCurrentStories(currentPage);
+      loadStatistics();
+      loadHotStories();
+      
+      setMessage(newValue ? 'Đã đánh dấu Hot!' : 'Đã bỏ đánh dấu Hot!');
+      setTimeout(() => setMessage(''), 2000);
+    } catch (error) {
+      setMessage('Lỗi khi cập nhật trạng thái');
+      console.error('Error:', error);
+    }
+  };
+
   // Helper functions
   const getCategoryLabel = (category) => {
     const labels = {
@@ -226,6 +284,14 @@ const StoryManagement = () => {
           </div>
         </div>
         
+        <div className="stat-card stat-hot">
+          <div className="stat-icon">🔥</div>
+          <div className="stat-content">
+            <div className="stat-value">{statistics.hot_count}</div>
+            <div className="stat-label">Bài viết Hot</div>
+          </div>
+        </div>
+        
         <div className="stat-card stat-warning">
           <div className="stat-icon">⚠️</div>
           <div className="stat-content">
@@ -253,6 +319,58 @@ const StoryManagement = () => {
     </div>
   );
 
+  // Render Hot Stories Section
+  const renderHotStoriesSection = () => (
+    <div className="hot-stories-section">
+      <h3>🔥 Bài viết Hot</h3>
+      {hotStories.length === 0 ? (
+        <div className="no-hot-stories">
+          <p>Chưa có bài viết Hot nào</p>
+        </div>
+      ) : (
+        <div className="hot-stories-list">
+          {hotStories.map((story) => (
+            <div key={story.id} className="hot-story-item">
+              <div className="hot-story-content">
+                {story.image_url && (
+                  <img src={story.image_url} alt={story.title} />
+                )}
+                <div className="hot-story-info">
+                  <h4>{story.title}</h4>
+                  <p>{story.description}</p>
+                  <div className="hot-story-meta">
+                    <span className={`category-badge category-${story.category}`}>
+                      {getCategoryLabel(story.category)}
+                    </span>
+                    <span className="story-date">
+                      📅 {formatPublishedDate(story.published_at)}
+                    </span>
+                    <span className="story-source">{story.source}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="story-controls">
+                <button
+                  className="hot-toggle active"
+                  onClick={() => toggleHotStatus(story.id)}
+                  title="Bỏ đánh dấu Hot"
+                >
+                  🔥 Hot
+                </button>
+                <button
+                  className="delete-story-button"
+                  onClick={() => handleDeleteStory(story.id)}
+                >
+                  🗑️ Xóa
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   // Render List View
   const renderListView = () => (
     <div className="story-list-view">
@@ -277,6 +395,9 @@ const StoryManagement = () => {
       {/* Statistics Section */}
       {renderStatistics()}
 
+      {/* Hot Stories Section */}
+      {renderHotStoriesSection()}
+
       {/* Current Stories List */}
       {loadingStories ? (
         <div className="loading">Đang tải...</div>
@@ -292,8 +413,9 @@ const StoryManagement = () => {
         </div>
       ) : (
         <>
+          <h3 style={{ marginTop: '30px', marginBottom: '20px', color: '#333' }}>📰 Tất cả bài viết</h3>
           <div className="current-stories-list">
-            {currentStories.map((story) => (
+            {currentStories.filter(story => !story.is_hot).map((story) => (
               <div key={story.id} className="current-story-item">
                 <div className="current-story-content">
                   {story.image_url && (
@@ -313,12 +435,21 @@ const StoryManagement = () => {
                     </div>
                   </div>
                 </div>
-                <button
-                  className="delete-story-button"
-                  onClick={() => handleDeleteStory(story.id)}
-                >
-                  🗑️ Xóa
-                </button>
+                <div className="story-controls">
+                  <button
+                    className={`hot-toggle ${story.is_hot ? 'active' : ''}`}
+                    onClick={() => toggleHotStatus(story.id)}
+                    title={story.is_hot ? 'Bỏ đánh dấu Hot' : 'Đánh dấu Hot'}
+                  >
+                    🔥 {story.is_hot ? 'Hot' : 'Mark Hot'}
+                  </button>
+                  <button
+                    className="delete-story-button"
+                    onClick={() => handleDeleteStory(story.id)}
+                  >
+                    🗑️ Xóa
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -385,10 +516,11 @@ const StoryManagement = () => {
           <div className="articles-list">
             {articles.map((article, index) => {
               const isSelected = isArticleSelected(article.url);
+              const isExists = isArticleExists(article.url);
               return (
                 <div 
                   key={index} 
-                  className={`article-card ${isSelected ? 'selected' : ''}`}
+                  className={`article-card ${isSelected ? 'selected' : ''} ${isExists ? 'exists' : ''}`}
                   onClick={() => toggleSelectArticle(article)}
                 >
                   {article.urlToImage && (
@@ -404,6 +536,9 @@ const StoryManagement = () => {
                       </span>
                       {isSelected && (
                         <span className="selected-badge">✓ Đã chọn</span>
+                      )}
+                      {isExists && (
+                        <span className="exists-badge">✓ Đã thêm</span>
                       )}
                     </div>
                   </div>

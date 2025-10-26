@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import newsService from '../services/newsService';
 import './Stories.css';
 
 const Stories = ({ location }) => {
+  const navigate = useNavigate();
   const [stories, setStories] = useState([]);
+  const [hotStories, setHotStories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     loadStories();
@@ -13,8 +15,13 @@ const Stories = ({ location }) => {
 
   const loadStories = async () => {
     try {
-      const response = await newsService.getStories();
-      setStories(response.stories || []);
+      const [allResponse, hotResponse] = await Promise.all([
+        newsService.getStories(),
+        newsService.getHotStories(5)
+      ]);
+      
+      setStories(allResponse.stories || []);
+      setHotStories(hotResponse.stories || []);
     } catch (error) {
       console.error('Error loading stories:', error);
     } finally {
@@ -87,73 +94,79 @@ const Stories = ({ location }) => {
         </div>
       </div>
 
-      <div className="stories-grid">
-        {loading ? (
-          <div className="loading">Đang tải...</div>
-        ) : stories.length === 0 ? (
-          <div className="no-stories">Chưa có tin tức nào được đăng</div>
-        ) : (
-          <>
-            {stories.slice(0, 3).map((story) => (
+      {/* Hot Stories Section - Hiển thị đầu tiên */}
+      {hotStories.length > 0 && (
+        <div className="hot-section">
+          <h3 className="section-title">🔥 Tin Nóng - Hot Stories</h3>
+          <div className="stories-grid">
+            {hotStories.map((story) => (
               <div
                 key={story.id}
-                className="story-card"
+                className="story-card hot-card"
                 style={getBackgroundStyle(story)}
                 onClick={() => window.open(story.url, '_blank')}
               >
-                {/* Thời gian đăng bài ở góc trên bên phải */}
                 <div className="story-time">
                   {formatPublishedDate(story.published_at)}
                 </div>
-                
-                {/* Badge category ở góc trên bên trái */}
-                <div className="story-badge">{getCategoryLabel(story.category)}</div>
-                
-                {/* Title ở phía dưới */}
+                <div className="story-badge hot-badge">
+                  🔥 HOT
+                </div>
                 <div className="story-content">
                   <div className="story-title">{story.title}</div>
                 </div>
               </div>
             ))}
             
-            <div
-              className="story-card view-more-card"
-              onClick={() => setIsModalOpen(true)}
-            >
-              <div className="view-more-icon">➕</div>
-              <div className="view-more-text">Xem Thêm Tin Tức</div>
-            </div>
-          </>
-        )}
-      </div>
+            {/* Show "View More" if there are regular stories */}
+            {stories.length > 0 && (
+              <div
+                className="story-card view-more-card"
+                onClick={() => navigate('/stories')}
+              >
+                <div className="view-more-icon">➕</div>
+                <div className="view-more-text">Xem Thêm Tin Tức</div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
-      {/* Modal for all stories */}
-      {isModalOpen && (
-        <div className="stories-modal" onClick={() => setIsModalOpen(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Tất cả tin tức</h3>
-              <button onClick={() => setIsModalOpen(false)}>✕</button>
-            </div>
-            <div className="modal-stories">
-              {stories.map((story) => (
+      {/* Regular Stories Section - Chỉ hiển thị nếu không có Hot stories */}
+      {hotStories.length === 0 && (
+        <div className="stories-grid">
+          {loading ? (
+            <div className="loading">Đang tải...</div>
+          ) : stories.length === 0 ? (
+            <div className="no-stories">Chưa có tin tức nào được đăng</div>
+          ) : (
+            <>
+              {stories.slice(0, 3).map((story) => (
                 <div
                   key={story.id}
-                  className="modal-story-item"
+                  className="story-card"
+                  style={getBackgroundStyle(story)}
                   onClick={() => window.open(story.url, '_blank')}
                 >
-                  {story.image_url && (
-                    <img src={story.image_url} alt={story.title} />
-                  )}
-                  <div className="modal-story-info">
-                    <h4>{story.title}</h4>
-                    <p>{story.description}</p>
-                    <span className="story-source">{story.source}</span>
+                  <div className="story-time">
+                    {formatPublishedDate(story.published_at)}
+                  </div>
+                  <div className="story-badge">{getCategoryLabel(story.category)}</div>
+                  <div className="story-content">
+                    <div className="story-title">{story.title}</div>
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
+              
+              <div
+                className="story-card view-more-card"
+                onClick={() => navigate('/stories')}
+              >
+                <div className="view-more-icon">➕</div>
+                <div className="view-more-text">Xem Thêm Tin Tức</div>
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>

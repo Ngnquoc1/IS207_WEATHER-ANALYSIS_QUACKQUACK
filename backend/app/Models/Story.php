@@ -20,12 +20,14 @@ class Story extends Model
         'category',
         'location',
         'is_active',
+        'is_hot',
         'created_by'
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
         'is_active' => 'boolean',
+        'is_hot' => 'boolean',
     ];
 
     public function creator()
