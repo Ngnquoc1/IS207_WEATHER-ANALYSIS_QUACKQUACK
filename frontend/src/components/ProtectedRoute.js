@@ -7,7 +7,7 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const isAdmin = authService.isAdmin();
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   if (requireAdmin && !isAdmin) {

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import authService from '../services/authService';
 import SearchModal from './SearchModal';
+import LoginModal from './LoginModal';
 import './Header.css';
 
 /**
@@ -13,6 +14,7 @@ const Header = ({ onLocationSelect, currentLocation }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
     const dropdownRef = useRef(null);
 
@@ -90,8 +92,13 @@ const Header = ({ onLocationSelect, currentLocation }) => {
     const handleLogout = async () => {
         if (window.confirm('Bạn có chắc chắn muốn đăng xuất?')) {
             await authService.logout();
-            window.location.href = '/login';
+            window.location.href = '/dashboard';
         }
+    };
+
+    // Handle login success
+    const handleLoginSuccess = (user) => {
+        setCurrentUser(user);
     };
 
     // Close dropdown when clicking outside
@@ -116,103 +123,132 @@ const Header = ({ onLocationSelect, currentLocation }) => {
                     <h1>Weather Analysis Dashboard</h1>
                 </div>
 
-                {/* Right side controls - Only show if authenticated */}
-                {currentUser && (
-                    <div className="header-controls">
-                        {/* User Info */}
-                        <div className="user-info-container">
-                            <span className="user-name">
-                                👤 {currentUser.name}
-                            </span>
-                            <span className="user-role">
-                                ({currentUser.role})
-                            </span>
-                        </div>
-
-                        {/* Location Dropdown */}
-                        <div className="location-dropdown" ref={dropdownRef}>
-                            <button
-                                className="location-dropdown-button"
-                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                            >
-                                <span className="location-text">
-                                    {currentLocation ? currentLocation.name : 'Tìm kiếm địa điểm / So sánh'}
+                {/* Right side controls */}
+                <div className="header-controls">
+                    {currentUser ? (
+                        // Authenticated user controls
+                        <>
+                            {/* User Info */}
+                            <div className="user-info-container">
+                                <span className="user-name">
+                                    👤 {currentUser.name}
                                 </span>
-                                <span className="dropdown-arrow">▼</span>
+                                <span className="user-role">
+                                    ({currentUser.role})
+                                </span>
+                            </div>
+
+                            {/* Location Dropdown */}
+                            <div className="location-dropdown" ref={dropdownRef}>
+                                <button
+                                    className="location-dropdown-button"
+                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                >
+                                    <span className="location-text">
+                                        {currentLocation ? currentLocation.name : 'Tìm kiếm địa điểm / So sánh'}
+                                    </span>
+                                    <span className="dropdown-arrow">▼</span>
+                                </button>
+
+                                {isDropdownOpen && (
+                                    <div className="dropdown-menu">
+                                        {/* Search input */}
+                                        <div className="dropdown-search">
+                                            <input
+                                                type="text"
+                                                placeholder="Tìm kiếm thành phố..."
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                                className="search-input"
+                                            />
+                                        </div>
+
+                                        {/* Current location button */}
+                                        <button
+                                            className="dropdown-item current-location"
+                                            onClick={handleCurrentLocation}
+                                        >
+                                            📍 Vị trí hiện tại
+                                        </button>
+
+                                        {/* Quick locations */}
+                                        <div className="dropdown-divider"></div>
+                                        {filteredLocations.map((location, index) => (
+                                            <button
+                                                key={index}
+                                                className="dropdown-item"
+                                                onClick={() => handleLocationSelect(location)}
+                                            >
+                                                📍 {location.name}
+                                            </button>
+                                        ))}
+
+                                        {/* Custom location button */}
+                                        <div className="dropdown-divider"></div>
+                                        <button
+                                            className="dropdown-item custom-location-button"
+                                            onClick={() => {
+                                                setIsDropdownOpen(false);
+                                                setIsSearchModalOpen(true);
+                                            }}
+                                        >
+                                            🗺️ Chọn vị trí tùy chỉnh
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Theme Toggle */}
+                            <button 
+                                className="theme-toggle"
+                                onClick={toggleTheme}
+                                title={`Chuyển sang ${isDark ? 'sáng' : 'tối'}`}
+                            >
+                                {isDark ? '☀️' : '🌙'}
                             </button>
 
-                            {isDropdownOpen && (
-                                <div className="dropdown-menu">
-                                    {/* Search input */}
-                                    <div className="dropdown-search">
-                                        <input
-                                            type="text"
-                                            placeholder="Tìm kiếm thành phố..."
-                                            value={searchTerm}
-                                            onChange={(e) => setSearchTerm(e.target.value)}
-                                            className="search-input"
-                                        />
-                                    </div>
+                            {/* Logout Button */}
+                            <button 
+                                className="logout-button"
+                                onClick={handleLogout}
+                                title="Đăng xuất"
+                            >
+                                🚪
+                            </button>
 
-                                    {/* Current location button */}
-                                    <button
-                                        className="dropdown-item current-location"
-                                        onClick={handleCurrentLocation}
-                                    >
-                                        📍 Vị trí hiện tại
-                                    </button>
+                            {/* Language Selector */}
+                            <button className="language-selector">
+                                VI
+                            </button>
+                        </>
+                    ) : (
+                        // Guest user controls
+                        <>
+                            {/* Login Button */}
+                            <button 
+                                className="login-button"
+                                onClick={() => setIsLoginModalOpen(true)}
+                                title="Đăng nhập"
+                            >
+                                🔐 Đăng nhập
+                            </button>
 
-                                    {/* Quick locations */}
-                                    <div className="dropdown-divider"></div>
-                                    {filteredLocations.map((location, index) => (
-                                        <button
-                                            key={index}
-                                            className="dropdown-item"
-                                            onClick={() => handleLocationSelect(location)}
-                                        >
-                                            📍 {location.name}
-                                        </button>
-                                    ))}
+                            {/* Theme Toggle */}
+                            <button 
+                                className="theme-toggle"
+                                onClick={toggleTheme}
+                                title={`Chuyển sang ${isDark ? 'sáng' : 'tối'}`}
+                            >
+                                {isDark ? '☀️' : '🌙'}
+                            </button>
 
-                                    {/* Custom location button */}
-                                    <div className="dropdown-divider"></div>
-                                    <button
-                                        className="dropdown-item custom-location-button"
-                                        onClick={() => {
-                                            setIsDropdownOpen(false);
-                                            setIsSearchModalOpen(true);
-                                        }}
-                                    >
-                                        🗺️ Chọn vị trí tùy chỉnh
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Theme Toggle */}
-                        <button 
-                            className="theme-toggle"
-                            onClick={toggleTheme}
-                            title={`Chuyển sang ${isDark ? 'sáng' : 'tối'}`}
-                        >
-                            {isDark ? '☀️' : '🌙'}
-                        </button>
-
-                        {/* Logout Button */}
-                        <button 
-                            className="logout-button"
-                            onClick={handleLogout}
-                            title="Đăng xuất"
-                        >
-                            🚪
-                        </button>
-
-                        {/* Language Selector */}
-                        <button className="language-selector">
-                            VI
-                        </button>
-                    </div>
-                )}
+                            {/* Language Selector */}
+                            <button className="language-selector">
+                                VI
+                            </button>
+                        </>
+                    )}
+                </div>
             </div>
 
             {/* Search Modal */}
@@ -220,6 +256,13 @@ const Header = ({ onLocationSelect, currentLocation }) => {
                 isOpen={isSearchModalOpen}
                 onClose={() => setIsSearchModalOpen(false)}
                 onLocationSelect={onLocationSelect}
+            />
+
+            {/* Login Modal */}
+            <LoginModal 
+                isOpen={isLoginModalOpen}
+                onClose={() => setIsLoginModalOpen(false)}
+                onLoginSuccess={handleLoginSuccess}
             />
         </header>
     );

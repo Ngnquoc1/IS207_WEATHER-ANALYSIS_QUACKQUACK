@@ -1,24 +1,6 @@
-.login-container {
+.login-modal-form {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.login-form {
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  width: 100%;
-  max-width: 400px;
-}
-
-.login-form h2 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  color: #333;
+  flex-direction: column;
 }
 
 .form-group {
@@ -46,7 +28,7 @@
   border-color: #667eea;
 }
 
-.login-form button {
+.login-submit-button {
   width: 100%;
   padding: 0.75rem;
   background: #667eea;
@@ -58,11 +40,11 @@
   margin-top: 1rem;
 }
 
-.login-form button:hover:not(:disabled) {
+.login-submit-button:hover:not(:disabled) {
   background: #5568d3;
 }
 
-.login-form button:disabled {
+.login-submit-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }

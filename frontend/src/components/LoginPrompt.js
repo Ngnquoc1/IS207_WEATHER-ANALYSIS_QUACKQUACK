@@ -1,14 +1,7 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import './LoginPrompt.css';
 
-const LoginPrompt = () => {
-    const navigate = useNavigate();
-
-    const handleLogin = () => {
-        navigate('/login');
-    };
-
+const LoginPrompt = ({ onLoginClick }) => {
     return (
         <div className="login-prompt">
             <div className="login-prompt-icon">🔒</div>
@@ -24,7 +17,7 @@ const LoginPrompt = () => {
                 <li>🗺️ So sánh địa điểm</li>
                 <li>📰 Tin tức và câu chuyện</li>
             </ul>
-            <button onClick={handleLogin} className="prompt-login-button">
+            <button onClick={onLoginClick} className="prompt-login-button">
                 Đăng nhập ngay
             </button>
         </div>

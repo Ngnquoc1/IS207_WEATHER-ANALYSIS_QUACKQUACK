@@ -26,12 +26,12 @@ axios.interceptors.response.use(
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       
-      // Only redirect to login if:
+      // Only redirect to dashboard if:
       // 1. User was previously authenticated (had a token that expired)
-      // 2. Not already on login or dashboard page
+      // 2. Not already on dashboard page
       const currentPath = window.location.pathname;
-      if (hadToken && currentPath !== '/login' && currentPath !== '/' && currentPath !== '/dashboard') {
-        window.location.href = '/login';
+      if (hadToken && currentPath !== '/' && currentPath !== '/dashboard') {
+        window.location.href = '/dashboard';
       }
     }
     return Promise.reject(error);

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import Modal from './common/Modal';
 import authService from '../services/authService';
-import './Login.css';
+import './LoginModal.css';
 
-const Login = () => {
+const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -16,11 +17,20 @@ const Login = () => {
     try {
       const response = await authService.login(username, password);
       
+      // Call success callback
+      if (onLoginSuccess) {
+        onLoginSuccess(response.user);
+      }
+      
+      // Close modal
+      onClose();
+      
       // Redirect based on role
       if (response.user.role === 'admin') {
         window.location.href = '/admin';
       } else {
-        window.location.href = '/dashboard';
+        // Stay on dashboard, just refresh
+        window.location.reload();
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
@@ -29,10 +39,21 @@ const Login = () => {
     }
   };
 
+  const handleClose = () => {
+    setUsername('');
+    setPassword('');
+    setError('');
+    onClose();
+  };
+
   return (
-    <div className="login-container">
-      <form onSubmit={handleSubmit} className="login-form">
-        <h2>Weather Dashboard Login</h2>
+    <Modal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title="Weather Dashboard Login"
+      size="small"
+    >
+      <form onSubmit={handleSubmit} className="login-modal-form">
         {error && <div className="error-message">{error}</div>}
         <div className="form-group">
           <label>Username</label>
@@ -42,6 +63,7 @@ const Login = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
+            autoFocus
           />
         </div>
         <div className="form-group">
@@ -54,7 +76,7 @@ const Login = () => {
             required
           />
         </div>
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading} className="login-submit-button">
           {loading ? 'Logging in...' : 'Login'}
         </button>
         <div className="login-hint">
@@ -62,9 +84,9 @@ const Login = () => {
           <p>Customer: username=customer, password=123</p>
         </div>
       </form>
-    </div>
+    </Modal>
   );
 };
 
-export default Login;
+export default LoginModal;
 

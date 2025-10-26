@@ -11,7 +11,7 @@ const AdminLayout = ({ children }) => {
   const handleLogout = async () => {
     if (window.confirm('Bạn có chắc chắn muốn đăng xuất?')) {
       await authService.logout();
-      navigate('/login');
+      navigate('/dashboard');
     }
   };
 

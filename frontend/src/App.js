@@ -5,7 +5,6 @@ import DashboardPage from './pages/DashboardPage';
 import AdminPage from './pages/AdminPage';
 import AdminStoriesPage from './pages/AdminStoriesPage';
 import AdminLayout from './pages/AdminLayout';
-import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -15,8 +14,6 @@ function App() {
             <Router>
                 <div className="App">
                     <Routes>
-                        <Route path="/login" element={<Login />} />
-                        
                         {/* Admin routes with layout */}
                         <Route 
                             path="/admin/users" 

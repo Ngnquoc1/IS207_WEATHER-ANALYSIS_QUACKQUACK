@@ -10,6 +10,7 @@ import Recommendation from '../components/Recommendation';
 import LocationComparator from '../components/LocationComparator';
 import Stories from '../components/Stories';
 import LoginPrompt from '../components/LoginPrompt';
+import LoginModal from '../components/LoginModal';
 import './DashboardPage.css';
 
 /**
@@ -27,6 +28,7 @@ const DashboardPage = () => {
     const [error, setError] = useState(null);
     const [locationError, setLocationError] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(authService.isAuthenticated());
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     
     // Listen for authentication changes
     useEffect(() => {
@@ -125,6 +127,11 @@ const DashboardPage = () => {
         }
     };
 
+    const handleLoginSuccess = (user) => {
+        setIsAuthenticated(true);
+        setIsLoginModalOpen(false);
+    };
+
     return (
         <div className="dashboard-page">
             {/* Header with Dropdown */}
@@ -183,7 +190,7 @@ const DashboardPage = () => {
                         {/* Login Prompt for Guest Users */}
                         {!isAuthenticated && (
                             <div className="grid-row">
-                                <LoginPrompt />
+                                <LoginPrompt onLoginClick={() => setIsLoginModalOpen(true)} />
                             </div>
                         )}
 
@@ -245,6 +252,13 @@ const DashboardPage = () => {
                     Weather Analysis Dashboard © 2024 | Cập nhật thời gian thực
                 </p>
             </footer>
+
+            {/* Login Modal */}
+            <LoginModal 
+                isOpen={isLoginModalOpen}
+                onClose={() => setIsLoginModalOpen(false)}
+                onLoginSuccess={handleLoginSuccess}
+            />
         </div>
     );
 };
