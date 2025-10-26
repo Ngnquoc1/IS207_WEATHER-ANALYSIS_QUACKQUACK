@@ -4,8 +4,9 @@ import Pagination from './Pagination';
 import './StoryManagement.css';
 
 const StoryManagement = () => {
-  // View state: 'list' or 'create'
+  // View state: 'list', 'create', or 'edit'
   const [currentView, setCurrentView] = useState('list');
+  const [editingStory, setEditingStory] = useState(null);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [articles, setArticles] = useState([]);
@@ -39,6 +40,9 @@ const StoryManagement = () => {
 
   // Hot stories state
   const [hotStories, setHotStories] = useState([]);
+
+  // Filter state for statistics cards
+  const [filter, setFilter] = useState(null); // null, 'hot', 'warning', 'info', 'normal'
 
   // Existing URLs state
   const [existingUrls, setExistingUrls] = useState([]);
@@ -169,6 +173,14 @@ const StoryManagement = () => {
     loadHotStories();
   }, []);
 
+  // Reload stories when filter changes
+  useEffect(() => {
+    if (currentView === 'list') {
+      loadCurrentStories(1);
+      setCurrentPage(1);
+    }
+  }, [filter]);
+
   // Load statistics
   const loadStatistics = async () => {
     try {
@@ -185,7 +197,7 @@ const StoryManagement = () => {
   const loadCurrentStories = async (page = 1) => {
     setLoadingStories(true);
     try {
-      const response = await newsService.getStories(page, 10);
+      const response = await newsService.getStories(page, 10, filter);
       setCurrentStories(response.stories || []);
       if (response.pagination) {
         setPagination(response.pagination);
@@ -251,6 +263,36 @@ const StoryManagement = () => {
     }
   };
 
+  // Handle edit story
+  const handleEditStory = (story) => {
+    setEditingStory(story);
+    setCurrentView('edit');
+  };
+
+  // Handle update story
+  const handleUpdateStory = async () => {
+    if (!editingStory) return;
+    
+    try {
+      await newsService.updateStory(editingStory.id, {
+        is_hot: editingStory.is_hot,
+        category: editingStory.category
+      });
+      
+      setMessage('Đã cập nhật bài viết thành công!');
+      loadCurrentStories(currentPage);
+      loadStatistics();
+      setTimeout(() => {
+        setMessage('');
+        setCurrentView('list');
+        setEditingStory(null);
+      }, 2000);
+    } catch (error) {
+      setMessage('Lỗi khi cập nhật bài viết');
+      console.error('Error updating story:', error);
+    }
+  };
+
   // Helper functions
   const getCategoryLabel = (category) => {
     const labels = {
@@ -271,12 +313,21 @@ const StoryManagement = () => {
     });
   };
 
+  // Get filtered stories based on selected stat card
+  const getFilteredStories = () => {
+    return currentStories; // API already filters, no need to filter client-side
+  };
+
   // Render Statistics Section
   const renderStatistics = () => (
     <div className="statistics-section">
       <h3>📊 Thống kê</h3>
       <div className="statistics-grid">
-        <div className="stat-card stat-total">
+        <div 
+          className={`stat-card stat-total ${filter === null ? 'active' : ''}`}
+          onClick={() => setFilter(null)}
+          style={{ cursor: 'pointer' }}
+        >
           <div className="stat-icon">📰</div>
           <div className="stat-content">
             <div className="stat-value">{statistics.total}</div>
@@ -284,7 +335,11 @@ const StoryManagement = () => {
           </div>
         </div>
         
-        <div className="stat-card stat-hot">
+        <div 
+          className={`stat-card stat-hot ${filter === 'hot' ? 'active' : ''}`}
+          onClick={() => setFilter('hot')}
+          style={{ cursor: 'pointer' }}
+        >
           <div className="stat-icon">🔥</div>
           <div className="stat-content">
             <div className="stat-value">{statistics.hot_count}</div>
@@ -292,7 +347,11 @@ const StoryManagement = () => {
           </div>
         </div>
         
-        <div className="stat-card stat-warning">
+        <div 
+          className={`stat-card stat-warning ${filter === 'warning' ? 'active' : ''}`}
+          onClick={() => setFilter('warning')}
+          style={{ cursor: 'pointer' }}
+        >
           <div className="stat-icon">⚠️</div>
           <div className="stat-content">
             <div className="stat-value">{statistics.by_category.warning}</div>
@@ -300,7 +359,11 @@ const StoryManagement = () => {
           </div>
         </div>
         
-        <div className="stat-card stat-info">
+        <div 
+          className={`stat-card stat-info ${filter === 'info' ? 'active' : ''}`}
+          onClick={() => setFilter('info')}
+          style={{ cursor: 'pointer' }}
+        >
           <div className="stat-icon">ℹ️</div>
           <div className="stat-content">
             <div className="stat-value">{statistics.by_category.info}</div>
@@ -308,7 +371,11 @@ const StoryManagement = () => {
           </div>
         </div>
         
-        <div className="stat-card stat-normal">
+        <div 
+          className={`stat-card stat-normal ${filter === 'normal' ? 'active' : ''}`}
+          onClick={() => setFilter('normal')}
+          style={{ cursor: 'pointer' }}
+        >
           <div className="stat-icon">📝</div>
           <div className="stat-content">
             <div className="stat-value">{statistics.by_category.normal}</div>
@@ -395,9 +462,6 @@ const StoryManagement = () => {
       {/* Statistics Section */}
       {renderStatistics()}
 
-      {/* Hot Stories Section */}
-      {renderHotStoriesSection()}
-
       {/* Current Stories List */}
       {loadingStories ? (
         <div className="loading">Đang tải...</div>
@@ -413,16 +477,43 @@ const StoryManagement = () => {
         </div>
       ) : (
         <>
-          <h3 style={{ marginTop: '30px', marginBottom: '20px', color: '#333' }}>📰 Tất cả bài viết</h3>
+          <h3 style={{ marginTop: '30px', marginBottom: '20px', color: '#333' }}>
+            📰 {filter === null ? 'Tất cả bài viết' : 
+                filter === 'hot' ? 'Bài viết Hot' :
+                filter === 'warning' ? 'Bài viết Cảnh báo' :
+                filter === 'info' ? 'Bài viết Thông tin' :
+                'Bài viết Tin tức'}
+            {filter && (
+              <button 
+                className="clear-filter-btn"
+                onClick={() => setFilter(null)}
+                style={{ 
+                  marginLeft: '15px', 
+                  padding: '5px 15px', 
+                  fontSize: '14px',
+                  background: '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer'
+                }}
+              >
+                ✕ Xóa bộ lọc
+              </button>
+            )}
+          </h3>
           <div className="current-stories-list">
-            {currentStories.filter(story => !story.is_hot).map((story) => (
+            {getFilteredStories().map((story) => (
               <div key={story.id} className="current-story-item">
                 <div className="current-story-content">
                   {story.image_url && (
                     <img src={story.image_url} alt={story.title} />
                   )}
                   <div className="current-story-info">
-                    <h4>{story.title}</h4>
+                    <h4>
+                      {story.is_hot && '🔥 '}
+                      {story.title}
+                    </h4>
                     <p>{story.description}</p>
                     <div className="current-story-meta">
                       <span className={`category-badge category-${story.category}`}>
@@ -437,11 +528,10 @@ const StoryManagement = () => {
                 </div>
                 <div className="story-controls">
                   <button
-                    className={`hot-toggle ${story.is_hot ? 'active' : ''}`}
-                    onClick={() => toggleHotStatus(story.id)}
-                    title={story.is_hot ? 'Bỏ đánh dấu Hot' : 'Đánh dấu Hot'}
+                    className="edit-story-button"
+                    onClick={() => handleEditStory(story)}
                   >
-                    🔥 {story.is_hot ? 'Hot' : 'Mark Hot'}
+                    ✏️ Chỉnh sửa
                   </button>
                   <button
                     className="delete-story-button"
@@ -594,9 +684,104 @@ const StoryManagement = () => {
     </div>
   );
 
+  // Render Edit View
+  const renderEditView = () => (
+    <div className="story-edit-view">
+      <div className="view-header">
+        <button 
+          className="back-button"
+          onClick={() => {
+            setCurrentView('list');
+            setEditingStory(null);
+          }}
+        >
+          ← Quay lại danh sách
+        </button>
+        <h2>✏️ Chỉnh sửa bài viết</h2>
+      </div>
+
+      {message && (
+        <div className={`message ${message.includes('thành công') ? 'success' : 'error'}`}>
+          {message}
+        </div>
+      )}
+
+      {editingStory && (
+        <div className="edit-story-form">
+          <div className="story-preview">
+            {editingStory.image_url && (
+              <img src={editingStory.image_url} alt={editingStory.title} />
+            )}
+            <h3>{editingStory.title}</h3>
+            <p>{editingStory.description}</p>
+            <div className="story-preview-meta">
+              <span className={`category-badge category-${editingStory.category}`}>
+                {getCategoryLabel(editingStory.category)}
+              </span>
+              <span className="story-date">
+                📅 {formatPublishedDate(editingStory.published_at)}
+              </span>
+              <span className="story-source">{editingStory.source}</span>
+            </div>
+          </div>
+
+          <div className="form-section">
+            <label>
+              <input
+                type="checkbox"
+                checked={editingStory.is_hot}
+                onChange={(e) => setEditingStory({
+                  ...editingStory,
+                  is_hot: e.target.checked
+                })}
+              />
+              🔥 Đánh dấu là Hot Story
+            </label>
+          </div>
+
+          <div className="form-section">
+            <label>Phân loại:</label>
+            <select
+              value={editingStory.category}
+              onChange={(e) => setEditingStory({
+                ...editingStory,
+                category: e.target.value
+              })}
+              className="category-select-edit"
+            >
+              <option value="normal">📰 Tin tức</option>
+              <option value="info">ℹ️ Thông tin</option>
+              <option value="warning">⚠️ Cảnh báo</option>
+            </select>
+          </div>
+
+          <div className="form-actions">
+            <button 
+              className="save-button"
+              onClick={handleUpdateStory}
+            >
+              💾 Lưu thay đổi
+            </button>
+            <button 
+              className="cancel-button"
+              onClick={() => {
+                setCurrentView('list');
+                setEditingStory(null);
+              }}
+            >
+              ❌ Hủy
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="story-management">
-      {currentView === 'list' ? renderListView() : renderCreateView()}
+      {currentView === 'list' && renderListView()}
+      {currentView === 'create' && renderCreateView()}
+      {currentView === 'edit' && renderEditView()}
     </div>
   );
 };

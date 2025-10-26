@@ -568,10 +568,17 @@
   border-radius: 8px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  transition: transform 0.2s;
+  transition: all 0.3s ease;
 }
 
 .stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card.active {
+  border: 3px solid #fff;
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.5);
   transform: translateY(-2px);
 }
 
@@ -847,5 +854,134 @@
     justify-content: flex-end;
     margin-top: 12px;
   }
+}
+
+/* Edit Story View */
+.edit-story-button {
+  padding: 8px 16px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.edit-story-button:hover {
+  background: #5568d3;
+}
+
+.story-edit-view {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+}
+
+.edit-story-form {
+  max-width: 800px;
+}
+
+.story-preview {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
+.story-preview img {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.story-preview h3 {
+  margin: 15px 0 10px 0;
+  color: #333;
+}
+
+.story-preview p {
+  color: #666;
+  line-height: 1.6;
+}
+
+.story-preview-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.form-section {
+  margin-bottom: 25px;
+}
+
+.form-section label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-section input[type="checkbox"] {
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+}
+
+.category-select-edit {
+  padding: 10px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 15px;
+  background: white;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+}
+
+.category-select-edit:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.save-button {
+  padding: 12px 24px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.save-button:hover {
+  background: #218838;
+}
+
+.cancel-button {
+  padding: 12px 24px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cancel-button:hover {
+  background: #5a6268;
 }
 

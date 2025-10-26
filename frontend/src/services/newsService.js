@@ -8,10 +8,12 @@ const newsService = {
     return response.data;
   },
 
-  async getStories(page = 1, perPage = 10) {
-    const response = await axios.get('/stories', {
-      params: { page, per_page: perPage }
-    });
+  async getStories(page = 1, perPage = 10, filter = null) {
+    const params = { page, per_page: perPage };
+    if (filter) {
+      params.filter = filter;
+    }
+    const response = await axios.get('/stories', { params });
     return response.data;
   },
 
@@ -39,6 +41,11 @@ const newsService = {
 
   async updateStoryStatus(id, statusData) {
     const response = await axios.put(`/stories/${id}/status`, statusData);
+    return response.data;
+  },
+
+  async updateStory(id, updateData) {
+    const response = await axios.put(`/stories/${id}`, updateData);
     return response.data;
   },
 

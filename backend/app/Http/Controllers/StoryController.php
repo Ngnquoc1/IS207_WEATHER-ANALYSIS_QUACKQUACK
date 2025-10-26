@@ -93,10 +93,19 @@ class StoryController extends Controller
     {
         $perPage = $request->get('per_page', 10); // Default 10 items per page
         $page = $request->get('page', 1);
+        $filter = $request->get('filter'); // 'hot', 'warning', 'info', 'normal', null
         
-        $stories = Story::where('is_active', true)
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+        $query = Story::where('is_active', true);
+        
+        // Apply filter
+        if ($filter === 'hot') {
+            $query->where('is_hot', true);
+        } elseif (in_array($filter, ['warning', 'info', 'normal'])) {
+            $query->where('category', $filter);
+        }
+        // If filter is null, show all stories
+        
+        $stories = $query->orderBy('created_at', 'desc')->paginate($perPage);
         
         return response()->json([
             'success' => true,
@@ -188,6 +197,35 @@ class StoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Story hot status updated successfully',
+            'story' => $story
+        ]);
+    }
+
+    /**
+     * Update story details (is_hot and category)
+     */
+    public function updateStory(Request $request, $id)
+    {
+        $request->validate([
+            'is_hot' => 'nullable|boolean',
+            'category' => 'nullable|in:warning,info,normal',
+        ]);
+
+        $story = Story::findOrFail($id);
+        
+        if ($request->has('is_hot')) {
+            $story->is_hot = $request->is_hot;
+        }
+        
+        if ($request->has('category')) {
+            $story->category = $request->category;
+        }
+        
+        $story->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Story updated successfully',
             'story' => $story
         ]);
     }

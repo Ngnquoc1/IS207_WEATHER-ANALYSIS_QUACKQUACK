@@ -18,7 +18,7 @@ const StoriesPage = () => {
     try {
       const [allResponse, hotResponse] = await Promise.all([
         newsService.getStories(1, 100), // Get up to 100 stories
-        newsService.getHotStories(10)
+        newsService.getHotStories(5) // Get top 5 hot stories
       ]);
       
       setStories(allResponse.stories || []);
@@ -29,6 +29,18 @@ const StoriesPage = () => {
       setLoading(false);
     }
   };
+
+  // Get IDs of hot stories to filter them out from latest news
+  const hotStoryIds = hotStories.map(story => story.id);
+  
+  // Get latest 5 stories excluding hot stories, sorted by date
+  const latestStories = stories
+    .filter(story => !hotStoryIds.includes(story.id))
+    .sort((a, b) => new Date(b.published_at) - new Date(a.published_at))
+    .slice(0, 5);
+
+  // All stories sorted by date (including hot ones)
+  const allStoriesSorted = stories.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
 
   const getCategoryColor = (category) => {
     switch (category) {
@@ -84,25 +96,34 @@ const StoriesPage = () => {
           <button className="back-button" onClick={() => navigate('/dashboard')}>
             ← Quay lại Dashboard
           </button>
-          <h1>📰 Tất Cả Tin Tức & Stories</h1>
-          <p>Khám phá các bài viết mới nhất về thời tiết</p>
+          <h1>Tất Cả Tin Tức & Bài Viết</h1>
+          <p>Khám phá những thông tin nổi bật và cập nhật mới nhất.</p>
         </div>
 
         {loading ? (
           <div className="loading">Đang tải...</div>
         ) : (
           <>
-            {/* Hot Stories Section */}
+            {/* Hot Stories Section - Show top 5 hot stories */}
             {hotStories.length > 0 && (
               <div className="hot-stories-section">
-                <h2 className="section-title">
-                  🔥 Tin Nóng - Hot Stories
-                </h2>
-                <div className="stories-grid large">
+                <div className="hot-section-header">
+                  <h2 className="section-title">
+                    <span className="flame-icon">🔥</span>
+                    Tin Nóng - Hot Stories
+                  </h2>
+                  <div className="red-divider"></div>
+                  <a href="#all-stories" className="view-all-link">
+                    Xem tất cả →
+                  </a>
+                </div>
+                
+                {/* Grid of 5 hot stories */}
+                <div className="hot-stories-grid">
                   {hotStories.map((story) => (
                     <div
                       key={story.id}
-                      className="story-card large hot-card"
+                      className="story-card hot-story-card"
                       style={getBackgroundStyle(story)}
                       onClick={() => handleStoryClick(story)}
                     >
@@ -114,9 +135,6 @@ const StoriesPage = () => {
                       </div>
                       <div className="story-content">
                         <div className="story-title">{story.title}</div>
-                        {story.description && (
-                          <div className="story-description">{story.description}</div>
-                        )}
                       </div>
                     </div>
                   ))}
@@ -124,38 +142,82 @@ const StoriesPage = () => {
               </div>
             )}
 
-            {/* All Stories Section */}
-            <div className="all-stories-section">
-              <h2 className="section-title">
-                📰 Tất Cả Tin Tức
-              </h2>
-              <div className="stories-list">
-                {stories.map((story) => (
+            {/* Latest News Section - Show top 5 latest (excluding hot) */}
+            {latestStories.length > 0 && (
+              <div className="latest-news-section">
+                <div className="latest-news-header">
+                  <h2 className="section-title">
+                    Tin Tức Mới Nhất
+                  </h2>
+                  <div className="gray-divider"></div>
+                  <button className="discover-more-link">
+                    Khám phá thêm →
+                  </button>
+                </div>
+                
+                <div className="news-grid">
+                  {latestStories.map((story) => (
+                    <div
+                      key={story.id}
+                      className="news-item"
+                      onClick={() => handleStoryClick(story)}
+                    >
+                      <div className="news-thumbnail">
+                        {story.image_url ? (
+                          <img src={story.image_url} alt={story.title} />
+                        ) : (
+                          <div className="thumbnail-placeholder">Thumb</div>
+                        )}
+                      </div>
+                      <div className="news-content">
+                        <h3 className="news-title">{story.title}</h3>
+                        <div className="news-meta">
+                          <span className="news-category">{getCategoryLabel(story.category)}</span>
+                          <span className="dot-separator">•</span>
+                          <span className="news-date">
+                            🕐 {formatPublishedDate(story.published_at)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* All Stories Section - Show all stories including hot */}
+            <div className="all-stories-section" id="all-stories">
+              <div className="latest-news-header">
+                <h2 className="section-title">
+                  Tất Cả Tin Tức
+                </h2>
+                <div className="gray-divider"></div>
+              </div>
+              
+              <div className="news-grid">
+                {allStoriesSorted.map((story) => (
                   <div
                     key={story.id}
-                    className="story-list-item"
+                    className="news-item"
                     onClick={() => handleStoryClick(story)}
                   >
-                    {story.image_url && (
-                      <img src={story.image_url} alt={story.title} className="story-thumbnail" />
-                    )}
-                    <div className="story-list-content">
-                      <div className="story-list-header">
-                        <h3 className="story-list-title">
-                          {story.is_hot && '🔥 '}
-                          {story.title}
-                        </h3>
-                        <span className={`category-badge category-${story.category}`}>
-                          {getCategoryLabel(story.category)}
-                        </span>
-                      </div>
-                      {story.description && (
-                        <p className="story-list-description">{story.description}</p>
+                    <div className="news-thumbnail">
+                      {story.image_url ? (
+                        <img src={story.image_url} alt={story.title} />
+                      ) : (
+                        <div className="thumbnail-placeholder">Thumb</div>
                       )}
-                      <div className="story-list-footer">
-                        <span className="story-list-source">{story.source}</span>
-                        <span className="story-list-date">
-                          📅 {formatPublishedDate(story.published_at)}
+                    </div>
+                    <div className="news-content">
+                      <h3 className="news-title">
+                        {story.is_hot && '🔥 '}
+                        {story.title}
+                      </h3>
+                      <div className="news-meta">
+                        <span className="news-category">{getCategoryLabel(story.category)}</span>
+                        <span className="dot-separator">•</span>
+                        <span className="news-date">
+                          🕐 {formatPublishedDate(story.published_at)}
                         </span>
                       </div>
                     </div>

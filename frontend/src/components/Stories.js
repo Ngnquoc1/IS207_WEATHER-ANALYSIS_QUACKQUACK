@@ -29,6 +29,15 @@ const Stories = ({ location }) => {
     }
   };
 
+  // Get top 5 latest stories sorted by date
+  const latestStories = stories
+    .sort((a, b) => new Date(b.published_at) - new Date(a.published_at))
+    .slice(0, 5);
+
+  // Stories to display: hot stories if available, otherwise latest stories
+  const storiesToDisplay = hotStories.length > 0 ? hotStories : latestStories;
+  const isHotSection = hotStories.length > 0;
+
   const getCategoryColor = (category) => {
     switch (category) {
       case 'warning': return '#dc3545'; // Red
@@ -94,23 +103,27 @@ const Stories = ({ location }) => {
         </div>
       </div>
 
-      {/* Hot Stories Section - Hiển thị đầu tiên */}
-      {hotStories.length > 0 && (
+      {/* Stories Section */}
+      {loading ? (
+        <div className="loading">Đang tải...</div>
+      ) : storiesToDisplay.length === 0 ? (
+        <div className="no-stories">Chưa có tin tức nào được đăng</div>
+      ) : (
         <div className="hot-section">
-          <h3 className="section-title">🔥 Tin Nóng - Hot Stories</h3>
+          {/* Grid of 5 stories */}
           <div className="stories-grid">
-            {hotStories.map((story) => (
+            {storiesToDisplay.map((story) => (
               <div
                 key={story.id}
-                className="story-card hot-card"
+                className={`story-card ${isHotSection ? 'hot-card' : ''}`}
                 style={getBackgroundStyle(story)}
                 onClick={() => window.open(story.url, '_blank')}
               >
                 <div className="story-time">
                   {formatPublishedDate(story.published_at)}
                 </div>
-                <div className="story-badge hot-badge">
-                  🔥 HOT
+                <div className={`story-badge ${isHotSection ? 'hot-badge' : ''}`}>
+                  {isHotSection ? '🔥 HOT' : getCategoryLabel(story.category)}
                 </div>
                 <div className="story-content">
                   <div className="story-title">{story.title}</div>
@@ -118,55 +131,15 @@ const Stories = ({ location }) => {
               </div>
             ))}
             
-            {/* Show "View More" if there are regular stories */}
-            {stories.length > 0 && (
-              <div
-                className="story-card view-more-card"
-                onClick={() => navigate('/stories')}
-              >
-                <div className="view-more-icon">➕</div>
-                <div className="view-more-text">Xem Thêm Tin Tức</div>
-              </div>
-            )}
+            {/* View More Card */}
+            <div
+              className="story-card view-more-card"
+              onClick={() => navigate('/stories')}
+            >
+              <div className="view-more-icon">➕</div>
+              <div className="view-more-text">Xem Thêm Tin Tức</div>
+            </div>
           </div>
-        </div>
-      )}
-
-      {/* Regular Stories Section - Chỉ hiển thị nếu không có Hot stories */}
-      {hotStories.length === 0 && (
-        <div className="stories-grid">
-          {loading ? (
-            <div className="loading">Đang tải...</div>
-          ) : stories.length === 0 ? (
-            <div className="no-stories">Chưa có tin tức nào được đăng</div>
-          ) : (
-            <>
-              {stories.slice(0, 3).map((story) => (
-                <div
-                  key={story.id}
-                  className="story-card"
-                  style={getBackgroundStyle(story)}
-                  onClick={() => window.open(story.url, '_blank')}
-                >
-                  <div className="story-time">
-                    {formatPublishedDate(story.published_at)}
-                  </div>
-                  <div className="story-badge">{getCategoryLabel(story.category)}</div>
-                  <div className="story-content">
-                    <div className="story-title">{story.title}</div>
-                  </div>
-                </div>
-              ))}
-              
-              <div
-                className="story-card view-more-card"
-                onClick={() => navigate('/stories')}
-              >
-                <div className="view-more-icon">➕</div>
-                <div className="view-more-text">Xem Thêm Tin Tức</div>
-              </div>
-            </>
-          )}
         </div>
       )}
     </div>

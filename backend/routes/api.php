@@ -56,6 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/check', [StoryController::class, 'checkStoriesExist']);
             Route::post('/', [StoryController::class, 'createStory']);
             Route::put('/{id}/status', [StoryController::class, 'updateStoryStatus']);
+            Route::put('/{id}', [StoryController::class, 'updateStory']);
             Route::delete('/{id}', [StoryController::class, 'deleteStory']);
         });
     });
