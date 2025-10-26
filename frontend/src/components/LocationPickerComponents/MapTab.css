@@ -17,7 +17,9 @@
   flex-direction: column;
   background: white;
   border-radius: 0 0 8px 8px;
-  margin-top: 60px;
+  /* margin-top: 60px; - Removed to fix overflow */
+  min-height: 600px; /* Set minimum height for map tab */
+  width: 100%; /* Ensure full width */
 }
 
 .theme-dark .map-tab {
@@ -28,10 +30,16 @@
 .popular-locations {
   display: flex;
   gap: 12px;
-  padding: 20px;
+  padding: 20px 24px; /* Standardize horizontal padding */
   overflow-x: auto;
   background: #f8f9fa;
   border-bottom: 1px solid #e0e0e0;
+  flex-shrink: 0; /* Don't shrink this element */
+  /* Extend to full width by counteracting parent padding */
+  margin-left: -24px;
+  margin-right: -24px;
+  width: calc(100% + 48px);
+  box-sizing: border-box;
 }
 
 .theme-dark .popular-locations {
@@ -51,6 +59,7 @@
   color: #666;
   transition: all 0.3s ease;
   min-width: fit-content;
+  flex-shrink: 0; /* Prevent chips from shrinking */
 }
 
 .location-chip:hover {
@@ -75,11 +84,20 @@
   color: #0d6efd;
 }
 
+/* Map and Location Wrapper */
+.map-and-location-wrapper {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  min-height: 500px;
+  align-items: flex-start; /* Align items to top */
+}
+
 /* Map Container */
 .map-container {
   flex: 1;
   position: relative;
-  min-height: 400px;
+  min-height: 500px; /* Ensure map has minimum height */
   margin: 0;
   border-radius: 0;
   overflow: hidden;
@@ -175,6 +193,7 @@
   transition: all 0.3s ease;
   margin-top: 20px;
   box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  flex-shrink: 0; /* Don't shrink this element */
 }
 
 .search-button:hover:not(:disabled) {
@@ -200,6 +219,102 @@
 
 .theme-dark .search-button:hover:not(:disabled) {
   background: #0b5ed7;
+}
+
+/* Selected Location Display */
+.selected-location {
+  /* No fixed width - full width by default */
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0; /* Don't shrink this element */
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* Custom width styling - can be applied externally */
+.selected-location.sidebar {
+  width: 30%; /* Custom width for sidebar layout */
+}
+
+.selected-location.full-width {
+  width: 100%; /* Explicit full width */
+}
+
+.theme-dark .selected-location {
+  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+}
+
+.selected-location h3 {
+  margin: 0 0 15px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.location-info {
+  margin-bottom: 20px;
+}
+
+.location-info p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.location-info strong {
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.select-button {
+  width: 100%;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.select-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.select-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.select-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error-message {
+  margin-top: 20px;
+  padding: 16px;
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  color: #e74c3c;
+  border-radius: 8px;
+  font-size: 14px;
+  flex-shrink: 0; /* Don't shrink this element */
+}
+
+.theme-dark .error-message {
+  background: rgba(231, 76, 60, 0.2);
+  border-color: rgba(231, 76, 60, 0.4);
 }
 
 /* Map Return Location Button */
@@ -364,9 +479,34 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .map-tab {
+    min-height: 400px; /* Smaller minimum height on mobile */
+  }
+  
+  /* Change to flex-col on mobile */
+  .map-and-location-wrapper {
+    flex-direction: column;
+    gap: 16px;
+    min-height: auto;
+  }
+  
+  .map-container {
+    min-height: 350px; /* Smaller map height on mobile */
+  }
+  
+  /* Selected location takes full width on mobile */
+  .selected-location.sidebar {
+    width: 100%; /* Override sidebar width on mobile */
+    max-height: none;
+  }
+  
   .popular-locations {
-    padding: 16px;
+    padding: 16px 20px; /* Standardize horizontal padding */
     gap: 8px;
+    /* Adjust negative margins for mobile - account for different padding */
+    margin-left: -20px;
+    margin-right: -20px;
+    width: calc(100% + 40px);
   }
   
   .location-chip {
@@ -392,8 +532,37 @@
 }
 
 @media (max-width: 480px) {
+  .map-tab {
+    min-height: 350px; /* Even smaller height for small screens */
+  }
+  
+  .map-and-location-wrapper {
+    gap: 12px;
+  }
+  
+  .map-container {
+    min-height: 300px; /* Smaller map height for small screens */
+  }
+  
+  .selected-location {
+    padding: 16px;
+  }
+  
+  .selected-location h3 {
+    font-size: 16px;
+  }
+  
+  .select-button {
+    padding: 14px;
+    font-size: 16px;
+  }
+  
   .popular-locations {
-    padding: 12px;
+    padding: 12px 16px; /* Standardize horizontal padding */
+    /* Adjust negative margins for small mobile - account for different padding */
+    margin-left: -16px;
+    margin-right: -16px;
+    width: calc(100% + 32px);
   }
   
   .location-chip {

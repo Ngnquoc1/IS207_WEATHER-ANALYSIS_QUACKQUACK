@@ -51,22 +51,14 @@ function App() {
                             } 
                         />
                         
-                        {/* Customer routes */}
+                        {/* Customer routes - allow guest access */}
                         <Route 
                             path="/" 
-                            element={
-                                <ProtectedRoute>
-                                    <DashboardPage />
-                                </ProtectedRoute>
-                            } 
+                            element={<DashboardPage />}
                         />
                         <Route 
                             path="/dashboard" 
-                            element={
-                                <ProtectedRoute>
-                                    <DashboardPage />
-                                </ProtectedRoute>
-                            } 
+                            element={<DashboardPage />}
                         />
                     </Routes>
                 </div>

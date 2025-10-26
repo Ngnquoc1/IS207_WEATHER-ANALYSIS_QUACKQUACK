@@ -101,7 +101,10 @@
 .modal-content {
   padding: 24px;
   overflow-y: auto;
+  overflow-x: hidden;
   flex: 1;
+  min-height: 0; /* Important for flex */
+  box-sizing: border-box;
 }
 
 /* Animation */

@@ -19,9 +19,20 @@ axios.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      // Check if user had a token before removing it
+      const hadToken = !!localStorage.getItem('token');
+      
+      // Clear authentication data
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      
+      // Only redirect to login if:
+      // 1. User was previously authenticated (had a token that expired)
+      // 2. Not already on login or dashboard page
+      const currentPath = window.location.pathname;
+      if (hadToken && currentPath !== '/login' && currentPath !== '/' && currentPath !== '/dashboard') {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

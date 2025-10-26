@@ -15,6 +15,13 @@ use App\Http\Controllers\StoryController;
 // Authentication routes
 Route::post('/login', [AuthController::class, 'login']);
 
+// Public Weather API Routes - allow guest access
+Route::prefix('weather')->group(function () {
+    // Get comprehensive weather data for a specific location
+    // Available to both guests and authenticated users
+    Route::get('/{lat}/{lon}', [WeatherController::class, 'getWeatherData']);
+});
+
 /*
 |--------------------------------------------------------------------------
 | Protected Routes (requires authentication)
@@ -26,12 +33,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
     
-    // Weather API Routes - requires authentication
+    // Protected Weather API Routes - requires authentication
     Route::prefix('weather')->group(function () {
-        // Get comprehensive weather data for a specific location
-        // Returns current weather, hourly forecast, daily forecast, anomaly detection, and recommendations
-        Route::get('/{lat}/{lon}', [WeatherController::class, 'getWeatherData']);
-        
         // Get weather data for multiple cities in bulk (for RainMap)
         // Returns weather data for 24 major cities worldwide
         Route::get('/bulk', [WeatherController::class, 'getBulkWeatherData']);

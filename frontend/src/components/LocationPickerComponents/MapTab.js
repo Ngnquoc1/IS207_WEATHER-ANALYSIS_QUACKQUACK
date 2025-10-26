@@ -334,62 +334,56 @@ const MapTab = ({
         ))}
       </div>
 
-      {/* Map Container */}
-      <div className="map-container">
-        <MapContainer
-          center={[21.0285, 105.8542]} // Default center, will be changed by setView
-          zoom={10}
-          className="location-picker-map"
-        >
-          <TileLayer
-            url={currentMapConfig.url}
-            attribution={currentMapConfig.attribution}
-          />
-          
-          <MapControls
-            currentPosition={currentPosition}
-            isLoadingLocation={isLoadingLocation}
-            onCoordinatesChange={handleCoordinatesChange}
-            resetClickedPosition={resetClickedPosition}
-            onMapCenterChange={mapCenterToSet}
-            onMapCenterReset={resetMapCenter}
-            onMapClick={handleMapClick}
-          />
-        </MapContainer>
+
+      {/* Map and Selected Location Container */}
+      <div className="map-and-location-wrapper">
+        {/* Map Container */}
+        <div style={{height: '100%'}} className="map-container">
+          <MapContainer
+            center={[21.0285, 105.8542]} // Default center, will be changed by setView
+            zoom={10}
+            className="location-picker-map"
+          >
+            <TileLayer
+              url={currentMapConfig.url}
+              attribution={currentMapConfig.attribution}
+            />
+            
+            <MapControls
+              currentPosition={currentPosition}
+              isLoadingLocation={isLoadingLocation}
+              onCoordinatesChange={handleCoordinatesChange}
+              resetClickedPosition={resetClickedPosition}
+              onMapCenterChange={mapCenterToSet}
+              onMapCenterReset={resetMapCenter}
+              onMapClick={handleMapClick}
+            />
+          </MapContainer>
+        </div>
+
+        {/* Selected Location Display */}
+        {selectedLocation && (
+          <div className="selected-location sidebar">
+            <h3>Vị Trí Đã Chọn:</h3>
+            <div className="location-info">
+              <p><strong>Tên:</strong> {selectedLocation.name}</p>
+              <p><strong>Vĩ độ:</strong> {selectedLocation.latitude}</p>
+              <p><strong>Kinh độ:</strong> {selectedLocation.longitude}</p>
+            </div>
+            <button 
+              className="select-button"
+              onClick={onSelectLocation}
+              disabled={loading}
+            >
+              {loading ? 'Đang xử lý...' : 'Xem Thời Tiết Tại Đây'}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Error Message */}
       {error && <div className="error-message">{error}</div>}
-      
-      {/* Selected Location Display */}
-      {selectedLocation && (
-        <div className="selected-location">
-          <h3>Vị Trí Đã Chọn:</h3>
-          <div className="location-info">
-            <p><strong>Tên:</strong> {selectedLocation.name}</p>
-            <p><strong>Vĩ độ:</strong> {selectedLocation.latitude}</p>
-            <p><strong>Kinh độ:</strong> {selectedLocation.longitude}</p>
-          </div>
-          <button 
-            className="select-button"
-            onClick={onSelectLocation}
-            disabled={loading}
-          >
-            {loading ? 'Đang xử lý...' : 'Xem Thời Tiết Tại Đây'}
-          </button>
-        </div>
-      )}
-      
-      {/* Action Button - chỉ hiển thị khi chưa có selectedLocation */}
-      {!selectedLocation && (
-        <button 
-          className="search-button"
-          onClick={onSelectLocation}
-          disabled={loading}
-        >
-          {loading ? 'Đang tìm...' : 'TÌM KIẾM TẠI VỊ TRÍ NÀY'}
-        </button>
-      )}
+     
     </div>
   );
 };

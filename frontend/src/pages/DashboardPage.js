@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { fetchWeatherData, getCurrentLocation } from '../services/weatherService';
+import authService from '../services/authService';
 import Header from '../components/Header';
 import CurrentWeather from '../components/CurrentWeather';
 import HourlyForecastChart from '../components/HourlyForecastChart';
@@ -8,6 +9,7 @@ import AnomalyDisplay from '../components/AnomalyDisplay';
 import Recommendation from '../components/Recommendation';
 import LocationComparator from '../components/LocationComparator';
 import Stories from '../components/Stories';
+import LoginPrompt from '../components/LoginPrompt';
 import './DashboardPage.css';
 
 /**
@@ -24,6 +26,28 @@ const DashboardPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [locationError, setLocationError] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(authService.isAuthenticated());
+    
+    // Listen for authentication changes
+    useEffect(() => {
+        const checkAuth = () => {
+            setIsAuthenticated(authService.isAuthenticated());
+        };
+        
+        // Check auth on mount
+        checkAuth();
+        
+        // Listen for storage changes (when user logs in/out)
+        const handleStorageChange = () => {
+            checkAuth();
+        };
+        
+        window.addEventListener('storage', handleStorageChange);
+        
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
 
 
     // Get user's current location on component mount or handle location from router state
@@ -148,7 +172,7 @@ const DashboardPage = () => {
                     <>
                         {/* Current Location Display */}
                         <div className="current-location-banner">
-                            <h2>📍 {location.name}</h2>
+                            <h2>📍 {selectedLocation?.name}</h2>
                             <p>
                                 Vĩ độ: {weatherData.location?.latitude}° | 
                                 Kinh độ: {weatherData.location?.longitude}° | 
@@ -156,38 +180,55 @@ const DashboardPage = () => {
                             </p>
                         </div>
 
-                        {/* Stories Section */}
-                        <div className="grid-row">
-                            <Stories location={selectedLocation?.name} />
-                        </div>
+                        {/* Login Prompt for Guest Users */}
+                        {!isAuthenticated && (
+                            <div className="grid-row">
+                                <LoginPrompt />
+                            </div>
+                        )}
 
-                        {/* Section 1: Current Weather */}
+                        {/* Stories Section - Only for authenticated users */}
+                        {isAuthenticated && (
+                            <div className="grid-row">
+                                <Stories location={selectedLocation?.name} />
+                            </div>
+                        )}
+
+                        {/* Section 1: Current Weather - Available for all users */}
                         <div className="grid-row">
                             <CurrentWeather data={weatherData.current_weather} />
                         </div>
 
-                        {/* Hourly Forecast Chart */}
-                        <div className="grid-row">
-                            <HourlyForecastChart 
-                                data={weatherData.hourly_forecast} 
-                                dailyData={weatherData.daily_forecast}
-                            />
-                        </div>
+                        {/* Hourly Forecast Chart - Only for authenticated users */}
+                        {isAuthenticated && (
+                            <div className="grid-row">
+                                <HourlyForecastChart 
+                                    data={weatherData.hourly_forecast} 
+                                    dailyData={weatherData.daily_forecast}
+                                />
+                            </div>
+                        )}
 
-                        {/* Section 2: Anomaly Analysis */}
-                        <div className="grid-row">
-                            <AnomalyDisplay anomalyData={weatherData.anomaly} />
-                        </div>
+                        {/* Section 2: Anomaly Analysis - Only for authenticated users */}
+                        {isAuthenticated && (
+                            <div className="grid-row">
+                                <AnomalyDisplay anomalyData={weatherData.anomaly} />
+                            </div>
+                        )}
 
-                        {/* Section 3: Smart Recommendations */}
-                        <div className="grid-row">
-                            <Recommendation recommendation={weatherData.recommendation} />
-                        </div>
+                        {/* Section 3: Smart Recommendations - Only for authenticated users */}
+                        {isAuthenticated && (
+                            <div className="grid-row">
+                                <Recommendation recommendation={weatherData.recommendation} />
+                            </div>
+                        )}
 
-                        {/* Location Comparator */}
-                        <div className="grid-row">
-                            <LocationComparator />
-                        </div>
+                        {/* Location Comparator - Only for authenticated users */}
+                        {isAuthenticated && (
+                            <div className="grid-row">
+                                <LocationComparator />
+                            </div>
+                        )}
                     </>
                 )}
             </main>

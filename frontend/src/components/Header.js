@@ -16,10 +16,25 @@ const Header = ({ onLocationSelect, currentLocation }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const dropdownRef = useRef(null);
 
-    // Load current user info
+    // Load current user info and listen for changes
     useEffect(() => {
-        const user = authService.getUser();
-        setCurrentUser(user);
+        const loadUser = () => {
+            const user = authService.getUser();
+            setCurrentUser(user);
+        };
+        
+        loadUser();
+        
+        // Listen for storage changes (when user logs in/out in another tab)
+        const handleStorageChange = () => {
+            loadUser();
+        };
+        
+        window.addEventListener('storage', handleStorageChange);
+        
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
     }, []);
 
     // Quick location presets
@@ -101,10 +116,10 @@ const Header = ({ onLocationSelect, currentLocation }) => {
                     <h1>Weather Analysis Dashboard</h1>
                 </div>
 
-                {/* Right side controls */}
-                <div className="header-controls">
-                    {/* User Info */}
-                    {currentUser && (
+                {/* Right side controls - Only show if authenticated */}
+                {currentUser && (
+                    <div className="header-controls">
+                        {/* User Info */}
                         <div className="user-info-container">
                             <span className="user-name">
                                 👤 {currentUser.name}
@@ -113,91 +128,91 @@ const Header = ({ onLocationSelect, currentLocation }) => {
                                 ({currentUser.role})
                             </span>
                         </div>
-                    )}
 
-                    {/* Location Dropdown */}
-                    <div className="location-dropdown" ref={dropdownRef}>
-                        <button
-                            className="location-dropdown-button"
-                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        {/* Location Dropdown */}
+                        <div className="location-dropdown" ref={dropdownRef}>
+                            <button
+                                className="location-dropdown-button"
+                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            >
+                                <span className="location-text">
+                                    {currentLocation ? currentLocation.name : 'Tìm kiếm địa điểm / So sánh'}
+                                </span>
+                                <span className="dropdown-arrow">▼</span>
+                            </button>
+
+                            {isDropdownOpen && (
+                                <div className="dropdown-menu">
+                                    {/* Search input */}
+                                    <div className="dropdown-search">
+                                        <input
+                                            type="text"
+                                            placeholder="Tìm kiếm thành phố..."
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            className="search-input"
+                                        />
+                                    </div>
+
+                                    {/* Current location button */}
+                                    <button
+                                        className="dropdown-item current-location"
+                                        onClick={handleCurrentLocation}
+                                    >
+                                        📍 Vị trí hiện tại
+                                    </button>
+
+                                    {/* Quick locations */}
+                                    <div className="dropdown-divider"></div>
+                                    {filteredLocations.map((location, index) => (
+                                        <button
+                                            key={index}
+                                            className="dropdown-item"
+                                            onClick={() => handleLocationSelect(location)}
+                                        >
+                                            📍 {location.name}
+                                        </button>
+                                    ))}
+
+                                    {/* Custom location button */}
+                                    <div className="dropdown-divider"></div>
+                                    <button
+                                        className="dropdown-item custom-location-button"
+                                        onClick={() => {
+                                            setIsDropdownOpen(false);
+                                            setIsSearchModalOpen(true);
+                                        }}
+                                    >
+                                        🗺️ Chọn vị trí tùy chỉnh
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Theme Toggle */}
+                        <button 
+                            className="theme-toggle"
+                            onClick={toggleTheme}
+                            title={`Chuyển sang ${isDark ? 'sáng' : 'tối'}`}
                         >
-                            <span className="location-text">
-                                {currentLocation ? currentLocation.name : 'Tìm kiếm địa điểm / So sánh'}
-                            </span>
-                            <span className="dropdown-arrow">▼</span>
+                            {isDark ? '☀️' : '🌙'}
                         </button>
 
-                        {isDropdownOpen && (
-                            <div className="dropdown-menu">
-                                {/* Search input */}
-                                <div className="dropdown-search">
-                                    <input
-                                        type="text"
-                                        placeholder="Tìm kiếm thành phố..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="search-input"
-                                    />
-                                </div>
+                        {/* Logout Button */}
+                        <button 
+                            className="logout-button"
+                            onClick={handleLogout}
+                            title="Đăng xuất"
+                        >
+                            🚪
+                        </button>
 
-                                {/* Current location button */}
-                                <button
-                                    className="dropdown-item current-location"
-                                    onClick={handleCurrentLocation}
-                                >
-                                    📍 Vị trí hiện tại
-                                </button>
-
-                                {/* Quick locations */}
-                                <div className="dropdown-divider"></div>
-                                {filteredLocations.map((location, index) => (
-                                    <button
-                                        key={index}
-                                        className="dropdown-item"
-                                        onClick={() => handleLocationSelect(location)}
-                                    >
-                                        📍 {location.name}
-                                    </button>
-                                ))}
-
-                                {/* Custom location button */}
-                                <div className="dropdown-divider"></div>
-                                <button
-                                    className="dropdown-item custom-location-button"
-                                    onClick={() => {
-                                        setIsDropdownOpen(false);
-                                        setIsSearchModalOpen(true);
-                                    }}
-                                >
-                                    🗺️ Chọn vị trí tùy chỉnh
-                                </button>
-                            </div>
-                        )}
+                        {/* Language Selector */}
+                        <button className="language-selector">
+                            VI
+                        </button>
                     </div>
-
-                    {/* Theme Toggle */}
-                    <button 
-                        className="theme-toggle"
-                        onClick={toggleTheme}
-                        title={`Chuyển sang ${isDark ? 'sáng' : 'tối'}`}
-                    >
-                        {isDark ? '☀️' : '🌙'}
-                    </button>
-
-                    {/* Logout Button */}
-                    <button 
-                        className="logout-button"
-                        onClick={handleLogout}
-                        title="Đăng xuất"
-                    >
-                        🚪
-                    </button>
-
-                    {/* Language Selector */}
-                    <button className="language-selector">
-                        VI
-                    </button>
-                </div>
+                )}
             </div>
 
             {/* Search Modal */}

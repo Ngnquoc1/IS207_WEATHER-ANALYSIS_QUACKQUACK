@@ -7,7 +7,10 @@
   flex-direction: column;
   background: white;
   border-radius: 0 0 8px 8px;
-  margin-top: 60px;
+  /* margin-top: 60px; - Removed to fix overflow */
+  min-height: 0; /* Important for flex overflow */
+  overflow-y: auto; /* Allow scrolling if content is too tall */
+  width: 100%; /* Ensure full width */
 }
 
 .theme-dark .manual-tab {
@@ -89,6 +92,7 @@
   transition: all 0.3s ease;
   margin-top: 20px;
   box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  flex-shrink: 0; /* Don't shrink this element */
 }
 
 .search-button:hover:not(:disabled) {
@@ -124,6 +128,7 @@
   color: white;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0; /* Don't shrink this element */
 }
 
 .theme-dark .selected-location {
@@ -178,6 +183,7 @@
   margin: 16px 0;
   border: 1px solid #f5c6cb;
   font-size: 14px;
+  flex-shrink: 0; /* Don't shrink this element */
 }
 
 .theme-dark .error-message {
