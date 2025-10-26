@@ -8,8 +8,15 @@ const newsService = {
     return response.data;
   },
 
-  async getStories() {
-    const response = await axios.get('/stories');
+  async getStories(page = 1, perPage = 10) {
+    const response = await axios.get('/stories', {
+      params: { page, per_page: perPage }
+    });
+    return response.data;
+  },
+
+  async getStoryStatistics() {
+    const response = await axios.get('/stories/statistics');
     return response.data;
   },
 

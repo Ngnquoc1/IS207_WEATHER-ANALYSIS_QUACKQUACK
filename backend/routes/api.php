@@ -47,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
         
         // Admin only routes
         Route::middleware('role:admin')->group(function () {
+            Route::get('/statistics', [StoryController::class, 'getStoryStatistics']);
             Route::get('/search', [StoryController::class, 'searchNews']);
             Route::post('/', [StoryController::class, 'createStory']);
             Route::delete('/{id}', [StoryController::class, 'deleteStory']);

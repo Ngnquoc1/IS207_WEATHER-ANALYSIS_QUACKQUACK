@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import newsService from '../services/newsService';
+import Pagination from './Pagination';
 import './StoryManagement.css';
 
 const StoryManagement = () => {
+  // View state: 'list' or 'create'
+  const [currentView, setCurrentView] = useState('list');
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [articles, setArticles] = useState([]);
   const [selectedArticles, setSelectedArticles] = useState([]);
@@ -10,6 +14,27 @@ const StoryManagement = () => {
   const [loading, setLoading] = useState(false);
   const [loadingStories, setLoadingStories] = useState(false);
   const [message, setMessage] = useState('');
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    per_page: 10,
+    total: 0,
+    last_page: 1,
+    from: 0,
+    to: 0
+  });
+
+  // Statistics state
+  const [statistics, setStatistics] = useState({
+    total: 0,
+    by_category: {
+      warning: 0,
+      info: 0,
+      normal: 0
+    }
+  });
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) {
@@ -89,9 +114,15 @@ const StoryManagement = () => {
       
       setMessage(`Đã lưu ${selectedArticles.length} bài viết thành công!`);
       setSelectedArticles([]); // Clear selected
+      setArticles([]); // Clear search results
+      setSearchTerm(''); // Clear search term
       loadCurrentStories(); // Reload current stories
+      loadStatistics(); // Reload statistics
       
-      setTimeout(() => setMessage(''), 3000);
+      setTimeout(() => {
+        setMessage('');
+        setCurrentView('list'); // Navigate back to list view
+      }, 2000);
     } catch (error) {
       setMessage('Lỗi khi lưu bài viết');
       console.error('Error saving stories:', error);
@@ -106,15 +137,31 @@ const StoryManagement = () => {
 
   // Load current stories on mount
   useEffect(() => {
-    loadCurrentStories();
+    loadCurrentStories(1);
+    loadStatistics();
   }, []);
 
-  // Load current stories from database
-  const loadCurrentStories = async () => {
+  // Load statistics
+  const loadStatistics = async () => {
+    try {
+      const response = await newsService.getStoryStatistics();
+      if (response.statistics) {
+        setStatistics(response.statistics);
+      }
+    } catch (error) {
+      console.error('Error loading statistics:', error);
+    }
+  };
+
+  // Load current stories from database with pagination
+  const loadCurrentStories = async (page = 1) => {
     setLoadingStories(true);
     try {
-      const response = await newsService.getStories();
+      const response = await newsService.getStories(page, 10);
       setCurrentStories(response.stories || []);
+      if (response.pagination) {
+        setPagination(response.pagination);
+      }
     } catch (error) {
       console.error('Error loading stories:', error);
     } finally {
@@ -131,12 +178,19 @@ const StoryManagement = () => {
     try {
       await newsService.deleteStory(storyId);
       setMessage('Đã xóa bài viết thành công!');
-      loadCurrentStories(); // Reload danh sách
+      loadCurrentStories(currentPage); // Reload current page
+      loadStatistics(); // Reload statistics
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
       setMessage('Lỗi khi xóa bài viết');
       console.error('Error deleting story:', error);
     }
+  };
+
+  // Pagination handlers
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    loadCurrentStories(page);
   };
 
   // Helper functions
@@ -159,16 +213,85 @@ const StoryManagement = () => {
     });
   };
 
-  return (
-    <div className="story-management">
-      {/* Current Stories Section */}
-      <div className="current-stories-section">
-        <h2>📋 Bài viết hiện tại đang hiển thị</h2>
-        {loadingStories ? (
-          <div className="loading">Đang tải...</div>
-        ) : currentStories.length === 0 ? (
-          <div className="no-stories">Chưa có bài viết nào</div>
-        ) : (
+  // Render Statistics Section
+  const renderStatistics = () => (
+    <div className="statistics-section">
+      <h3>📊 Thống kê</h3>
+      <div className="statistics-grid">
+        <div className="stat-card stat-total">
+          <div className="stat-icon">📰</div>
+          <div className="stat-content">
+            <div className="stat-value">{statistics.total}</div>
+            <div className="stat-label">Tổng số bài viết</div>
+          </div>
+        </div>
+        
+        <div className="stat-card stat-warning">
+          <div className="stat-icon">⚠️</div>
+          <div className="stat-content">
+            <div className="stat-value">{statistics.by_category.warning}</div>
+            <div className="stat-label">Cảnh báo</div>
+          </div>
+        </div>
+        
+        <div className="stat-card stat-info">
+          <div className="stat-icon">ℹ️</div>
+          <div className="stat-content">
+            <div className="stat-value">{statistics.by_category.info}</div>
+            <div className="stat-label">Thông tin</div>
+          </div>
+        </div>
+        
+        <div className="stat-card stat-normal">
+          <div className="stat-icon">📝</div>
+          <div className="stat-content">
+            <div className="stat-value">{statistics.by_category.normal}</div>
+            <div className="stat-label">Tin tức</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Render List View
+  const renderListView = () => (
+    <div className="story-list-view">
+      {/* Header with Create Button */}
+      <div className="view-header">
+        <h2>📋 Danh sách bài viết</h2>
+        <button 
+          className="create-story-button"
+          onClick={() => setCurrentView('create')}
+        >
+          ➕ Tạo bài viết mới
+        </button>
+      </div>
+
+      {/* Message */}
+      {message && (
+        <div className={`message ${message.includes('thành công') ? 'success' : 'error'}`}>
+          {message}
+        </div>
+      )}
+
+      {/* Statistics Section */}
+      {renderStatistics()}
+
+      {/* Current Stories List */}
+      {loadingStories ? (
+        <div className="loading">Đang tải...</div>
+      ) : currentStories.length === 0 ? (
+        <div className="no-stories">
+          <p>Chưa có bài viết nào</p>
+          <button 
+            className="create-story-button-alt"
+            onClick={() => setCurrentView('create')}
+          >
+            ➕ Tạo bài viết đầu tiên
+          </button>
+        </div>
+      ) : (
+        <>
           <div className="current-stories-list">
             {currentStories.map((story) => (
               <div key={story.id} className="current-story-item">
@@ -199,11 +322,40 @@ const StoryManagement = () => {
               </div>
             ))}
           </div>
-        )}
-      </div>
 
-      {/* Divider */}
-      <div className="section-divider"></div>
+          {/* Pagination Component */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={pagination.last_page}
+            totalItems={pagination.total}
+            itemsPerPage={pagination.per_page}
+            onPageChange={handlePageChange}
+            itemName="bài viết"
+          />
+        </>
+      )}
+    </div>
+  );
+
+  // Render Create View
+  const renderCreateView = () => (
+    <div className="story-create-view">
+      {/* Header with Back Button */}
+      <div className="view-header">
+        <button 
+          className="back-button"
+          onClick={() => {
+            setCurrentView('list');
+            setArticles([]);
+            setSelectedArticles([]);
+            setSearchTerm('');
+            setMessage('');
+          }}
+        >
+          ← Quay lại danh sách
+        </button>
+        <h2>➕ Tạo bài viết mới</h2>
+      </div>
 
       {/* Search Section */}
       <div className="search-section">
@@ -216,7 +368,7 @@ const StoryManagement = () => {
             onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
           />
           <button onClick={handleSearch} disabled={loading}>
-            {loading ? 'Đang tìm...' : 'Tìm kiếm'}
+            {loading ? 'Đang tìm...' : '🔍 Tìm kiếm'}
           </button>
         </div>
         {message && (
@@ -299,11 +451,17 @@ const StoryManagement = () => {
               onClick={handleSaveAll}
               disabled={loading}
             >
-              {loading ? 'Đang lưu...' : `Lưu ${selectedArticles.length} bài viết`}
+              {loading ? 'Đang lưu...' : `💾 Lưu ${selectedArticles.length} bài viết`}
             </button>
           </div>
         </div>
       )}
+    </div>
+  );
+
+  return (
+    <div className="story-management">
+      {currentView === 'list' ? renderListView() : renderCreateView()}
     </div>
   );
 };

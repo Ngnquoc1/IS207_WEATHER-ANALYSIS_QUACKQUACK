@@ -9,13 +9,13 @@ const AdminSidebar = () => {
   const menuItems = [
     {
       id: 'users',
-      label: '👥 User Management',
+      label: 'User Management',
       path: '/admin/users',
       icon: '👥'
     },
     {
       id: 'stories',
-      label: '📰 Stories Management',
+      label: 'Stories Management',
       path: '/admin/stories',
       icon: '📰'
     }

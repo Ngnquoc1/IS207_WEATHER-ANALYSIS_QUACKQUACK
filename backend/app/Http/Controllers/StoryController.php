@@ -87,17 +87,50 @@ class StoryController extends Controller
     }
 
     /**
-     * Get all active stories
+     * Get all active stories with pagination
      */
     public function getStories(Request $request)
     {
+        $perPage = $request->get('per_page', 10); // Default 10 items per page
+        $page = $request->get('page', 1);
+        
         $stories = Story::where('is_active', true)
             ->orderBy('created_at', 'desc')
-            ->get();
-
+            ->paginate($perPage);
+        
         return response()->json([
             'success' => true,
-            'stories' => $stories
+            'stories' => $stories->items(),
+            'pagination' => [
+                'current_page' => $stories->currentPage(),
+                'per_page' => $stories->perPage(),
+                'total' => $stories->total(),
+                'last_page' => $stories->lastPage(),
+                'from' => $stories->firstItem(),
+                'to' => $stories->lastItem(),
+            ]
+        ]);
+    }
+
+    /**
+     * Get story statistics
+     */
+    public function getStoryStatistics(Request $request)
+    {
+        $totalStories = Story::where('is_active', true)->count();
+        
+        $statistics = [
+            'total' => $totalStories,
+            'by_category' => [
+                'warning' => Story::where('is_active', true)->where('category', 'warning')->count(),
+                'info' => Story::where('is_active', true)->where('category', 'info')->count(),
+                'normal' => Story::where('is_active', true)->where('category', 'normal')->count(),
+            ]
+        ];
+        
+        return response()->json([
+            'success' => true,
+            'statistics' => $statistics
         ]);
     }
 
