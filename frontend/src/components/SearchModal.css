@@ -4,6 +4,9 @@
     width: 95vw;
     height: 90vh;
     max-height: 800px;
+    min-height: 0; /* Important for flex children */
+    display: flex;
+    flex-direction: column;
 }
 
 /* Dark theme styles - Apply to modal-overlay */
@@ -83,7 +86,11 @@
 
 .search-modal-content {
     height: 100%;
+    width: 100%; /* Ensure full width */
     overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    min-height: 0; /* Important for flex */
 }
 
 .content-grid {

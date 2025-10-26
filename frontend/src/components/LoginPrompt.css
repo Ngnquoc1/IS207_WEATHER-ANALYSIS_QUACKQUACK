@@ -1,0 +1,75 @@
+.login-prompt {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    color: white;
+    margin: 20px 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.login-prompt-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.login-prompt h3 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.login-prompt p {
+    font-size: 16px;
+    margin-bottom: 20px;
+    opacity: 0.95;
+    line-height: 1.6;
+}
+
+.prompt-features {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    text-align: left;
+    display: inline-block;
+}
+
+.prompt-features li {
+    padding: 8px 0;
+    font-size: 15px;
+    opacity: 0.9;
+}
+
+.prompt-login-button {
+    background: white;
+    color: #667eea;
+    border: none;
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 16px;
+}
+
+.prompt-login-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background: #f0f0f0;
+}
+
+.prompt-login-button:active {
+    transform: translateY(0);
+}
+

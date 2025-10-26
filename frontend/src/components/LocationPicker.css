@@ -8,6 +8,11 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f8f9fa;
   position: relative;
+  padding-top: 60px; /* Compensate for absolute tab-navigation */
+  box-sizing: border-box;
+  overflow-y: auto; /* Allow vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  width: 100%; /* Ensure full width */
 }
 
 .location-picker-container.theme-dark {
