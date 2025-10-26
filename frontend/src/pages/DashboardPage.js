@@ -7,6 +7,7 @@ import HourlyForecastChart from '../components/HourlyForecastChart';
 import AnomalyDisplay from '../components/AnomalyDisplay';
 import Recommendation from '../components/Recommendation';
 import LocationComparator from '../components/LocationComparator';
+import Stories from '../components/Stories';
 import './DashboardPage.css';
 
 /**
@@ -153,6 +154,11 @@ const DashboardPage = () => {
                                 Kinh độ: {weatherData.location?.longitude}° | 
                                 Múi giờ: {weatherData.location?.timezone}
                             </p>
+                        </div>
+
+                        {/* Stories Section */}
+                        <div className="grid-row">
+                            <Stories location={selectedLocation?.name} />
                         </div>
 
                         {/* Section 1: Current Weather */}

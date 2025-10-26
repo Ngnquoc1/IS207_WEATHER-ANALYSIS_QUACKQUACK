@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+import authService from '../services/authService';
 import SearchModal from './SearchModal';
 import './Header.css';
 
@@ -12,7 +13,14 @@ const Header = ({ onLocationSelect, currentLocation }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null);
     const dropdownRef = useRef(null);
+
+    // Load current user info
+    useEffect(() => {
+        const user = authService.getUser();
+        setCurrentUser(user);
+    }, []);
 
     // Quick location presets
     const quickLocations = [
@@ -63,6 +71,14 @@ const Header = ({ onLocationSelect, currentLocation }) => {
         }
     };
 
+    // Handle logout
+    const handleLogout = async () => {
+        if (window.confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+            await authService.logout();
+            window.location.href = '/login';
+        }
+    };
+
     // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -87,6 +103,18 @@ const Header = ({ onLocationSelect, currentLocation }) => {
 
                 {/* Right side controls */}
                 <div className="header-controls">
+                    {/* User Info */}
+                    {currentUser && (
+                        <div className="user-info-container">
+                            <span className="user-name">
+                                👤 {currentUser.name}
+                            </span>
+                            <span className="user-role">
+                                ({currentUser.role})
+                            </span>
+                        </div>
+                    )}
+
                     {/* Location Dropdown */}
                     <div className="location-dropdown" ref={dropdownRef}>
                         <button
@@ -154,6 +182,15 @@ const Header = ({ onLocationSelect, currentLocation }) => {
                         title={`Chuyển sang ${isDark ? 'sáng' : 'tối'}`}
                     >
                         {isDark ? '☀️' : '🌙'}
+                    </button>
+
+                    {/* Logout Button */}
+                    <button 
+                        className="logout-button"
+                        onClick={handleLogout}
+                        title="Đăng xuất"
+                    >
+                        🚪
                     </button>
 
                     {/* Language Selector */}
