@@ -91,7 +91,15 @@ fi
 cd ..
 
 print_status "🎉 All images built and pushed successfully!"
+echo ""
+print_status "New in this build:"
+echo "  ✅ Auto-migration on container start"
+echo "  ✅ Data persistence with Docker volumes"
+echo "  ✅ Automatic database initialization"
+echo ""
 print_status "You can now deploy using: docker-compose up -d"
 print_status "Or pull and run on any server with:"
 echo "  docker pull dung317/weather-backend:latest"
 echo "  docker pull dung317/weather-frontend:latest"
+echo ""
+print_status "💾 Don't forget: Data is automatically persisted in Docker volumes!"
