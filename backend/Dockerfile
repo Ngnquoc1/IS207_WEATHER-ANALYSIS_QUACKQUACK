@@ -47,6 +47,10 @@ COPY docker/nginx.conf /etc/nginx/sites-available/default
 # Copy supervisor configuration
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+# Copy entrypoint script
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 # Create necessary directories
 RUN mkdir -p /var/log/supervisor \
     && mkdir -p /var/www/html/storage/logs \
@@ -59,5 +63,5 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD curl -f http://localhost/api/weather/10.98/106.75 || exit 1
 
-# Start supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Use entrypoint script to initialize and start supervisor
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

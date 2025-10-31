@@ -22,7 +22,7 @@ bootstrap/cache/*
 tests
 .phpunit.result.cache
 phpunit.xml
-.env.example
+# .env.example  # Allow this for Docker build
 .env.testing
 docker-compose.yml
 docker-compose.override.yml

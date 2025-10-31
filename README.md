@@ -4,6 +4,8 @@ A comprehensive weather analysis dashboard built with Laravel (backend) and Reac
 
 ## 🌟 Features
 
+### Core Features
+
 - **Modern Header with Location Dropdown**: Dark theme header with dropdown location selector and theme toggle
 - **Dark/Light Mode**: Toggle between dark and light themes with persistent settings
 - **Current Weather Display**: Real-time weather conditions with temperature, humidity, wind speed, and more
@@ -14,6 +16,15 @@ A comprehensive weather analysis dashboard built with Laravel (backend) and Reac
 - **Smart Recommendations**: AI-powered suggestions based on weather conditions (UV protection, clothing advice, etc.)
 - **Location Comparison**: Side-by-side weather comparison between two locations with interactive charts
 - **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
+- **Stories Feature**: Share and view weather-related stories with authentication
+
+### Deployment & Data
+
+- 🐳 **Docker Ready**: Pre-built images on Docker Hub for instant deployment
+- 💾 **Data Persistence**: All user data automatically saved in Docker volumes
+- 🔄 **Auto-Migration**: Database schema automatically set up on first run
+- 👥 **Multi-User Support**: Each deployment has isolated data storage
+- 📦 **Zero Configuration**: Works out of the box with `docker-compose up`
 
 ## 🛠️ Technology Stack
 
@@ -46,7 +57,46 @@ A comprehensive weather analysis dashboard built with Laravel (backend) and Reac
 - Node.js >= 16.x
 - npm or yarn
 
-## 🚀 Installation & Setup
+## 🚀 Quick Start with Docker (Recommended)
+
+### Deploy from Docker Hub (Easiest Method)
+
+**No build required! Just run:**
+
+```bash
+git clone <your-repo>
+cd IS207_WEATHER-ANALYSIS_QUACKQUACK
+docker-compose up -d
+```
+
+**That's it!** The application will:
+
+- ✅ Automatically pull images from Docker Hub
+- ✅ Set up persistent data storage
+- ✅ Run database migrations
+- ✅ Create default user accounts
+- ✅ Start all services
+
+**Access:**
+
+- Main App: http://localhost
+- Backend API: http://localhost:8000
+- Frontend: http://localhost:3000
+
+**Default Login:**
+
+- Admin: `admin@example.com` / `password`
+- Editor: `editor@example.com` / `password`
+
+**📖 Full Docker Documentation:**
+
+- [DOCKER_HUB_DEPLOYMENT.md](DOCKER_HUB_DEPLOYMENT.md) - Quick deployment guide
+- [DATA_PERSISTENCE_GUIDE.md](DATA_PERSISTENCE_GUIDE.md) - How data persistence works
+- [DOCKER_DEPLOYMENT.md](DOCKER_DEPLOYMENT.md) - Advanced Docker configuration
+
+---
+
+## 🛠️ Manual Installation & Setup
 
 ### Part 1: Backend Setup (Laravel)
 
