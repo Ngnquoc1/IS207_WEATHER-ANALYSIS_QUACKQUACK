@@ -96,6 +96,111 @@ docker-compose up -d
 
 ---
 
+## 📚 Documentation
+
+This project uses **OpenSpec** for technical specifications and documentation.
+
+### 📖 API Specifications
+
+All API requirements and behaviors are documented in OpenSpec format:
+
+- **`openspec/specs/auth/`** - Authentication & authorization (login, logout, roles)
+- **`openspec/specs/weather/`** - Weather data fetching, anomaly detection, recommendations
+- **`openspec/specs/stories/`** - News stories management (CRUD, search, filtering)
+
+### 🔍 Quick Access
+
+```bash
+# View all specifications
+openspec list --specs
+
+# View specific spec details
+openspec show auth --type spec
+openspec show weather --type spec
+openspec show stories --type spec
+
+# View active development changes
+openspec list
+```
+
+### 📝 Project Context
+
+- **Project conventions**: `openspec/project.md` - Tech stack, coding standards, architecture patterns
+- **Deployment guides**:
+  - [DOCKER_HUB_DEPLOYMENT.md](DOCKER_HUB_DEPLOYMENT.md) - Quick deployment
+  - [DATA_PERSISTENCE_GUIDE.md](DATA_PERSISTENCE_GUIDE.md) - Data management
+  - [DOCKER_DEPLOYMENT.md](DOCKER_DEPLOYMENT.md) - Advanced Docker setup
+- **Setup instructions**: [SETUP_GUIDE.md](SETUP_GUIDE.md) - Manual installation guide
+
+### 🤖 AI Development
+
+This project uses spec-driven development with OpenSpec. When proposing changes:
+
+```bash
+# Create a change proposal
+openspec init  # if not already initialized
+
+# View proposal example
+# Create: openspec/changes/my-feature/proposal.md
+# Then run: openspec validate my-feature --strict
+```
+
+---
+
+## 🔧 Available Scripts
+
+This project includes utility scripts for deployment and maintenance:
+
+### For Users (Deployment)
+
+#### **`docker-compose up -d`** - Standard Deployment
+
+The simplest way to deploy:
+
+```bash
+docker-compose up -d
+```
+
+Automatically pulls images from Docker Hub and starts all services.
+
+#### **`./deploy-from-hub.sh`** - Enhanced Deployment
+
+Deploy with comprehensive health checks and status reports:
+
+```bash
+./deploy-from-hub.sh
+```
+
+Features:
+
+- ✅ Pulls latest images from Docker Hub
+- ✅ Stops old containers gracefully
+- ✅ Starts new containers
+- ✅ Performs health checks
+- ✅ Shows service URLs and logs
+- ✅ Verifies deployment success
+
+### For Developers (Build & Release)
+
+#### **`./build-and-push.sh`** - Build and Publish Images
+
+Build Docker images and push to Docker Hub:
+
+```bash
+./build-and-push.sh
+```
+
+Features:
+
+- ✅ Builds backend and frontend images
+- ✅ Pushes to Docker Hub registry
+- ✅ Tags with version and latest
+- ✅ Verifies Docker Hub login
+
+**Note:** This script is for maintainers only. Regular users should use pre-built images from Docker Hub.
+
+---
+
 ## 🛠️ Manual Installation & Setup
 
 ### Part 1: Backend Setup (Laravel)
