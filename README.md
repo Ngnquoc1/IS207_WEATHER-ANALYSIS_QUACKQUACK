@@ -96,6 +96,70 @@ docker-compose up -d
 
 ---
 
+## 🗄️ Database: MongoDB Atlas (Cloud)
+
+This application uses **MongoDB Atlas** as a cloud-hosted database for production-ready data persistence.
+
+### 🚀 MongoDB Atlas Setup
+
+#### 1. Create MongoDB Atlas Account
+
+1. Visit https://www.mongodb.com/cloud/atlas/register
+2. Sign up for a free account
+3. Create a new **M0 Free Cluster** (512MB storage)
+4. Choose a region close to you (Singapore or Tokyo recommended for Vietnam)
+
+#### 2. Configure Database Access
+
+1. Go to **Database Access** in Atlas dashboard
+2. Click **Add New Database User**
+3. Create username and strong password
+4. Set privileges: **Read and write to any database**
+
+#### 3. Configure Network Access
+
+1. Go to **Network Access** in Atlas dashboard
+2. Click **Add IP Address**
+3. For development: Add `0.0.0.0/0` (allow all)
+4. For production: Add your server's specific IP address
+
+#### 4. Get Connection String
+
+1. Click **Connect** on your cluster
+2. Choose **Connect your application**
+3. Copy the connection string (looks like):
+
+```
+mongodb+srv://username:password@cluster.mongodb.net/weather_db?retryWrites=true&w=majority
+```
+
+#### 5. Configure Application
+
+Create a `.env` file in project root:
+
+```bash
+MONGODB_URI=mongodb+srv://your-username:your-password@your-cluster.mongodb.net/weather_db?retryWrites=true&w=majority
+```
+
+**⚠️ Important:** Never commit `.env` to git! Keep your credentials secure.
+
+### 📊 Database Collections
+
+- `users` - User accounts and authentication
+- `stories` - Weather news stories from NewsAPI
+- `personal_access_tokens` - API authentication tokens (Sanctum)
+
+### 💡 Why MongoDB Atlas?
+
+- ✅ **Zero infrastructure management** - Fully managed cloud database
+- ✅ **Free tier available** - 512MB storage (sufficient for this project)
+- ✅ **Automatic daily backups** - Point-in-time recovery
+- ✅ **Built-in security** - SSL/TLS encryption, IP whitelist
+- ✅ **Real-time monitoring** - Performance metrics dashboard
+- ✅ **99.995% SLA** - High availability guarantee
+
+---
+
 ## 📚 Documentation
 
 This project uses **OpenSpec** for technical specifications and documentation.

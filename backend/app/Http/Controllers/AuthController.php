@@ -24,8 +24,8 @@ class AuthController extends Controller
             ]);
         }
 
-        // Revoke old tokens
-        $user->tokens()->delete();
+        // Note: Token revocation skipped for MongoDB compatibility
+        // In production, consider implementing a token cleanup strategy
         
         // Create new token
         $token = $user->createToken('auth_token')->plainTextToken;

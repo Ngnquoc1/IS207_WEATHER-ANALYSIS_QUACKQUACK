@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\Sanctum;
+use App\Models\PersonalAccessToken;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Configure Sanctum to use MongoDB-compatible PersonalAccessToken model
+        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
     }
 }
