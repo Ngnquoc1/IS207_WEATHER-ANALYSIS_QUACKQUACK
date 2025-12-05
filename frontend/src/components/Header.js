@@ -125,88 +125,88 @@ const Header = ({ onLocationSelect, currentLocation }) => {
 
                 {/* Right side controls */}
                 <div className="header-controls">
-                    {currentUser ? (
-                        // Authenticated user controls
-                        <>
-                            {/* User Info */}
-                            <div className="user-info-container">
-                                <span className="user-name">
-                                    👤 {currentUser.name}
-                                </span>
-                                <span className="user-role">
-                                    ({currentUser.role})
-                                </span>
-                            </div>
+                    {currentUser && (
+                        <div className="user-info-container">
+                            <span className="user-name">
+                                👤 {currentUser.name}
+                            </span>
+                            <span className="user-role">
+                                ({currentUser.role})
+                            </span>
+                        </div>
+                    )}
 
-                            {/* Location Dropdown */}
-                            <div className="location-dropdown" ref={dropdownRef}>
+                    {/* Location Dropdown available for both guests and signed-in users */}
+                    <div className="location-dropdown" ref={dropdownRef}>
+                        <button
+                            className="location-dropdown-button"
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        >
+                            <span className="location-text">
+                                {currentLocation ? currentLocation.name : 'Tìm kiếm địa điểm / So sánh'}
+                            </span>
+                            <span className="dropdown-arrow">▼</span>
+                        </button>
+
+                        {isDropdownOpen && (
+                            <div className="dropdown-menu">
+                                {/* Search input */}
+                                <div className="dropdown-search">
+                                    <input
+                                        type="text"
+                                        placeholder="Tìm kiếm thành phố..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="search-input"
+                                    />
+                                </div>
+
+                                {/* Current location button */}
                                 <button
-                                    className="location-dropdown-button"
-                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                    className="dropdown-item current-location"
+                                    onClick={handleCurrentLocation}
                                 >
-                                    <span className="location-text">
-                                        {currentLocation ? currentLocation.name : 'Tìm kiếm địa điểm / So sánh'}
-                                    </span>
-                                    <span className="dropdown-arrow">▼</span>
+                                    📍 Vị trí hiện tại
                                 </button>
 
-                                {isDropdownOpen && (
-                                    <div className="dropdown-menu">
-                                        {/* Search input */}
-                                        <div className="dropdown-search">
-                                            <input
-                                                type="text"
-                                                placeholder="Tìm kiếm thành phố..."
-                                                value={searchTerm}
-                                                onChange={(e) => setSearchTerm(e.target.value)}
-                                                className="search-input"
-                                            />
-                                        </div>
+                                {/* Quick locations */}
+                                <div className="dropdown-divider"></div>
+                                {filteredLocations.map((location, index) => (
+                                    <button
+                                        key={index}
+                                        className="dropdown-item"
+                                        onClick={() => handleLocationSelect(location)}
+                                    >
+                                        📍 {location.name}
+                                    </button>
+                                ))}
 
-                                        {/* Current location button */}
-                                        <button
-                                            className="dropdown-item current-location"
-                                            onClick={handleCurrentLocation}
-                                        >
-                                            📍 Vị trí hiện tại
-                                        </button>
-
-                                        {/* Quick locations */}
-                                        <div className="dropdown-divider"></div>
-                                        {filteredLocations.map((location, index) => (
-                                            <button
-                                                key={index}
-                                                className="dropdown-item"
-                                                onClick={() => handleLocationSelect(location)}
-                                            >
-                                                📍 {location.name}
-                                            </button>
-                                        ))}
-
-                                        {/* Custom location button */}
-                                        <div className="dropdown-divider"></div>
-                                        <button
-                                            className="dropdown-item custom-location-button"
-                                            onClick={() => {
-                                                setIsDropdownOpen(false);
-                                                setIsSearchModalOpen(true);
-                                            }}
-                                        >
-                                            🗺️ Chọn vị trí tùy chỉnh
-                                        </button>
-                                    </div>
-                                )}
+                                {/* Custom location button */}
+                                <div className="dropdown-divider"></div>
+                                <button
+                                    className="dropdown-item custom-location-button"
+                                    onClick={() => {
+                                        setIsDropdownOpen(false);
+                                        setIsSearchModalOpen(true);
+                                    }}
+                                >
+                                    🗺️ Chọn vị trí tùy chỉnh
+                                </button>
                             </div>
+                        )}
+                    </div>
 
-                            {/* Theme Toggle */}
-                            <button 
-                                className="theme-toggle"
-                                onClick={toggleTheme}
-                                title={`Chuyển sang ${isDark ? 'sáng' : 'tối'}`}
-                            >
-                                {isDark ? '☀️' : '🌙'}
-                            </button>
+                    {/* Theme Toggle */}
+                    <button 
+                        className="theme-toggle"
+                        onClick={toggleTheme}
+                        title={`Chuyển sang ${isDark ? 'sáng' : 'tối'}`}
+                    >
+                        {isDark ? '☀️' : '🌙'}
+                    </button>
 
+                    {currentUser ? (
+                        <>
                             {/* Logout Button */}
                             <button 
                                 className="logout-button"
@@ -215,14 +215,8 @@ const Header = ({ onLocationSelect, currentLocation }) => {
                             >
                                 🚪
                             </button>
-
-                            {/* Language Selector */}
-                            <button className="language-selector">
-                                VI
-                            </button>
                         </>
                     ) : (
-                        // Guest user controls
                         <>
                             {/* Login Button */}
                             <button 
@@ -232,22 +226,13 @@ const Header = ({ onLocationSelect, currentLocation }) => {
                             >
                                 🔐 Đăng nhập
                             </button>
-
-                            {/* Theme Toggle */}
-                            <button 
-                                className="theme-toggle"
-                                onClick={toggleTheme}
-                                title={`Chuyển sang ${isDark ? 'sáng' : 'tối'}`}
-                            >
-                                {isDark ? '☀️' : '🌙'}
-                            </button>
-
-                            {/* Language Selector */}
-                            <button className="language-selector">
-                                VI
-                            </button>
                         </>
                     )}
+
+                    {/* Language Selector */}
+                    <button className="language-selector">
+                        VI
+                    </button>
                 </div>
             </div>
 

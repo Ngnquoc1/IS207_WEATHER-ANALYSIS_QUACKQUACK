@@ -85,6 +85,8 @@ const DashboardPage = () => {
         initializeLocation();
     }, [location.state]);
 
+    const [resolvedLocationName, setResolvedLocationName] = useState(null);
+
     // Fetch weather data when component mounts or location changes
     useEffect(() => {
         if (!selectedLocation) return; // Don't fetch if location is not set yet
@@ -95,6 +97,7 @@ const DashboardPage = () => {
             try {
                 const data = await fetchWeatherData(selectedLocation.lat, selectedLocation.lon);
                 setWeatherData(data);
+                setResolvedLocationName(data?.location?.name || selectedLocation?.name);
             } catch (err) {
                 setError('Không thể tải dữ liệu thời tiết. Vui lòng thử lại sau.');
                 console.error('Error loading weather data:', err);
@@ -110,20 +113,16 @@ const DashboardPage = () => {
     // Handle location selection from Header dropdown
     const handleLocationSelect = async (locationData) => {
         try {
-            setLoading(true);
             setError(null);
             setLocationError(null);
-            
+            if (locationData?.name) {
+                setResolvedLocationName(locationData.name);
+            }
             setSelectedLocation(locationData);
-            
-            // Fetch weather data for the selected location
-            const data = await fetchWeatherData(locationData.lat, locationData.lon);
-            setWeatherData(data);
+            // Weather data will be refreshed by the effect watching selectedLocation
         } catch (err) {
             console.error('Error fetching weather data:', err);
             setError('Không thể tải dữ liệu thời tiết. Vui lòng thử lại.');
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -137,7 +136,7 @@ const DashboardPage = () => {
             {/* Header with Dropdown */}
             <Header 
                 onLocationSelect={handleLocationSelect}
-                currentLocation={selectedLocation}
+                currentLocation={resolvedLocationName ? { ...selectedLocation, name: resolvedLocationName } : selectedLocation}
             />
 
             {/* Location Error Alert */}
@@ -157,9 +156,11 @@ const DashboardPage = () => {
                     <div className="loading-container">
                         <div className="loading-spinner"></div>
                         <p>
-                            {location ? 
-                                `Đang tải dữ liệu thời tiết cho ${location.name}...` : 
-                                'Đang lấy vị trí hiện tại...'
+                            {selectedLocation
+                                ? (resolvedLocationName
+                                    ? `Đang tải dữ liệu thời tiết cho ${resolvedLocationName}...`
+                                    : 'Đang tải dữ liệu thời tiết...')
+                                : 'Đang lấy vị trí hiện tại...'
                             }
                         </p>
                     </div>
@@ -179,7 +180,7 @@ const DashboardPage = () => {
                     <>
                         {/* Current Location Display */}
                         <div className="current-location-banner">
-                            <h2>📍 {selectedLocation?.name}</h2>
+                            <h2>📍 {resolvedLocationName || selectedLocation?.name}</h2>
                             <p>
                                 Vĩ độ: {weatherData.location?.latitude}° | 
                                 Kinh độ: {weatherData.location?.longitude}° | 
