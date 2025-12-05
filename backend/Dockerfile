@@ -22,8 +22,8 @@ RUN apt-get update && apt-get install -y \
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
-# Install MongoDB PHP extension
-RUN pecl install mongodb-1.19.0 && \
+# Install MongoDB PHP extension (compatible with mongodb/laravel-mongodb ^4.9)
+RUN pecl install mongodb-2.1.4 && \
     docker-php-ext-enable mongodb
 
 # Install Composer
