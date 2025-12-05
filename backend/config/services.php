@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'opencage' => [
+        'key' => env('OPENCAGE_API_KEY'),
+        'endpoint' => env('OPENCAGE_API_ENDPOINT', 'https://api.opencagedata.com/geocode/v1/json'),
+    ],
+
+    // Reverse geocoding cache TTL in seconds (default 24h)
+    'reverse_geocode_cache_ttl' => env('REVERSE_GEOCODE_CACHE_TTL', 86400),
+
 ];

@@ -6,9 +6,14 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
+use App\Services\ReverseGeocodeService;
 
 class WeatherController extends Controller
 {
+    public function __construct(private ReverseGeocodeService $reverseGeocodeService)
+    {
+    }
+
     /**
      * Weather code descriptions mapping (Vietnamese)
      */
@@ -94,7 +99,8 @@ class WeatherController extends Controller
                     'latitude' => $data['latitude'],
                     'longitude' => $data['longitude'],
                     'timezone' => $data['timezone'],
-                    'elevation' => $data['elevation']
+                    'elevation' => $data['elevation'],
+                    'name' => $this->reverseGeocodeService->reverse((float)$lat, (float)$lon)
                 ],
                 'current_weather' => $this->processCurrentWeather($data['current']),
                 'hourly_forecast' => $this->processHourlyForecast($data['hourly']),
@@ -144,6 +150,9 @@ class WeatherController extends Controller
             $location1 = $validated['location1'];
             $location2 = $validated['location2'];
 
+            $location1Name = $location1['name'] ?? $this->reverseGeocodeService->reverse((float)$location1['lat'], (float)$location1['lon']);
+            $location2Name = $location2['name'] ?? $this->reverseGeocodeService->reverse((float)$location2['lat'], (float)$location2['lon']);
+
             // Fetch weather data for both locations
             $weather1 = $this->fetchWeatherForComparison($location1['lat'], $location1['lon']);
             $weather2 = $this->fetchWeatherForComparison($location2['lat'], $location2['lon']);
@@ -151,7 +160,7 @@ class WeatherController extends Controller
             // Structure comparison data
             $comparison = [
                 'location1' => [
-                    'name' => $location1['name'] ?? "Location 1",
+                    'name' => $location1Name,
                     'coordinates' => [
                         'lat' => $location1['lat'],
                         'lon' => $location1['lon']
@@ -160,7 +169,7 @@ class WeatherController extends Controller
                     'daily_summary' => $weather1['daily_summary']
                 ],
                 'location2' => [
-                    'name' => $location2['name'] ?? "Location 2",
+                    'name' => $location2Name,
                     'coordinates' => [
                         'lat' => $location2['lat'],
                         'lon' => $location2['lon']

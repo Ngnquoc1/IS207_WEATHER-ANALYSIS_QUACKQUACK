@@ -293,25 +293,48 @@ const MapTab = ({
     // Coordinates are handled by MapControls component
   }, []);
 
+  const reverseGeocodeName = async (lat, lon) => {
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&accept-language=vi`;
+      const res = await fetch(url, {
+        headers: {
+          'User-Agent': 'weather-dashboard/1.0 (+https://localhost)'
+        }
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data?.address?.city
+        || data?.address?.town
+        || data?.address?.village
+        || data?.display_name
+        || null;
+    } catch (e) {
+      console.warn('Reverse geocode (Nominatim) failed', e);
+      return null;
+    }
+  };
+
   // Handle map click to set selected location
-  const handleMapClick = useCallback((coordinates) => {
+  const handleMapClick = useCallback(async (coordinates) => {
     if (setError) setError('');
     if (setLoading) setLoading(true);
     
-    // Simulate API call giống ManualTab
-    setTimeout(() => {
-      const locationName = `Tọa độ ${coordinates.lat.toFixed(4)}, ${coordinates.lon.toFixed(4)}`;
-      const locationData = {
-        name: locationName,
-        latitude: coordinates.lat,
-        longitude: coordinates.lon
-      };
-      
-      if (setSelectedLocation) {
-        setSelectedLocation(locationData);
-      }
-      if (setLoading) setLoading(false);
-    }, 1000);
+    const fallbackName = `Tọa độ ${coordinates.lat.toFixed(4)}, ${coordinates.lon.toFixed(4)}`;
+    let locationName = fallbackName;
+
+    const name = await reverseGeocodeName(coordinates.lat, coordinates.lon);
+    if (name) locationName = name;
+
+    const locationData = {
+      name: locationName,
+      latitude: coordinates.lat,
+      longitude: coordinates.lon
+    };
+    
+    if (setSelectedLocation) {
+      setSelectedLocation(locationData);
+    }
+    if (setLoading) setLoading(false);
   }, [setSelectedLocation, setLoading, setError]);
 
   // Reset map center after it's been used

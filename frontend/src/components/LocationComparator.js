@@ -46,11 +46,25 @@ const LocationComparator = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const validateCoordinates = (loc) => {
+        const lat = parseFloat(loc.lat);
+        const lon = parseFloat(loc.lon);
+        const isLatValid = !isNaN(lat) && lat >= -90 && lat <= 90;
+        const isLonValid = !isNaN(lon) && lon >= -180 && lon <= 180;
+        return isLatValid && isLonValid;
+    };
+
     // Handle form submission
     const handleCompare = async (e) => {
         e.preventDefault();
-        setLoading(true);
         setError(null);
+
+        if (!validateCoordinates(location1) || !validateCoordinates(location2)) {
+            setError('Tọa độ không hợp lệ. Vĩ độ [-90, 90], Kinh độ [-180, 180].');
+            return;
+        }
+
+        setLoading(true);
 
         try {
             const data = await fetchComparisonData(
