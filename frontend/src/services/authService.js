@@ -10,6 +10,23 @@ const authService = {
     return response.data;
   },
 
+  async register({ username, email, password, password_confirmation, name }) {
+    const response = await axios.post('/register', {
+      name,
+      username,
+      email,
+      password,
+      password_confirmation,
+    });
+
+    if (response.data.access_token) {
+      localStorage.setItem('token', response.data.access_token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+    }
+
+    return response.data;
+  },
+
   async logout() {
     const token = localStorage.getItem('token');
     if (token) {

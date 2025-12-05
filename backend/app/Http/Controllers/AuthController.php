@@ -3,12 +3,49 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\SqlUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'nullable|string|max:255',
+            'username' => 'required|string|unique:users,username',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $connection = config('database.default', 'mongodb');
+        $user = $connection === 'mongodb' ? new User() : new SqlUser();
+        $user->setConnection(config('database.default'));
+        $user->name = $validated['name'] ?? null;
+        $user->username = $validated['username'];
+        $user->email = $validated['email'];
+        $user->password = Hash::make($validated['password']);
+        $user->role = 'customer';
+        $user->save();
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Registration successful',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'username' => $user->username,
+                'email' => $user->email,
+                'role' => $user->role,
+            ],
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+        ], 201);
+    }
+
     public function login(Request $request)
     {
         $request->validate([
