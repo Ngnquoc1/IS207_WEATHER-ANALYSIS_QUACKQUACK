@@ -1,3 +1,9 @@
 # Old documentation backups
 .archive/
 .archive/old-scripts/
+
+# Environment / secrets
+.env
+backend/.env
+frontend/.env
+mongodb.env
