@@ -77,6 +77,8 @@ class StoryController extends Controller
             'published_at' => $request->published_at,
             'category' => $request->category ?? 'normal',
             'location' => $request->location,
+            'is_active' => $request->is_active ?? true, // Default to active
+            'is_hot' => $request->is_hot ?? false, // Default to not hot
             'created_by' => $request->user()->id
         ]);
 

@@ -4,13 +4,17 @@ services:
     container_name: weather-backend
     ports:
       - "8000:80"
+    env_file:
+      - ./mongodb.env
     environment:
       - APP_ENV=production
       - APP_DEBUG=false
       - APP_URL=http://backend
+      # MongoDB Atlas Configuration
+      - DB_CONNECTION=mongodb
+      - DB_URI=mongodb+srv://weatheradmin:2HjVKo9917bzB4xz@weather-cluster.wxyy0ni.mongodb.net/weather_db?retryWrites=true&w=majority
+      - DB_DATABASE=weather_db
     volumes:
-      # Persist database - stores all user data, stories, etc.
-      - weather-db:/var/www/html/database
       # Persist storage - stores logs, cache, uploaded files
       - weather-storage:/var/www/html/storage
     restart: unless-stopped
@@ -62,7 +66,5 @@ networks:
     driver: bridge
 
 volumes:
-  weather-db:
-    driver: local
   weather-storage:
     driver: local

@@ -14,6 +14,7 @@ use App\Http\Controllers\StoryController;
 
 // Authentication routes
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
 // Public Weather API Routes - allow guest access
 Route::prefix('weather')->group(function () {
