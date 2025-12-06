@@ -1,4 +1,5 @@
 services:
+  # Backend Service
   backend:
     build:
       context: ./backend
@@ -22,6 +23,7 @@ services:
       retries: 3
       start_period: 40s
 
+  # Frontend Service
   frontend:
     build:
       context: ./frontend
@@ -35,6 +37,8 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+    networks:
+      - weather-network
     restart: unless-stopped
     networks:
       - weather-network
@@ -45,16 +49,21 @@ services:
       retries: 3
       start_period: 40s
 
+  # Reverse Proxy
   nginx:
     image: nginx:alpine
     container_name: weather-proxy
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./docker/nginx-proxy.conf:/etc/nginx/nginx.conf
+      - ./docker/ssl:/etc/nginx/ssl
     depends_on:
       - backend
       - frontend
+    networks:
+      - weather-network
     restart: unless-stopped
     networks:
       - weather-network

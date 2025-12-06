@@ -7,11 +7,15 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 use App\Services\ReverseGeocodeService;
+use App\Services\GeminiService;
 
 class WeatherController extends Controller
 {
-    public function __construct(private ReverseGeocodeService $reverseGeocodeService)
+    protected $geminiService;
+
+    public function __construct(GeminiService $geminiService)
     {
+        $this->geminiService = $geminiService;
     }
 
     /**
@@ -160,21 +164,15 @@ class WeatherController extends Controller
             // Structure comparison data
             $comparison = [
                 'location1' => [
-                    'name' => $location1Name,
-                    'coordinates' => [
-                        'lat' => $location1['lat'],
-                        'lon' => $location1['lon']
-                    ],
-                    'current_weather' => $weather1['current_weather'],
+                    'name' => $location1['name'] ?? "Location 1",
+                    'coordinates' => ['lat' => $location1['lat'], 'lon' => $location1['lon']],
+                    'weather' => $weather1['current_weather'],
                     'daily_summary' => $weather1['daily_summary']
                 ],
                 'location2' => [
-                    'name' => $location2Name,
-                    'coordinates' => [
-                        'lat' => $location2['lat'],
-                        'lon' => $location2['lon']
-                    ],
-                    'current_weather' => $weather2['current_weather'],
+                    'name' => $location2['name'] ?? "Location 2",
+                    'coordinates' => ['lat' => $location2['lat'], 'lon' => $location2['lon']],
+                    'weather' => $weather2['current_weather'],
                     'daily_summary' => $weather2['daily_summary']
                 ],
                 'differences' => $this->calculateDifferences($weather1['current_weather'], $weather2['current_weather'])
@@ -185,13 +183,94 @@ class WeatherController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'error' => 'Validation failed',
-                'message' => $e->errors()
+                'message' => $e->getMessage()
             ], 422);
         } catch (\Exception $e) {
-            Log::error('Comparison Error: ' . $e->getMessage());
+            Log::error('Location Comparison Error: ' . $e->getMessage());
             return response()->json([
-                'error' => 'Failed to compare locations',
-                'message' => 'An error occurred while comparing weather data'
+                'error' => 'Comparison failed',
+                'message' => 'Could not compare locations'
+            ], 500);
+        }
+    }
+
+    /**
+     * Generate detailed weather report using Gemini AI
+     *
+     * @param Request $request
+     * @param float $lat Latitude
+     * @param float $lon Longitude
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getDetailedReport(Request $request, $lat, $lon)
+    {
+        try {
+            // Validate coordinates
+            if (!is_numeric($lat) || !is_numeric($lon)) {
+                return response()->json([
+                    'error' => 'Invalid coordinates',
+                    'message' => 'Latitude and longitude must be numeric'
+                ], 400);
+            }
+
+            if ($lat < -90 || $lat > 90 || $lon < -180 || $lon > 180) {
+                return response()->json([
+                    'error' => 'Coordinates out of range',
+                    'message' => 'Invalid coordinate values'
+                ], 400);
+            }
+
+            // First, get the weather data
+            $apiUrl = "https://api.open-meteo.com/v1/forecast";
+            $params = [
+                'latitude' => $lat,
+                'longitude' => $lon,
+                'current' => 'temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,precipitation',
+                'hourly' => 'temperature_2m,weather_code,precipitation_probability',
+                'daily' => 'weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_sum',
+                'timezone' => 'auto',
+                'past_days' => 30,
+                'forecast_days' => 7
+            ];
+
+            $client = new Client([
+                'timeout' => 10,
+                'verify' => false
+            ]);
+            $response = $client->get($apiUrl, ['query' => $params]);
+            $data = json_decode($response->getBody(), true);
+
+            // Process weather data
+            $weatherData = [
+                'location' => [
+                    'latitude' => $data['latitude'],
+                    'longitude' => $data['longitude'],
+                    'timezone' => $data['timezone'],
+                    'elevation' => $data['elevation']
+                ],
+                'current_weather' => $this->processCurrentWeather($data['current']),
+                'daily_forecast' => $this->processDailyForecast($data['daily']),
+                'anomaly' => $this->detectAnomaly($data['current'], $data['daily'])
+            ];
+
+            // Generate detailed report using Gemini AI
+            $reportData = $this->geminiService->generateDetailedReport($weatherData, $lat, $lon);
+
+            return response()->json($reportData);
+
+        } catch (GuzzleException $e) {
+            Log::error('Detailed Report - Weather API Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => 'Failed to fetch weather data',
+                'message' => 'Could not connect to weather service'
+            ], 503);
+        } catch (\Exception $e) {
+            Log::error('Detailed Report Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => 'Failed to generate report',
+                'message' => 'An error occurred while generating the report'
             ], 500);
         }
     }
@@ -389,7 +468,7 @@ class WeatherController extends Controller
 
     /**
      * Generate smart recommendations based on weather conditions
-     * Analyzes multiple weather parameters to provide actionable advice
+     * Now powered by Gemini AI for context-aware suggestions
      *
      * @param array $current
      * @param array $daily
@@ -397,56 +476,42 @@ class WeatherController extends Controller
      */
     private function generateRecommendation($current, $daily)
     {
-        $recommendations = [];
-        
-        // UV Index recommendation
-        $todayUV = $daily['uv_index_max'][count($daily['uv_index_max']) - 7] ?? 0;
-        if ($todayUV >= 8) {
-            $recommendations[] = "☀️ Chỉ số UV rất cao ({$todayUV}). Nên sử dụng kem chống nắng SPF 50+, đội mũ và đeo kính râm.";
-        } elseif ($todayUV >= 6) {
-            $recommendations[] = "☀️ Chỉ số UV cao ({$todayUV}). Nên sử dụng kem chống nắng và hạn chế ra ngoài vào giữa trưa.";
-        } elseif ($todayUV >= 3) {
-            $recommendations[] = "🌤️ Chỉ số UV trung bình ({$todayUV}). Nên sử dụng kem chống nắng khi ra ngoài lâu.";
-        }
+        try {
+            // Use Gemini AI for smart recommendations
+            return $this->geminiService->generateRecommendation($current, $daily);
+        } catch (\Exception $e) {
+            Log::error('Recommendation generation error: ' . $e->getMessage());
+            
+            // Fallback to simple rule-based recommendations
+            $recommendations = [];
+            
+            $todayUV = $daily['uv_index_max'][count($daily['uv_index_max']) - 7] ?? 0;
+            if ($todayUV >= 8) {
+                $recommendations[] = "☀️ Chỉ số UV rất cao ({$todayUV}). Nên sử dụng kem chống nắng SPF 50+, đội mũ và đeo kính râm.";
+            } elseif ($todayUV >= 6) {
+                $recommendations[] = "☀️ Chỉ số UV cao ({$todayUV}). Nên sử dụng kem chống nắng và hạn chế ra ngoài vào giữa trưa.";
+            }
 
-        // Temperature recommendation
-        $temp = $current['temperature_2m'];
-        if ($temp >= 35) {
-            $recommendations[] = "🌡️ Nhiệt độ rất cao ({$temp}°C). Hãy uống nhiều nước, tránh hoạt động ngoài trời và ở nơi mát mẻ.";
-        } elseif ($temp <= 15) {
-            $recommendations[] = "🧥 Nhiệt độ khá thấp ({$temp}°C). Nên mặc áo ấm khi ra ngoài.";
-        }
+            $temp = $current['temperature_2m'];
+            if ($temp >= 35) {
+                $recommendations[] = "🌡️ Nhiệt độ rất cao ({$temp}°C). Hãy uống nhiều nước, tránh hoạt động ngoài trời.";
+            } elseif ($temp <= 15) {
+                $recommendations[] = "🧥 Nhiệt độ khá thấp ({$temp}°C). Nên mặc áo ấm khi ra ngoài.";
+            }
 
-        // Weather code based recommendations
-        $weatherCode = $current['weather_code'];
-        if (in_array($weatherCode, [61, 63, 65, 80, 81, 82])) {
-            $recommendations[] = "☔ Trời đang mưa. Nhớ mang theo áo mưa hoặc ô.";
-        } elseif (in_array($weatherCode, [95, 96, 99])) {
-            $recommendations[] = "⛈️ Cảnh báo giông bão. Nên ở trong nhà và tránh xa cửa sổ.";
-        } elseif (in_array($weatherCode, [45, 48])) {
-            $recommendations[] = "🌫️ Sương mù dày. Lái xe cần thận trọng, bật đèn và giảm tốc độ.";
-        }
+            $weatherCode = $current['weather_code'];
+            if (in_array($weatherCode, [61, 63, 65, 80, 81, 82])) {
+                $recommendations[] = "☔ Trời đang mưa. Nhớ mang theo áo mưa hoặc ô.";
+            } elseif (in_array($weatherCode, [95, 96, 99])) {
+                $recommendations[] = "⛈️ Cảnh báo giông bão. Nên ở trong nhà.";
+            }
 
-        // Wind speed recommendation
-        $windSpeed = $current['wind_speed_10m'];
-        if ($windSpeed >= 40) {
-            $recommendations[] = "💨 Gió rất mạnh ({$windSpeed} km/h). Tránh ra ngoài và cố định đồ vật có thể bị thổi bay.";
-        } elseif ($windSpeed >= 25) {
-            $recommendations[] = "🌬️ Gió mạnh ({$windSpeed} km/h). Cẩn thận khi di chuyển ngoài trời.";
-        }
+            if (empty($recommendations)) {
+                $recommendations[] = "✅ Thời tiết thuận lợi cho các hoạt động ngoài trời!";
+            }
 
-        // Humidity recommendation
-        $humidity = $current['relative_humidity_2m'];
-        if ($humidity >= 80) {
-            $recommendations[] = "💧 Độ ẩm cao ({$humidity}%). Thời tiết oi bức, hãy giữ cơ thể khô ráo.";
+            return implode(" ", $recommendations);
         }
-
-        // Default recommendation if weather is good
-        if (empty($recommendations)) {
-            $recommendations[] = "✅ Thời tiết thuận lợi cho các hoạt động ngoài trời!";
-        }
-
-        return implode("\n\n", $recommendations);
     }
 
     /**

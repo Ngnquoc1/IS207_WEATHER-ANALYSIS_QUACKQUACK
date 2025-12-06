@@ -71,4 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
             ]);
         });
     });
+    
+    // Generate detailed AI-powered weather report
+    Route::get('/report/{lat}/{lon}', [WeatherController::class, 'getDetailedReport']);
 });
