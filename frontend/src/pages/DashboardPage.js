@@ -170,7 +170,10 @@ const DashboardPage = () => {
 
                         {/* Section 2: Anomaly Analysis */}
                         <div className="grid-row">
-                            <AnomalyDisplay anomalyData={weatherData.anomaly} />
+                            <AnomalyDisplay 
+                                anomalyData={weatherData.anomaly} 
+                                location={selectedLocation}
+                            />
                         </div>
 
                         {/* Section 3: Smart Recommendations */}
@@ -195,7 +198,7 @@ const DashboardPage = () => {
                     </a>
                 </p>
                 <p className="footer-note">
-                    Weather Analysis Dashboard © 2024 | Cập nhật thời gian thực
+                    Weather Analysis Dashboard © 2025 | Cập nhật thời gian thực
                 </p>
             </footer>
         </div>

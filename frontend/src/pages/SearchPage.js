@@ -1,17 +1,55 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
-import RainMap from '../components/RainMap'; // eslint-disable-line no-unused-vars
+import { fetchLocationByName } from '../services/weatherService';
+import RainMap from '../components/RainMap';
 import './SearchPage.css';
 
 const SearchPage = () => {
     const { isDark } = useTheme();
     const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
     const [customLat, setCustomLat] = useState('');
     const [customLon, setCustomLon] = useState('');
     const [selectedLocation, setSelectedLocation] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [searchLoading, setSearchLoading] = useState(false);
     const [error, setError] = useState('');
+
+    // Handle city name search
+    const handleSearchByName = async () => {
+        if (!searchQuery.trim()) {
+            setError('Vui lòng nhập tên thành phố hoặc quốc gia');
+            return;
+        }
+
+        setError('');
+        setSearchLoading(true);
+        setSearchResults([]);
+        setSelectedLocation(null);
+
+        try {
+            const results = await fetchLocationByName(searchQuery);
+            setSearchResults(results);
+            if (results.length === 0) {
+                setError('Không tìm thấy địa điểm nào');
+            }
+        } catch (err) {
+            setError(err.message || 'Không thể tìm kiếm địa điểm');
+        } finally {
+            setSearchLoading(false);
+        }
+    };
+
+    // Handle selecting a location from search results
+    const handleSelectSearchResult = (location) => {
+        setSelectedLocation(location);
+        setCustomLat(location.latitude.toString());
+        setCustomLon(location.longitude.toString());
+        setSearchResults([]);
+        setSearchQuery('');
+    };
 
     // Handle coordinate input
     const handleCustomLocation = () => {
@@ -94,8 +132,54 @@ const SearchPage = () => {
                 <div className="content-grid">
                     {/* Left Column - Form */}
                     <div className="form-section">
+                        {/* City Name Search */}
                         <div className="form-card">
-                            <h2>Nhập Tọa Độ</h2>
+                            <h2>🔍 Tìm Kiếm Theo Tên</h2>
+                            <div className="search-input-group">
+                                <input
+                                    type="text"
+                                    placeholder="Nhập tên thành phố, quốc gia... (Ví dụ: Hanoi, Tokyo, Paris)"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && handleSearchByName()}
+                                    className="search-input"
+                                />
+                                <button 
+                                    className="search-button"
+                                    onClick={handleSearchByName}
+                                    disabled={searchLoading}
+                                >
+                                    {searchLoading ? '🔄 Đang tìm...' : '🔍 Tìm kiếm'}
+                                </button>
+                            </div>
+
+                            {/* Search Results */}
+                            {searchResults.length > 0 && (
+                                <div className="search-results">
+                                    <h3>Kết quả tìm kiếm ({searchResults.length}):</h3>
+                                    <div className="results-list">
+                                        {searchResults.map((location) => (
+                                            <div 
+                                                key={location.id}
+                                                className="result-item"
+                                                onClick={() => handleSelectSearchResult(location)}
+                                            >
+                                                <div className="result-name">
+                                                    📍 {location.displayName}
+                                                </div>
+                                                <div className="result-coords">
+                                                    {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Coordinate Input */}
+                        <div className="form-card">
+                            <h2>📍 Nhập Tọa Độ</h2>
                             <div className="coordinate-inputs">
                                 <div className="input-group">
                                     <label>Vĩ độ (Latitude)</label>

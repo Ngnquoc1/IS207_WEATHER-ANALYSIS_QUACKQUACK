@@ -1,0 +1,366 @@
+/* Report Modal Styles */
+.report-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.report-modal-content {
+    background: white;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Header */
+.report-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.report-modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+    font-weight: 700;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #999;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-button:hover {
+    background: #f5f5f5;
+    color: #333;
+    transform: rotate(90deg);
+}
+
+/* Body */
+.report-modal-body {
+    padding: 30px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* Loading State */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-state p {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.loading-state small {
+    color: #999;
+    font-size: 14px;
+}
+
+/* Error State */
+.error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.error-icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.error-state p {
+    font-size: 18px;
+    color: #e74c3c;
+    margin-bottom: 30px;
+}
+
+.retry-button {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.retry-button:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+}
+
+/* Report Content */
+.report-content {
+    animation: fadeIn 0.5s ease;
+}
+
+.report-source {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.ai-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.fallback-badge {
+    background: #95a5a6;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.timestamp {
+    color: #999;
+    font-size: 14px;
+}
+
+/* Markdown Content */
+.markdown-content {
+    line-height: 1.8;
+    color: #333;
+}
+
+.markdown-content h1 {
+    font-size: 28px;
+    color: #2c3e50;
+    margin: 30px 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #3498db;
+}
+
+.markdown-content h2 {
+    font-size: 24px;
+    color: #34495e;
+    margin: 25px 0 15px 0;
+}
+
+.markdown-content h3 {
+    font-size: 20px;
+    color: #7f8c8d;
+    margin: 20px 0 10px 0;
+}
+
+.markdown-content p {
+    margin: 15px 0;
+    font-size: 16px;
+}
+
+.markdown-content ul, .markdown-content ol {
+    margin: 15px 0;
+    padding-left: 30px;
+}
+
+.markdown-content li {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.markdown-content strong {
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.markdown-content em {
+    color: #7f8c8d;
+}
+
+.markdown-content hr {
+    border: none;
+    border-top: 2px solid #ecf0f1;
+    margin: 30px 0;
+}
+
+/* Report Actions */
+.report-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 2px solid #e0e0e0;
+}
+
+.print-button,
+.close-action-button {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.print-button {
+    background: #3498db;
+    color: white;
+}
+
+.print-button:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+.close-action-button {
+    background: #95a5a6;
+    color: white;
+}
+
+.close-action-button:hover {
+    background: #7f8c8d;
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .report-modal-content {
+        max-width: 95%;
+        max-height: 95vh;
+    }
+
+    .report-modal-header {
+        padding: 20px;
+    }
+
+    .report-modal-header h2 {
+        font-size: 20px;
+    }
+
+    .report-modal-body {
+        padding: 20px;
+    }
+
+    .report-source {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .markdown-content h1 {
+        font-size: 24px;
+    }
+
+    .markdown-content h2 {
+        font-size: 20px;
+    }
+
+    .report-actions {
+        flex-direction: column;
+    }
+
+    .print-button,
+    .close-action-button {
+        width: 100%;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .report-modal-overlay {
+        position: static;
+        background: white;
+    }
+
+    .report-modal-content {
+        max-height: none;
+        box-shadow: none;
+    }
+
+    .report-modal-header,
+    .report-actions,
+    .close-button {
+        display: none;
+    }
+
+    .report-source {
+        background: transparent;
+        border: 1px solid #ddd;
+    }
+}

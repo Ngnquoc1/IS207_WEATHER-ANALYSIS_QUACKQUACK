@@ -32,4 +32,7 @@ Route::prefix('weather')->group(function () {
     // Compare weather data between two locations
     // Expects JSON body: { "location1": {"lat": ..., "lon": ..., "name": "..."}, "location2": {"lat": ..., "lon": ..., "name": "..."} }
     Route::post('/comparison', [WeatherController::class, 'compareLocations']);
+    
+    // Generate detailed AI-powered weather report
+    Route::get('/report/{lat}/{lon}', [WeatherController::class, 'getDetailedReport']);
 });

@@ -12,6 +12,49 @@ const API_BASE_URL = process.env.NODE_ENV === 'production'
  */
 
 /**
+ * Search for locations by name using Open-Meteo Geocoding API
+ * @param {string} query - City name, country name, or address
+ * @returns {Promise} - Array of location results with coordinates
+ */
+export const fetchLocationByName = async (query) => {
+    try {
+        const response = await axios.get('https://geocoding-api.open-meteo.com/v1/search', {
+            params: {
+                name: query,
+                count: 10,  // Return up to 10 results
+                language: 'vi',  // Vietnamese language support
+                format: 'json'
+            },
+            timeout: 5000
+        });
+
+        if (!response.data.results || response.data.results.length === 0) {
+            throw new Error('Không tìm thấy địa điểm nào');
+        }
+
+        // Transform results to match our application format
+        return response.data.results.map(location => ({
+            id: location.id,
+            name: location.name,
+            latitude: location.latitude,
+            longitude: location.longitude,
+            country: location.country,
+            admin1: location.admin1,  // State/Province
+            displayName: `${location.name}${location.admin1 ? ', ' + location.admin1 : ''}, ${location.country}`
+        }));
+    } catch (error) {
+        console.error('Error searching location:', error);
+        if (error.message === 'Không tìm thấy địa điểm nào') {
+            throw error;
+        } else if (error.code === 'ECONNABORTED') {
+            throw new Error('Hết thời gian chờ - vui lòng thử lại');
+        } else {
+            throw new Error('Không thể tìm kiếm địa điểm');
+        }
+    }
+};
+
+/**
  * Fetch comprehensive weather data for a specific location
  * @param {number} lat - Latitude
  * @param {number} lon - Longitude
@@ -37,6 +80,34 @@ export const fetchWeatherData = async (lat, lon) => {
             throw new Error('Server error - please try again later');
         } else {
             throw new Error('Failed to fetch weather data');
+        }
+    }
+};
+
+/**
+ * Fetch detailed AI-generated weather report
+ * @param {number} lat - Latitude
+ * @param {number} lon - Longitude
+ * @returns {Promise} - Detailed weather report with analysis
+ */
+export const fetchDetailedReport = async (lat, lon) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/weather/report/${lat}/${lon}`, {
+            timeout: 30000, // 30 second timeout for AI generation
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching detailed report:', error);
+        if (error.code === 'ECONNABORTED') {
+            throw new Error('Hết thời gian chờ - vui lòng thử lại');
+        } else if (error.response?.status >= 500) {
+            throw new Error('Lỗi server - vui lòng thử lại sau');
+        } else {
+            throw new Error('Không thể tạo báo cáo chi tiết');
         }
     }
 };

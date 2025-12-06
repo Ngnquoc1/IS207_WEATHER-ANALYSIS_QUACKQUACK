@@ -75,15 +75,21 @@
 .anomaly-link {
     font-size: 14px;
     color: #E0E0E0;
-    text-decoration: none;
+    border: 2px solid #F08078;
+    background: transparent;
+    padding: 10px 20px;
+    border-radius: 8px;
     cursor: pointer;
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
     font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
 }
 
 .anomaly-link:hover {
-    opacity: 1;
+    background: #F08078;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(240, 128, 120, 0.4);
 }
 
 /* Stable Card */
@@ -136,19 +142,30 @@
 .stable-link {
     font-size: 14px;
     color: white;
-    text-decoration: none;
+    border: 2px solid #66BB6A;
+    background: transparent;
+    padding: 10px 20px;
+    border-radius: 8px;
     cursor: pointer;
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
     font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
 }
 
 .theme-light .stable-link {
     color: #333;
+    border-color: #66BB6A;
 }
 
 .stable-link:hover {
-    opacity: 1;
+    background: #66BB6A;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 187, 106, 0.4);
+}
+
+.theme-light .stable-link:hover {
+    color: white;
 }
 
 .theme-light .no-anomaly-card {
