@@ -300,13 +300,13 @@ Bạn là chuyên gia phân tích thời tiết chuyên nghiệp. Hãy tạo m�
 **NHIỆM VỤ:**
 Tạo báo cáo chi tiết có cấu trúc như sau (sử dụng Markdown):
 
-# 📊 BÁO CÁO PHÂN TÍCH THỜI TIẾT CHI TIẾT
+#  BÁO CÁO PHÂN TÍCH THỜI TIẾT CHI TIẾT
 
-## 1. 🌤️ TỔNG QUAN TÌNH HÌNH
+## 1.  TỔNG QUAN TÌNH HÌNH
 - Mô tả tổng quan điều kiện thời tiết hiện tại
 - Đánh giá chung về độ thuận lợi
 
-## 2. 📈 PHÂN TÍCH CHI TIẾT
+## 2.  PHÂN TÍCH CHI TIẾT
 
 ### Nhiệt độ
 - Phân tích nhiệt độ hiện tại
@@ -323,13 +323,13 @@ Tạo báo cáo chi tiết có cấu trúc như sau (sử dụng Markdown):
 - Mức độ ảnh hưởng
 - Cảnh báo nếu cần
 
-## 3. 🔍 PHÁT HIỆN BẤT THƯỜNG
+## 3.  PHÁT HIỆN BẤT THƯỜNG
 {$anomalyMessage}
 - Giải thích nguyên nhân có thể
 - Tác động đến hoạt động hàng ngày
 - Dự báo xu hướng
 
-## 4. 💡 KHUYẾN NGHỊ HÀNH ĐỘNG
+## 4.  KHUYẾN NGHỊ HÀNH ĐỘNG
 
 ### Đối với cá nhân:
 - Lời khuyên cụ thể về ăn mặc
@@ -346,17 +346,17 @@ Tạo báo cáo chi tiết có cấu trúc như sau (sử dụng Markdown):
 - Biện pháp phòng ngừa
 - Kế hoạch dự phòng
 
-## 5. 📅 DỰ BÁO 7 NGÀY TỚI
+## 5.  DỰ BÁO 7 NGÀY TỚI
 - Xu hướng nhiệt độ
 - Khả năng mưa
 - Những ngày cần chú ý đặc biệt
 
-## 6. ⚠️ CẢNH BÁO & LƯU Ý
+## 6.  CẢNH BÁO & LƯU Ý
 - Các nguy cơ tiềm ẩn
 - Biện pháp phòng tránh
 - Số điện thoại khẩn cấp (nếu cần)
 
-## 7. 📊 KẾT LUẬN
+## 7.  KẾT LUẬN
 - Đánh giá tổng thể
 - Xu hướng chung
 - Khuyến nghị quan trọng nhất
@@ -369,7 +369,7 @@ Tạo báo cáo chi tiết có cấu trúc như sau (sử dụng Markdown):
 - Độ dài: 800-1000 từ
 - Định dạng Markdown chuẩn
 
-Chỉ trả về nội dung báo cáo, không thêm giải thích hay text khác.
+Chỉ trả về nội dung báo cáo, không thêm giải thích hay text khác, không thêm icon và thực hiện format chuyên nghiệp.
 PROMPT;
 
         return $prompt;
@@ -399,9 +399,9 @@ PROMPT;
         $anomaly = $weatherData['anomaly'];
 
         $report = <<<MARKDOWN
-# 📊 BÁO CÁO PHÂN TÍCH THỜI TIẾT CHI TIẾT
+#  BÁO CÁO PHÂN TÍCH THỜI TIẾT CHI TIẾT
 
-## 1. 🌤️ TỔNG QUAN TÌNH HÌNH
+## 1.  TỔNG QUAN TÌNH HÌNH
 
 Thời tiết hiện tại: **{$current['weather_description']}**
 
@@ -409,7 +409,7 @@ Nhiệt độ: **{$current['temperature']}°C**
 Độ ẩm: **{$current['humidity']}%**
 Tốc độ gió: **{$current['wind_speed']} km/h**
 
-## 2. 📈 PHÂN TÍCH CHI TIẾT
+## 2.  PHÂN TÍCH CHI TIẾT
 
 ### Nhiệt độ
 Nhiệt độ hiện tại là {$current['temperature']}°C, nằm trong khoảng bình thường cho mùa này.
@@ -420,21 +420,21 @@ Nhiệt độ hiện tại là {$current['temperature']}°C, nằm trong khoản
 ### Gió
 Tốc độ gió {$current['wind_speed']} km/h ở mức độ nhẹ.
 
-## 3. 🔍 PHÁT HIỆN BẤT THƯỜNG
+## 3.  PHÁT HIỆN BẤT THƯỜNG
 
 {$anomaly['message']}
 
-## 4. 💡 KHUYẾN NGHỊ HÀNH ĐỘNG
+## 4.  KHUYẾN NGHỊ HÀNH ĐỘNG
 
 - Mặc quần áo phù hợp với nhiệt độ hiện tại
 - Uống đủ nước trong ngày
 - Theo dõi thời tiết thường xuyên
 
-## 5. 📅 DỰ BÁO
+## 5.  DỰ BÁO
 
 Vui lòng theo dõi các cập nhật thời tiết mới nhất.
 
-## 6. 📊 KẾT LUẬN
+## 6.  KẾT LUẬN
 
 Tình hình thời tiết hiện tại ổn định. Hãy chú ý theo dõi các thay đổi.
 

@@ -1,0 +1,530 @@
+/* NameTab.css - Styles for Location Search by Name */
+
+.name-tab-container {
+  padding: 20px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Search Input Section */
+.search-input-section {
+  margin-bottom: 20px;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.theme-dark .search-input-wrapper {
+  background: #2d2d2d;
+  border-color: #444;
+}
+
+.search-input-wrapper:focus-within {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.search-icon {
+  font-size: 18px;
+  margin-right: 8px;
+  color: #666;
+}
+
+.theme-dark .search-icon {
+  color: #aaa;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: transparent;
+  color: #333;
+}
+
+.theme-dark .search-input {
+  color: #fff;
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+.clear-button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #999;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.clear-button:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.theme-dark .clear-button:hover {
+  background: #444;
+  color: #fff;
+}
+
+.search-hint {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #666;
+  font-style: italic;
+}
+
+.theme-dark .search-hint {
+  color: #aaa;
+}
+
+/* Loading State */
+.search-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.theme-dark .search-loading {
+  color: #aaa;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #4CAF50;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+.theme-dark .loading-spinner {
+  border-color: #444;
+  border-top-color: #4CAF50;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error Message */
+.error-message {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 16px;
+  background: #ffebee;
+  border-left: 4px solid #f44336;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  color: #c62828;
+}
+
+.theme-dark .error-message {
+  background: rgba(244, 67, 54, 0.1);
+  color: #ef5350;
+}
+
+.error-icon {
+  font-size: 20px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.error-message > div {
+  flex: 1;
+}
+
+.error-message p {
+  margin: 0 0 8px 0;
+}
+
+.retry-button {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+
+.retry-button:hover {
+  background: #d32f2f;
+  transform: translateY(-1px);
+}
+
+.theme-dark .retry-button {
+  background: #ef5350;
+}
+
+.theme-dark .retry-button:hover {
+  background: #e53935;
+}
+
+/* Search Results */
+.search-results {
+  margin-top: 16px;
+  animation: fadeIn 0.3s ease;
+}
+
+.results-count {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.theme-dark .results-count {
+  color: #aaa;
+}
+
+.results-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+}
+
+.theme-dark .results-list {
+  background: #2d2d2d;
+  border-color: #444;
+}
+
+.result-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.2s;
+}
+
+.theme-dark .result-item {
+  border-bottom-color: #444;
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-item:hover,
+.result-item:focus {
+  background: #f5f5f5;
+  outline: none;
+}
+
+.theme-dark .result-item:hover,
+.theme-dark .result-item:focus {
+  background: #3d3d3d;
+}
+
+.result-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.theme-dark .result-name {
+  color: #fff;
+}
+
+.result-details {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.theme-dark .result-details {
+  color: #aaa;
+}
+
+.result-coords {
+  font-size: 12px;
+  color: #999;
+  font-family: monospace;
+}
+
+.theme-dark .result-coords {
+  color: #888;
+}
+
+/* No Results */
+.no-results {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.theme-dark .no-results {
+  color: #aaa;
+}
+
+.no-results-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.no-results p {
+  margin: 8px 0;
+}
+
+.no-results-hint {
+  font-size: 13px;
+  color: #999;
+}
+
+.theme-dark .no-results-hint {
+  color: #888;
+}
+
+/* Selected Location Display */
+.selected-location-display {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f5f5f5;
+  border: 2px solid #4CAF50;
+  border-radius: 8px;
+  animation: fadeIn 0.3s ease;
+}
+
+.theme-dark .selected-location-display {
+  background: #2d2d2d;
+  border-color: #4CAF50;
+}
+
+.selected-location-display h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #4CAF50;
+}
+
+.selected-location-info {
+  margin-bottom: 16px;
+}
+
+.location-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 4px 0;
+}
+
+.theme-dark .location-name {
+  color: #fff;
+}
+
+.location-region {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 8px 0;
+}
+
+.theme-dark .location-region {
+  color: #aaa;
+}
+
+.location-coords {
+  font-size: 13px;
+  color: #999;
+  margin: 0;
+  font-family: monospace;
+}
+
+.theme-dark .location-coords {
+  color: #888;
+}
+
+.confirm-button {
+  width: 100%;
+  padding: 12px 24px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.confirm-button:hover:not(:disabled) {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.confirm-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.theme-dark .empty-state {
+  color: #aaa;
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  display: block;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.empty-state h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.theme-dark .empty-state h3 {
+  color: #fff;
+}
+
+.empty-state > p {
+  margin: 0 0 24px 0;
+  font-size: 14px;
+}
+
+.search-examples {
+  margin-top: 20px;
+}
+
+.examples-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.theme-dark .examples-title {
+  color: #aaa;
+}
+
+.example-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.example-chip {
+  padding: 6px 12px;
+  background: #e3f2fd;
+  color: #1976d2;
+  border-radius: 16px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.theme-dark .example-chip {
+  background: rgba(25, 118, 210, 0.2);
+  color: #64b5f6;
+}
+
+.example-chip:hover {
+  background: #1976d2;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.theme-dark .example-chip:hover {
+  background: #1976d2;
+  color: white;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .name-tab-container {
+    padding: 16px;
+  }
+
+  .search-input {
+    font-size: 14px;
+  }
+
+  .results-list {
+    max-height: 250px;
+  }
+
+  .result-item {
+    padding: 10px 12px;
+  }
+
+  .result-name {
+    font-size: 15px;
+  }
+
+  .example-chips {
+    gap: 6px;
+  }
+
+  .example-chip {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+}
+
+/* Scrollbar Styling */
+.results-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.results-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.theme-dark .results-list::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.results-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.results-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

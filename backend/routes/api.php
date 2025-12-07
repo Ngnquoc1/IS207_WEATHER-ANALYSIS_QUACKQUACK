@@ -21,7 +21,12 @@ Route::prefix('weather')->group(function () {
     // Get comprehensive weather data for a specific location
     // Available to both guests and authenticated users
     Route::get('/{lat}/{lon}', [WeatherController::class, 'getWeatherData']);
+    // Generate detailed AI-powered weather report
+    Route::get('/report/{lat}/{lon}', [WeatherController::class, 'getDetailedReport']);
 });
+
+// Location search API - proxy for Open-Meteo Geocoding API to avoid CORS
+Route::get('/location/search', [WeatherController::class, 'searchLocation']);
 
 /*
 |--------------------------------------------------------------------------
@@ -72,6 +77,5 @@ Route::middleware('auth:sanctum')->group(function () {
         });
     });
     
-    // Generate detailed AI-powered weather report
-    Route::get('/report/{lat}/{lon}', [WeatherController::class, 'getDetailedReport']);
+    
 });

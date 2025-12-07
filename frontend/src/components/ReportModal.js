@@ -25,7 +25,7 @@ const ReportModal = ({ isOpen, onClose, reportData, loading, error }) => {
                     {loading && (
                         <div className="loading-state">
                             <div className="spinner"></div>
-                            <p>Đang tạo báo cáo chi tiết bằng AI...</p>
+                            <p>Đang tạo báo cáo chi tiết...</p>
                             <small>Vui lòng đợi 10-15 giây</small>
                         </div>
                     )}

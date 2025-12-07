@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapTab, ManualTab } from './LocationPickerComponents';
+import { MapTab, ManualTab, NameTab } from './LocationPickerComponents';
 import './LocationPicker.css';
 
 
@@ -17,12 +17,18 @@ const LocationPicker = ({
   onSelectLocation
 }) => {
   // Tab state
-  const [activeTab, setActiveTab] = useState('map'); // 'map' | 'manual'
+  const [activeTab, setActiveTab] = useState('name'); // 'map' | 'manual' | 'name'
 
   return (
     <div className={`location-picker-container ${isDark ? 'theme-dark' : 'theme-light'}`}>
       {/* Tab Navigation */}
       <div className="tab-navigation">
+        <button 
+          className={`tab-button ${activeTab === 'name' ? 'active' : ''}`}
+          onClick={() => setActiveTab('name')}
+        >
+          Tìm theo Tên
+        </button>
         <button 
           className={`tab-button ${activeTab === 'map' ? 'active' : ''}`}
           onClick={() => setActiveTab('map')}
@@ -38,7 +44,18 @@ const LocationPicker = ({
       </div>
 
       {/* Tab Content */}
-      {activeTab === 'map' ? (  
+      {activeTab === 'name' ? (
+        <NameTab 
+          isDark={isDark}
+          selectedLocation={selectedLocation}
+          setSelectedLocation={setSelectedLocation}
+          loading={loading}
+          setLoading={setLoading}
+          error={error}
+          setError={setError}
+          onSelectLocation={onSelectLocation}
+        />
+      ) : activeTab === 'map' ? (  
         <MapTab 
           isDark={isDark}
           onSelectLocation={onSelectLocation}

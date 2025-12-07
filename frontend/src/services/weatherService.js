@@ -15,24 +15,32 @@ const API_BASE_URL = "http://localhost:8000/api"
  * @param {string} query - City name, country name, or address
  * @returns {Promise} - Array of location results with coordinates
  */
+/**
+ * Search for locations by name using Laravel backend proxy
+ * (Proxied to avoid CORS issues with Open-Meteo Geocoding API)
+ * @param {string} query - City name, country name, or address
+ * @returns {Promise} - Array of location results with coordinates
+ */
 export const fetchLocationByName = async (query) => {
     try {
-        const response = await axios.get('https://geocoding-api.open-meteo.com/v1/search', {
+        console.log('🌐 Calling Geocoding API (via Laravel proxy) for:', query);
+        
+        // Use Laravel backend as proxy to avoid CORS issues
+        const response = await axios.get(`${API_BASE_URL}/location/search`, {
             params: {
-                name: query,
-                count: 10,  // Return up to 10 results
-                language: 'vi',  // Vietnamese language support
-                format: 'json'
+                query: query
             },
-            timeout: 5000
+            timeout: 10000
         });
+
+        console.log('📦 API Response:', response.data);
 
         if (!response.data.results || response.data.results.length === 0) {
             throw new Error('Không tìm thấy địa điểm nào');
         }
 
         // Transform results to match our application format
-        return response.data.results.map(location => ({
+        const transformedResults = response.data.results.map(location => ({
             id: location.id,
             name: location.name,
             latitude: location.latitude,
@@ -41,14 +49,30 @@ export const fetchLocationByName = async (query) => {
             admin1: location.admin1,  // State/Province
             displayName: `${location.name}${location.admin1 ? ', ' + location.admin1 : ''}, ${location.country}`
         }));
+        
+        console.log('✨ Transformed results:', transformedResults);
+        return transformedResults;
     } catch (error) {
-        console.error('Error searching location:', error);
+        console.error('❌ Error searching location:', error);
+        console.error('Error details:', {
+            message: error.message,
+            code: error.code,
+            response: error.response?.data,
+            status: error.response?.status
+        });
+        
         if (error.message === 'Không tìm thấy địa điểm nào') {
             throw error;
         } else if (error.code === 'ECONNABORTED') {
             throw new Error('Hết thời gian chờ - vui lòng thử lại');
+        } else if (error.response?.status === 404) {
+            throw new Error('Không tìm thấy địa điểm nào');
+        } else if (error.response?.status === 500) {
+            throw new Error('Lỗi server. Vui lòng thử lại sau.');
+        } else if (error.code === 'ERR_NETWORK') {
+            throw new Error('Không thể kết nối với server. Kiểm tra backend đang chạy.');
         } else {
-            throw new Error('Không thể tìm kiếm địa điểm');
+            throw new Error(`Không thể tìm kiếm địa điểm: ${error.message}`);
         }
     }
 };

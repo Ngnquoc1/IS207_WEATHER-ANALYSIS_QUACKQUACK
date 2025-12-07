@@ -12,10 +12,12 @@ use App\Services\GeminiService;
 class WeatherController extends Controller
 {
     protected $geminiService;
+    protected $reverseGeocodeService;
 
-    public function __construct(GeminiService $geminiService)
+    public function __construct(GeminiService $geminiService, ReverseGeocodeService $reverseGeocodeService)
     {
         $this->geminiService = $geminiService;
+        $this->reverseGeocodeService = $reverseGeocodeService;
     }
 
     /**
@@ -717,5 +719,69 @@ class WeatherController extends Controller
         
         // Fallback: return 0 if no suitable time found
         return 0;
+    }
+
+    /**
+     * Proxy for Open-Meteo Geocoding API to avoid CORS issues
+     * Search for locations by name
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function searchLocation(Request $request)
+    {
+        try {
+            $query = $request->input('query');
+            
+            if (!$query || strlen($query) < 2) {
+                return response()->json([
+                    'error' => 'Query too short',
+                    'message' => 'Search query must be at least 2 characters'
+                ], 400);
+            }
+
+            // Call Open-Meteo Geocoding API
+            $client = new Client([
+                'timeout' => 10,
+                'verify' => false
+            ]);
+
+            $response = $client->get('https://geocoding-api.open-meteo.com/v1/search', [
+                'query' => [
+                    'name' => $query,
+                    'count' => 10,
+                    'language' => 'vi',
+                    'format' => 'json'
+                ]
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            // Return results or empty array if no results
+            return response()->json([
+                'results' => $data['results'] ?? []
+            ]);
+
+        } catch (GuzzleException $e) {
+            Log::error('Geocoding API error', [
+                'message' => $e->getMessage(),
+                'query' => $request->input('query')
+            ]);
+
+            return response()->json([
+                'error' => 'Geocoding API error',
+                'message' => 'Could not search for locations. Please try again.'
+            ], 500);
+        } catch (\Exception $e) {
+            Log::error('Unexpected error in searchLocation', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'error' => 'Server error',
+                'message' => 'An unexpected error occurred'
+            ], 500);
+        }
     }
 }
