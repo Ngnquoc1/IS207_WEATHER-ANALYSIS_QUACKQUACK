@@ -14,9 +14,22 @@ A comprehensive weather analysis dashboard built with Laravel (backend) and Reac
 - **7-Day Forecast List**: Card-based daily weather predictions with color-coded conditions
 - **Anomaly Detection**: Automatically detects unusual temperature patterns by comparing with 30-day historical averages
 - **Smart Recommendations**: AI-powered suggestions based on weather conditions (UV protection, clothing advice, etc.)
+- **Affiliate Product Recommendations**: Weather-based product suggestions with AccessTrade affiliate links
 - **Location Comparison**: Side-by-side weather comparison between two locations with interactive charts
 - **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
 - **Stories Feature**: Share and view weather-related stories with authentication
+
+### Admin Features
+
+- **User Management**: View and manage user accounts with role-based access control
+- **Product Management**: Full CRUD interface for affiliate product recommendations
+  - Create, edit, and delete weather-related products
+  - Configure weather tags (rain, clear, clouds, snow, etc.)
+  - Set temperature ranges for product recommendations
+  - Toggle product visibility
+  - Manage affiliate links with AccessTrade integration
+  - Pagination, search, and filtering capabilities
+- **Stories Management**: Moderate and manage weather news stories
 
 ### Deployment & Data
 
@@ -145,7 +158,8 @@ MONGODB_URI=mongodb+srv://your-username:your-password@your-cluster.mongodb.net/w
 
 ### 📊 Database Collections
 
-- `users` - User accounts and authentication
+- `users` - User accounts and authentication (admin/customer roles)
+- `products` - Affiliate product recommendations with weather tags
 - `stories` - Weather news stories from NewsAPI
 - `personal_access_tokens` - API authentication tokens (Sanctum)
 
@@ -483,6 +497,102 @@ POST /api/weather/comparison
 }
 ```
 
+#### 3. Get Product Recommendations
+
+```
+GET /api/recommendations?weather_main={weather}&temperature={temp}
+```
+
+**Description**: Fetches affiliate product recommendations based on weather conditions.
+
+**Parameters**:
+- `weather_main` (string): Weather condition (rain, clear, clouds, snow, etc.)
+- `temperature` (float): Current temperature in Celsius
+
+**Example**:
+```bash
+GET http://localhost:8000/api/recommendations?weather_main=rain&temperature=25
+```
+
+**Response**:
+```json
+{
+    "success": true,
+    "recommendations": [
+        {
+            "id": "6935c3941ac6f7c6340f4f12",
+            "name": "Áo Mưa Poncho Dày Dặn",
+            "description": "Áo mưa poncho cao cấp...",
+            "image_url": "https://images.unsplash.com/...",
+            "affiliate_link": "https://go.isclix.com/deep_link/...",
+            "weather_tags": ["rain", "drizzle"],
+            "min_temp": 15,
+            "max_temp": 35
+        }
+    ]
+}
+```
+
+### Admin API Endpoints (Protected by auth:sanctum + admin middleware)
+
+#### 1. List Products
+
+```
+GET /api/admin/products?page=1&per_page=10&search=&weather_tag=&is_active=
+```
+
+**Response**:
+```json
+{
+    "success": true,
+    "products": {
+        "data": [...],
+        "current_page": 1,
+        "last_page": 3,
+        "per_page": 10,
+        "total": 25
+    }
+}
+```
+
+#### 2. Create Product
+
+```
+POST /api/admin/products
+```
+
+**Request Body**:
+```json
+{
+    "name": "Product Name",
+    "description": "Description",
+    "image_url": "https://...",
+    "original_link": "https://shopee.vn/...",
+    "weather_tags": ["rain", "clouds"],
+    "min_temp": 20,
+    "max_temp": 30,
+    "is_active": true
+}
+```
+
+#### 3. Update Product
+
+```
+PUT /api/admin/products/{id}
+```
+
+#### 4. Delete Product
+
+```
+DELETE /api/admin/products/{id}
+```
+
+#### 5. Toggle Product Active Status
+
+```
+PATCH /api/admin/products/{id}/toggle-active
+```
+
 ## 🎯 Key Features Explained
 
 ### Anomaly Detection Algorithm
@@ -504,7 +614,19 @@ The recommendation engine analyzes multiple weather parameters:
 - **Wind Speed**: Cautions about strong winds
 - **Humidity**: Alerts about uncomfortable conditions
 
+### Affiliate Product Recommendations
+
+The product recommendation system matches weather conditions with relevant products:
+
+- **Weather-Based Matching**: Products tagged with specific weather conditions (rain, clear, clouds, snow, etc.)
+- **Temperature Range Filtering**: Products configured for specific temperature ranges
+- **AccessTrade Integration**: Automatic affiliate link generation with deep linking
+- **Smart Display**: Only shows active products matching current weather conditions
+- **Admin Management**: Full CRUD interface for managing product catalog
+
 ## 🎨 UI Components
+
+### Customer-Facing Components
 
 1. **Header**: Modern dark theme header with location dropdown and theme toggle
 2. **CurrentWeather**: Displays real-time weather with large temperature display and details
@@ -513,7 +635,20 @@ The recommendation engine analyzes multiple weather parameters:
 5. **7-Day Forecast**: Card-based daily forecast with color-coded weather conditions (integrated in ForecastTabs)
 6. **AnomalyDisplay**: Animated alert box for temperature anomalies
 7. **Recommendation**: Smart suggestions based on current conditions
-8. **LocationComparator**: Side-by-side comparison with table and chart
+8. **ProductRecommendations**: Weather-based affiliate product suggestions with images and links
+9. **LocationComparator**: Side-by-side comparison with table and chart
+
+### Admin Dashboard Components
+
+1. **AdminSidebar**: Navigation menu with User, Product, and Stories management
+2. **AdminProductsPage**: Full CRUD interface for product management
+   - Product table with thumbnails, weather tags, status badges
+   - Search and filter functionality (by name, weather tag, active status)
+   - Pagination controls
+   - Create/Edit modal form with validation
+   - Toggle active status button
+   - Delete confirmation dialog
+   - Toast notifications for user feedback
 
 ## 🌙 Theme System
 

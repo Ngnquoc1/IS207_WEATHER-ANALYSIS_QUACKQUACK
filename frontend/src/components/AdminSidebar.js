@@ -14,6 +14,12 @@ const AdminSidebar = ({ isOpen, onClose }) => {
       icon: '👥'
     },
     {
+      id: 'products',
+      label: 'Product Management',
+      path: '/admin/products',
+      icon: '🛍️'
+    },
+    {
       id: 'stories',
       label: 'Stories Management',
       path: '/admin/stories',

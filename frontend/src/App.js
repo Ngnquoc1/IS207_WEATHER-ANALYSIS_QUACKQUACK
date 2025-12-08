@@ -4,6 +4,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import DashboardPage from './pages/DashboardPage';
 import StoriesPage from './pages/StoriesPage';
 import AdminPage from './pages/AdminPage';
+import AdminProductsPage from './pages/AdminProductsPage';
 import AdminStoriesPage from './pages/AdminStoriesPage';
 import AdminLayout from './pages/AdminLayout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -22,6 +23,16 @@ function App() {
                                 <ProtectedRoute requireAdmin={true}>
                                     <AdminLayout>
                                         <AdminPage />
+                                    </AdminLayout>
+                                </ProtectedRoute>
+                            } 
+                        />
+                        <Route 
+                            path="/admin/products" 
+                            element={
+                                <ProtectedRoute requireAdmin={true}>
+                                    <AdminLayout>
+                                        <AdminProductsPage />
                                     </AdminLayout>
                                 </ProtectedRoute>
                             } 

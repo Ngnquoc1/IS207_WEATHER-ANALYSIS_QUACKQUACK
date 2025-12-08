@@ -6,6 +6,7 @@ use App\Http\Controllers\WeatherController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StoryController;
 use App\Http\Controllers\RecommendationController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,5 +82,14 @@ Route::middleware('auth:sanctum')->group(function () {
         });
     });
     
+    // Admin Product Management (Protected by auth:sanctum + admin middleware)
+    Route::middleware('admin')->prefix('admin')->group(function () {
+        Route::get('/products', [AdminProductController::class, 'index']);
+        Route::post('/products', [AdminProductController::class, 'store']);
+        Route::get('/products/{id}', [AdminProductController::class, 'show']);
+        Route::put('/products/{id}', [AdminProductController::class, 'update']);
+        Route::delete('/products/{id}', [AdminProductController::class, 'destroy']);
+        Route::patch('/products/{id}/toggle-active', [AdminProductController::class, 'toggleActive']);
+    });
     
 });
