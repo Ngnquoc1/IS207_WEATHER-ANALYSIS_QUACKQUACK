@@ -16,6 +16,19 @@ function App() {
             <Router>
                 <div className="App">
                     <Routes>
+                        {/* Customer routes - allow guest access */}
+                        <Route 
+                            path="/" 
+                            element={<DashboardPage />}
+                        />
+                        <Route 
+                            path="/dashboard" 
+                            element={<DashboardPage />}
+                        />
+                        <Route 
+                            path="/stories" 
+                            element={<StoriesPage />}
+                        />
                         {/* Admin routes with layout */}
                         <Route 
                             path="/admin/users" 
@@ -58,20 +71,6 @@ function App() {
                                     </AdminLayout>
                                 </ProtectedRoute>
                             } 
-                        />
-                        
-                        {/* Customer routes - allow guest access */}
-                        <Route 
-                            path="/" 
-                            element={<DashboardPage />}
-                        />
-                        <Route 
-                            path="/dashboard" 
-                            element={<DashboardPage />}
-                        />
-                        <Route 
-                            path="/stories" 
-                            element={<StoriesPage />}
                         />
                     </Routes>
                 </div>

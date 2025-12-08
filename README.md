@@ -281,7 +281,13 @@ Features:
 
 ## 🛠️ Manual Installation & Setup
 
-### Part 1: Backend Setup (Laravel)
+### Part 1: Showing Database after configuring with Mongo Atlas Setup
+
+1. **Create connection with Atlas, Be sure it has weather_db we have configured.**
+
+2. **Create collection in database weather_db: stories, products**
+
+### Part 2: Backend Setup (Laravel)
 
 1. **Navigate to the backend directory:**
 
@@ -336,7 +342,7 @@ Features:
 
    The backend will be available at `http://localhost:8000`
 
-### Part 2: Frontend Setup (React)
+### Part 3: Frontend Setup (React)
 
 1. **Navigate to the frontend directory:**
 
@@ -366,6 +372,9 @@ Features:
    ```
 
    The frontend will open automatically at `http://localhost:3000`
+
+
+
 
 ## 📁 Project Structure
 

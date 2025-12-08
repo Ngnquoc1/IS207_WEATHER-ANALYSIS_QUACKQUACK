@@ -20,38 +20,55 @@ class ProductController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $perPage = $request->input('per_page', 10);
-            $perPage = min(max($perPage, 1), 50); // Limit between 1-50
-            
+            $perPage = (int) $request->input('per_page', 10);
             $query = Product::query();
-            
-            // Filter by search (name or description)
-            if ($request->has('search') && !empty($request->search)) {
+
+            // 1. TÌM KIẾM (Search) - Áp dụng cho name và description
+            if ($request->filled('search')) {
                 $search = $request->search;
-                $query->where(function($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                      ->orWhere('description', 'like', "%{$search}%");
+                // Tạo Regex không phân biệt hoa thường ('i')
+                // preg_quote giúp xử lý các ký tự đặc biệt nếu có
+                $regex = new \MongoDB\BSON\Regex($search, 'i');
+                
+                $query->where(function($q) use ($regex) {
+                    $q->where('name', 'regexp', $regex)
+                    ->orWhere('description', 'regexp', $regex);
                 });
             }
-            
-            // Filter by weather tag
-            if ($request->has('weather_tag') && !empty($request->weather_tag)) {
-                $query->whereIn('weather_tags', [$request->weather_tag]);
+
+            // 2. LỌC WEATHER TAGS (Quan trọng: Xử lý chuỗi JSON)
+            // Dữ liệu trong DB là chuỗi: "["clouds","fog"]"
+            // Nên ta phải tìm chuỗi "clouds" nằm trong đó.
+            if ($request->filled('weather_tag')) {
+                $tag = $request->weather_tag;
+                
+                // Tìm chính xác từ khóa nằm trong ngoặc kép để tránh nhầm lẫn
+                // Ví dụ: tìm "rain" thì regex sẽ là /"rain"/i
+                // Điều này tránh tìm "rain" mà ra "rainbow"
+                $tagRegex = new \MongoDB\BSON\Regex('"' . preg_quote($tag) . '"', 'i');
+                
+                $query->where('weather_tags', 'regexp', $tagRegex);
             }
-            
-            // Filter by active status
-            if ($request->has('is_active') && $request->is_active !== '') {
-                $query->where('is_active', $request->is_active === 'true' || $request->is_active === true);
+
+            // 3. LỌC TRẠNG THÁI (Boolean)
+            if ($request->has('is_active') && $request->is_active !== null && $request->is_active !== '') {
+                // Chuyển đổi mọi loại input (string "true", "1", 1...) về boolean chuẩn
+                $isActive = filter_var($request->is_active, FILTER_VALIDATE_BOOLEAN);
+                $query->where('is_active', $isActive);
             }
-            
-            // Sort by created_at descending
-            $query->orderBy('created_at', 'desc');
-            
-            // Paginate results
-            $products = $query->paginate($perPage);
-            
-            // Add affiliate_link to each product (accessor)
+
+            // Sắp xếp và Phân trang
+            $products = $query->orderBy('created_at', 'desc')->paginate($perPage);
+
+            // Transform dữ liệu để thêm affiliate_link
             $products->getCollection()->transform(function ($product) {
+                // Xử lý weather_tags để trả về Array chuẩn cho Frontend
+                // Nếu trong DB là chuỗi, ta decode nó ra.
+                $tags = $product->weather_tags;
+                if (is_string($tags)) {
+                    $tags = json_decode($tags, true) ?? []; 
+                }
+
                 return [
                     'id' => $product->id,
                     'name' => $product->name,
@@ -59,7 +76,7 @@ class ProductController extends Controller
                     'image_url' => $product->image_url,
                     'original_link' => $product->original_link,
                     'affiliate_link' => $product->affiliate_link,
-                    'weather_tags' => $product->weather_tags,
+                    'weather_tags' => $tags, // Trả về mảng chuẩn
                     'min_temp' => $product->min_temp,
                     'max_temp' => $product->max_temp,
                     'is_active' => $product->is_active,
@@ -67,7 +84,7 @@ class ProductController extends Controller
                     'updated_at' => $product->updated_at,
                 ];
             });
-            
+
             return response()->json([
                 'success' => true,
                 'products' => [
@@ -78,9 +95,9 @@ class ProductController extends Controller
                     'total' => $products->total(),
                 ]
             ]);
-            
+
         } catch (\Exception $e) {
-            Log::error('Error fetching products: ' . $e->getMessage());
+            \Log::error('Error fetching products: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch products',

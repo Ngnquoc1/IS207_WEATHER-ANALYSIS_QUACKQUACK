@@ -11,7 +11,7 @@ class GeminiService
 {
     private $apiKey;
     private $client;
-    private const API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+    private const API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent';
 
     public function __construct()
     {

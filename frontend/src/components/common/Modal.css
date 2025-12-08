@@ -1,169 +1,125 @@
-/* Portal Container */
-.modal-portal-container {
+/* Container Portal */
+.custom-modal-portal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
   z-index: 99999;
-  pointer-events: none; /* Cho phép click through khi không có modal */
+  pointer-events: none;
 }
 
-/* Modal Overlay */
-.modal-overlay {
-  position: fixed;
+/* Overlay - Lớp nền mờ & Căn giữa */
+.custom-modal-overlay {
+  position: fixed !important;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99999;
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 100000;
+  
+  /* Flexbox Căn giữa thần thánh */
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  
   padding: 20px;
   box-sizing: border-box;
-  pointer-events: auto; /* Cho phép interaction với modal */
+  pointer-events: auto;
+  animation: cmFadeIn 0.2s ease-out;
+  backdrop-filter: blur(2px); /* Làm mờ nền phía sau */
 }
 
-/* Modal Container */
-.modal-container {
-  background: var(--modal-bg, white);
+/* Container - Khung trắng chính */
+.custom-modal-container {
+  background: white;
   border-radius: 12px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  max-height: 90vh;
-  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  
+  /* Layout dọc: Header trên, Body dưới */
   display: flex;
   flex-direction: column;
-  animation: modalSlideIn 0.3s ease-out;
-}
-
-/* Modal Sizes */
-.modal-small {
+  
+  max-height: 90vh; /* Không cao quá màn hình */
   width: 100%;
-  max-width: 400px;
+  position: relative;
+  overflow: hidden;
+  animation: cmZoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.modal-medium {
-  width: 100%;
-  max-width: 600px;
-}
+/* Kích thước */
+.custom-modal-small { max-width: 400px; }
+.custom-modal-medium { max-width: 600px; }
+.custom-modal-large { max-width: 850px; }
 
-.modal-large {
-  width: 100%;
-  max-width: 800px;
-}
-
-/* Modal Header */
-.modal-header {
+/* Header */
+.custom-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--modal-border, #e5e7eb);
-  background-color: var(--modal-header-bg, #f9fafb);
+  padding: 16px 24px;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  flex-shrink: 0; /* Không bị co lại khi body dài */
 }
 
-.modal-title {
+.custom-modal-title {
   margin: 0;
   font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--modal-text, #111827);
+  font-weight: 700;
+  color: #333;
 }
 
-.modal-close-button {
-  background: none;
+.custom-modal-close {
+  background: transparent;
   border: none;
-  font-size: 24px;
-  color: var(--modal-text-secondary, #6b7280);
+  font-size: 28px;
+  line-height: 1;
+  color: #888;
   cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
+  padding: 0 8px;
+  transition: color 0.2s;
 }
 
-.modal-close-button:hover {
-  background-color: var(--modal-hover-bg, #f3f4f6);
-  color: var(--modal-text-hover, #374151);
+.custom-modal-close:hover {
+  color: #000;
 }
 
-.modal-close-button:focus {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-}
-
-/* Modal Content */
-.modal-content {
+/* Body - Nội dung cuộn */
+.custom-modal-body {
   padding: 24px;
-  overflow-y: auto;
+  overflow-y: auto; /* Cuộn dọc nếu nội dung dài */
   overflow-x: hidden;
-  flex: 1;
-  min-height: 0; /* Important for flex */
-  box-sizing: border-box;
+  flex: 1; /* Chiếm hết khoảng trống còn lại */
+  background-color: #fff;
 }
 
 /* Animation */
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95) translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+@keyframes cmFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* Responsive Design */
-@media (max-width: 640px) {
-  .modal-overlay {
-    padding: 10px;
-  }
-  
-  .modal-container {
-    max-height: 95vh;
-  }
-  
-  .modal-header {
-    padding: 16px 20px;
-  }
-  
-  .modal-content {
-    padding: 20px;
-  }
-  
-  .modal-title {
-    font-size: 1.125rem;
-  }
+@keyframes cmZoomIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* Dark mode support */
+/* Dark Mode Support (Nếu cần) */
 @media (prefers-color-scheme: dark) {
-  .modal-container {
+  .custom-modal-container {
     background: #1f2937;
-    color: #f9fafb;
+    color: #fff;
   }
-  
-  .modal-header {
-    background-color: #111827;
+  .custom-modal-header {
+    background: #1f2937;
     border-bottom-color: #374151;
   }
-  
-  .modal-title {
-    color: #f9fafb;
+  .custom-modal-title {
+    color: #fff;
   }
-  
-  .modal-close-button {
-    color: #9ca3af;
-  }
-  
-  .modal-close-button:hover {
-    background-color: #374151;
-    color: #d1d5db;
+  .custom-modal-body {
+    background: #1f2937;
   }
 }

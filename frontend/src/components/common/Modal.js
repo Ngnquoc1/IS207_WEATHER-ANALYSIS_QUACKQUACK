@@ -35,7 +35,7 @@ const Modal = ({
       // Tạo portal container nếu chưa tồn tại
       portalContainer = document.createElement('div');
       portalContainer.id = portalId;
-      portalContainer.className = 'modal-portal-container';
+      portalContainer.className = 'custom-modal-portal';
       document.body.appendChild(portalContainer);
     }
     
@@ -44,25 +44,25 @@ const Modal = ({
 
   const modalContent = (
     <div 
-      className={`modal-overlay ${className}`}
+      className={`custom-modal-overlay ${className}`}
       onClick={handleOverlayClick}
       onKeyDown={handleKeyDown}
       tabIndex={-1}
     >
-      <div className={`modal-container modal-${size}`}>
-        <div className="modal-header">
-          {title && <h2 className="modal-title">{title}</h2>}
+      <div className={`custom-modal-container custom-modal-${size}`}>
+        <div className="custom-modal-header">
+          {title && <h2 className="custom-modal-title">{title}</h2>}
           {showCloseButton && (
             <button 
-              className="modal-close-button"
+              className="custom-modal-close"
               onClick={onClose}
-              aria-label="Close modal"
+              aria-label="Close"
             >
               ×
             </button>
           )}
         </div>
-        <div className="modal-content">
+        <div className="custom-modal-body">
           {children}
         </div>
       </div>

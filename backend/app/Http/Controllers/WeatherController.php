@@ -168,13 +168,13 @@ class WeatherController extends Controller
                 'location1' => [
                     'name' => $location1['name'] ?? "Location 1",
                     'coordinates' => ['lat' => $location1['lat'], 'lon' => $location1['lon']],
-                    'weather' => $weather1['current_weather'],
+                    'current_weather' => $weather1['current_weather'],
                     'daily_summary' => $weather1['daily_summary']
                 ],
                 'location2' => [
                     'name' => $location2['name'] ?? "Location 2",
                     'coordinates' => ['lat' => $location2['lat'], 'lon' => $location2['lon']],
-                    'weather' => $weather2['current_weather'],
+                    'current_weather' => $weather2['current_weather'],
                     'daily_summary' => $weather2['daily_summary']
                 ],
                 'differences' => $this->calculateDifferences($weather1['current_weather'], $weather2['current_weather'])
