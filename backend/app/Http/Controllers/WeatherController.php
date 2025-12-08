@@ -322,6 +322,7 @@ class WeatherController extends Controller
      */
     private function processCurrentWeather($current)
     {
+        $weatherCode = $current['weather_code'];
         return [
             'time' => $current['time'],
             'temperature' => round($current['temperature_2m'], 1),
@@ -329,8 +330,9 @@ class WeatherController extends Controller
             'humidity' => $current['relative_humidity_2m'],
             'wind_speed' => round($current['wind_speed_10m'], 1),
             'precipitation' => $current['precipitation'] ?? 0,
-            'weather_code' => $current['weather_code'],
-            'weather_description' => $this->getWeatherDescription($current['weather_code'])
+            'weather_code' => $weatherCode,
+            'weather_description' => $this->getWeatherDescription($weatherCode),
+            'weather_main' => $this->getWeatherMain($weatherCode)
         ];
     }
 
@@ -542,6 +544,28 @@ class WeatherController extends Controller
     private function getWeatherDescription($code)
     {
         return self::WEATHER_CODES[$code] ?? 'Không xác định';
+    }
+
+    /**
+     * Get weather main category (Rain, Clear, Clouds, etc.)
+     * Used for product recommendations
+     *
+     * @param int $code Weather code
+     * @return string
+     */
+    private function getWeatherMain($code)
+    {
+        // Map weather codes to main categories
+        if ($code === 0) return 'Clear';
+        if ($code >= 1 && $code <= 3) return 'Clouds';
+        if ($code >= 45 && $code <= 48) return 'Fog';
+        if ($code >= 51 && $code <= 55) return 'Drizzle';
+        if ($code >= 61 && $code <= 65) return 'Rain';
+        if ($code >= 71 && $code <= 77) return 'Snow';
+        if ($code >= 80 && $code <= 82) return 'Rain';
+        if ($code >= 85 && $code <= 86) return 'Snow';
+        if ($code >= 95 && $code <= 99) return 'Thunderstorm';
+        return 'Unknown';
     }
 
     /**

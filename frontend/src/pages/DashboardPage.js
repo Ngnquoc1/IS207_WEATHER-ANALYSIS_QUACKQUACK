@@ -11,6 +11,7 @@ import LocationComparator from '../components/LocationComparator';
 import Stories from '../components/Stories';
 import LoginPrompt from '../components/LoginPrompt';
 import LoginModal from '../components/LoginModal';
+import ProductRecommendations from '../components/ProductRecommendations';
 import './DashboardPage.css';
 
 /**
@@ -205,6 +206,11 @@ const DashboardPage = () => {
                         {/* Section 1: Current Weather - Available for all users */}
                         <div className="grid-row">
                             <CurrentWeather data={weatherData.current_weather} />
+                        </div>
+
+                        {/* Product Recommendations - Available for all users */}
+                        <div className="grid-row">
+                            <ProductRecommendations weatherData={weatherData} />
                         </div>
 
                         {/* Hourly Forecast Chart - Only for authenticated users */}

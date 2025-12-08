@@ -43,4 +43,9 @@ return [
     // Reverse geocoding cache TTL in seconds (default 24h)
     'reverse_geocode_cache_ttl' => env('REVERSE_GEOCODE_CACHE_TTL', 86400),
 
+    // AccessTrade Affiliate Configuration
+    'accesstrade' => [
+        'id' => env('ACCESSTRADE_ID'),
+    ],
+
 ];

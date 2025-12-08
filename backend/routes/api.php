@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WeatherController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StoryController;
+use App\Http\Controllers\RecommendationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,9 @@ Route::prefix('weather')->group(function () {
 
 // Location search API - proxy for Open-Meteo Geocoding API to avoid CORS
 Route::get('/location/search', [WeatherController::class, 'searchLocation']);
+
+// Affiliate product recommendations based on weather
+Route::get('/recommendations', [RecommendationController::class, 'getRecommendations']);
 
 /*
 |--------------------------------------------------------------------------
