@@ -243,7 +243,7 @@
 .full-width-row {
     grid-template-columns: 1fr;
 }
-    
+
 /* Analysis Row (2 Columns: Anomaly + Smart Recs) */
 .analysis-row {
     grid-template-columns: 1fr 1fr;
@@ -268,19 +268,55 @@
     width: 100%; /* Ensure full width */
 }
 
+.grid-cell.no-padding {
+    padding: 0;
+    overflow: hidden; /* Ensure content doesn't spill out of rounded corners */
+}
+
+.section-title.padding-24 {
+    padding: 24px 24px 0 24px;
+    margin-bottom: 16px;
+}
+
 /* Hero Section Specifics */
 .hero-cell {
-    padding: 24px;
+    padding: 0; /* Remove padding to let map fill the cell */
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 0; /* Remove gap */
+    position: relative; /* For absolute positioning of content */
+    overflow: hidden; /* Clip map corners */
+    height: 60vh; /* Reduced height from 85vh */
+    min-height: 500px;
+}
+
+.hero-content-overlay {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 50; /* Lower than Header (1000) but above Map (0) */
+    background-color: rgba(255, 255, 255, 0.85); /* More transparent */
+    backdrop-filter: blur(12px); /* Stronger blur */
+    padding: 16px; /* Reduced padding */
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    max-width: 320px; /* Reduced width */
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth resize */
+}
+
+/* Dark mode support for overlay */
+.theme-dark .hero-content-overlay {
+    background-color: rgba(30, 41, 59, 0.95); /* Darker and less transparent */
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #f1f5f9;
 }
 
 .location-header {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 8px;
+    margin-bottom: 16px;
 }
 
 .location-header h2 {
@@ -385,16 +421,28 @@
         gap: 16px;
     }
 
+    /* Use display: contents to move Stories to bottom on Tablet too */
     .dashboard-sidebar {
-        width: 100%;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 16px;
+        display: contents;
     }
 
-    .dashboard-sidebar > * {
-        flex: 1;
-        min-width: 300px;
+    .dashboard-sidebar > .location-selector-panel {
+        order: 1;
+        width: 100%;
+    }
+
+    .dashboard-sidebar > .location-info-card {
+        order: 2;
+        width: 100%;
+    }
+
+    .dashboard-main {
+        order: 3;
+    }
+
+    .dashboard-sidebar > .sidebar-stories {
+        order: 4;
+        width: 100%;
     }
 
     /* Ensure login prompt takes full width in sidebar if needed, or shares space */
@@ -423,23 +471,38 @@
 
     .dashboard-container {
         padding: 12px;
-        gap: 12px;
+        gap: 16px;
         display: flex;
         flex-direction: column;
     }
 
-    /* Reorder: Main content (Weather) first, Sidebar (Location) second */
-    .dashboard-main {
-        order: 1;
-    }
-
+    /* Smart Reordering using display: contents to interleave Sidebar and Main items */
     .dashboard-sidebar {
-        order: 2;
-        flex-direction: column;
+        display: contents; /* Unwrap sidebar container */
     }
 
-    .dashboard-sidebar > * {
-        min-width: 100%;
+    /* 1. Location Selector (Top) */
+    .dashboard-sidebar > .location-selector-panel {
+        order: 1;
+        width: 100%;
+        margin-bottom: 0; /* Let gap handle spacing */
+    }
+
+    /* 2. Main Content (Map + Charts) */
+    .dashboard-main {
+        order: 2;
+    }
+
+    /* 3. Location Info (Below Map/Charts) */
+    .dashboard-sidebar > .location-info-card {
+        order: 3;
+        width: 100%;
+    }
+
+    /* 4. Stories (Bottom) */
+    .dashboard-sidebar > .sidebar-stories {
+        order: 4;
+        width: 100%;
     }
 
     .grid-row {
@@ -448,6 +511,28 @@
 
     .grid-cell {
         padding: 16px;
+    }
+
+    /* Hero Section Mobile Optimization */
+    .hero-cell {
+        height: 55vh; /* Reduced height for mobile */
+        min-height: 400px;
+    }
+
+    .hero-content-overlay {
+        top: auto; /* Unset top */
+        bottom: 16px; /* Position at bottom */
+        left: 16px;
+        right: 16px;
+        width: auto; /* Full width minus padding */
+        max-width: none; /* Remove width constraint */
+        background-color: rgba(255, 255, 255, 0.95); /* More solid background */
+        backdrop-filter: blur(16px);
+    }
+
+    /* Ensure dark mode overlay is readable on mobile */
+    .theme-dark .hero-content-overlay {
+        background-color: rgba(30, 41, 59, 0.98);
     }
 
     .location-header h2 {
@@ -563,5 +648,20 @@
     
     .dashboard-login-banner .prompt-login-button {
         margin-left: 0;
+    }
+}
+
+/* Visibility Utilities */
+.show-on-mobile {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .hide-on-mobile {
+        display: none !important;
+    }
+    
+    .show-on-mobile {
+        display: block !important;
     }
 }

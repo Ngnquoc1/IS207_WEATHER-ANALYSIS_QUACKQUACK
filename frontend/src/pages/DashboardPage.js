@@ -13,7 +13,10 @@ import Stories from '../components/Stories';
 import LoginPrompt from '../components/LoginPrompt';
 import LoginModal from '../components/LoginModal';
 import ProductRecommendations from '../components/ProductRecommendations';
+import WeatherMap from '../components/WeatherMap';
+import LocationInfo from '../components/LocationInfo';
 import './DashboardPage.css';
+import '../styles/DashboardStandard.css'; // Import standard styles
 
 /**
  * DashboardPage Component
@@ -164,23 +167,12 @@ const DashboardPage = () => {
                         currentLocation={resolvedLocationName ? { ...selectedLocation, name: resolvedLocationName } : selectedLocation}
                     />
                     
-                    {/* Location Info Card */}
+                    {/* Location Info Card - Hidden on Mobile */}
                     {weatherData && (
-                        <div className="location-info-card">
-                            <h3>Thông tin chi tiết</h3>
-                            <div className="info-row">
-                                <span className="label">Vĩ độ:</span>
-                                <span className="value">{weatherData.location?.latitude}°</span>
-                            </div>
-                            <div className="info-row">
-                                <span className="label">Kinh độ:</span>
-                                <span className="value">{weatherData.location?.longitude}°</span>
-                            </div>
-                            <div className="info-row">
-                                <span className="label">Múi giờ:</span>
-                                <span className="value">{weatherData.location?.timezone}</span>
-                            </div>
-                        </div>
+                        <LocationInfo 
+                            data={weatherData} 
+                            className="hide-on-mobile" 
+                        />
                     )}
 
                     {/* Stories Section - Moved to Sidebar */}
@@ -222,17 +214,34 @@ const DashboardPage = () => {
                             {/* Row 1: Current Weather (Full Width) */}
                             <div className="grid-row full-width-row">
                                 <div className="grid-cell hero-cell">
-                                    <div className="location-header">
-                                        <h2>{resolvedLocationName || selectedLocation?.name}</h2>
+                                    {/* Interactive Weather Map (Background) */}
+                                    <WeatherMap 
+                                        selectedLocation={selectedLocation ? { ...selectedLocation, name: resolvedLocationName || selectedLocation.name } : null}
+                                        currentWeatherData={weatherData.current_weather}
+                                    />
+
+                                    {/* Floating Content Overlay */}
+                                    <div className="hero-content-overlay">
+                                        <div className="location-header">
+                                            <h2>{resolvedLocationName || selectedLocation?.name}</h2>
+                                        </div>
+                                        <CurrentWeather data={weatherData.current_weather} />
                                     </div>
-                                    <CurrentWeather data={weatherData.current_weather} />
                                 </div>
                             </div>
+
+                            {/* Mobile Only: Location Info Card (Appears after Map) */}
+                            {weatherData && (
+                                <div className="grid-row full-width-row show-on-mobile">
+                                    <LocationInfo data={weatherData} />
+                                </div>
+                            )}
 
                             {/* Row 2: Forecast Chart (Full Width) */}
                             {isAuthenticated && (
                                 <div className="grid-row full-width-row">
                                     <div className="grid-cell chart-cell">
+                                        <h2 className="section-title">Dự Báo Chi Tiết</h2>
                                         <HourlyForecastChart 
                                             data={weatherData.hourly_forecast} 
                                             dailyData={weatherData.daily_forecast}
@@ -245,12 +254,14 @@ const DashboardPage = () => {
                             {isAuthenticated && (
                                 <div className="grid-row analysis-row">
                                     <div className="grid-cell anomaly-cell">
+                                        <h2 className="section-title">Phân Tích Bất Thường</h2>
                                         <AnomalyDisplay 
                                             anomalyData={weatherData.anomaly} 
                                             location={selectedLocation}
                                         />
                                     </div>
                                     <div className="grid-cell recommendation-cell">
+                                        <h2 className="section-title">Lời Khuyên Hôm Nay</h2>
                                         <Recommendation recommendation={weatherData.recommendation} />
                                     </div>
                                 </div>
@@ -258,7 +269,8 @@ const DashboardPage = () => {
 
                             {/* Row 4: Product Recommendations (Full Width) */}
                             <div className="grid-row full-width-row">
-                                <div className="grid-cell">
+                                <div className="grid-cell no-padding">
+                                    <h2 className="section-title padding-24">Đề Xuất Cho Bạn</h2>
                                     <ProductRecommendations weatherData={weatherData} />
                                 </div>
                             </div>
@@ -266,7 +278,8 @@ const DashboardPage = () => {
                             {/* Row 5: Location Comparison (Full Width) */}
                             {isAuthenticated && (
                                 <div className="grid-row full-width-row">
-                                    <div className="grid-cell">
+                                    <div className="grid-cell no-padding">
+                                        <h2 className="section-title padding-24">So Sánh Địa Điểm</h2>
                                         <LocationComparator />
                                     </div>
                                 </div>

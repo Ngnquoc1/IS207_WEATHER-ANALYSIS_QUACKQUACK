@@ -578,91 +578,93 @@ class WeatherController extends Controller
     public function getBulkWeatherData(Request $request)
     {
         try {
-            // Define major cities with their coordinates
-            $majorCities = [
-                ['name' => 'Hà Nội', 'lat' => 21.0285, 'lon' => 105.8542, 'country' => 'Vietnam'],
-                ['name' => 'TP.HCM', 'lat' => 10.8231, 'lon' => 106.6297, 'country' => 'Vietnam'],
-                ['name' => 'Đà Nẵng', 'lat' => 16.0544, 'lon' => 108.2022, 'country' => 'Vietnam'],
-                ['name' => 'Tokyo', 'lat' => 35.6762, 'lon' => 139.6503, 'country' => 'Japan'],
-                ['name' => 'Seoul', 'lat' => 37.5665, 'lon' => 126.9780, 'country' => 'South Korea'],
-                ['name' => 'Beijing', 'lat' => 39.9042, 'lon' => 116.4074, 'country' => 'China'],
-                ['name' => 'Shanghai', 'lat' => 31.2304, 'lon' => 121.4737, 'country' => 'China'],
-                ['name' => 'New York', 'lat' => 40.7128, 'lon' => -74.0060, 'country' => 'USA'],
-                ['name' => 'Los Angeles', 'lat' => 34.0522, 'lon' => -118.2437, 'country' => 'USA'],
-                ['name' => 'London', 'lat' => 51.5074, 'lon' => -0.1278, 'country' => 'UK'],
-                ['name' => 'Paris', 'lat' => 48.8566, 'lon' => 2.3522, 'country' => 'France'],
-                ['name' => 'Berlin', 'lat' => 52.5200, 'lon' => 13.4050, 'country' => 'Germany'],
-                ['name' => 'Rome', 'lat' => 41.9028, 'lon' => 12.4964, 'country' => 'Italy'],
-                ['name' => 'Sydney', 'lat' => -33.8688, 'lon' => 151.2093, 'country' => 'Australia'],
-                ['name' => 'Melbourne', 'lat' => -37.8136, 'lon' => 144.9631, 'country' => 'Australia'],
-                ['name' => 'Mumbai', 'lat' => 19.0760, 'lon' => 72.8777, 'country' => 'India'],
-                ['name' => 'Delhi', 'lat' => 28.7041, 'lon' => 77.1025, 'country' => 'India'],
-                ['name' => 'Dubai', 'lat' => 25.2048, 'lon' => 55.2708, 'country' => 'UAE'],
-                ['name' => 'São Paulo', 'lat' => -23.5505, 'lon' => -46.6333, 'country' => 'Brazil'],
-                ['name' => 'Mexico City', 'lat' => 19.4326, 'lon' => -99.1332, 'country' => 'Mexico'],
-                ['name' => 'Cairo', 'lat' => 30.0444, 'lon' => 31.2357, 'country' => 'Egypt'],
-                ['name' => 'Bangkok', 'lat' => 13.7563, 'lon' => 100.5018, 'country' => 'Thailand'],
-                ['name' => 'Singapore', 'lat' => 1.3521, 'lon' => 103.8198, 'country' => 'Singapore'],
-                ['name' => 'Jakarta', 'lat' => -6.2088, 'lon' => 106.8456, 'country' => 'Indonesia']
-            ];
+            // Check if custom locations are provided
+            $customLocations = $request->input('locations');
+            
+            if (!empty($customLocations) && is_array($customLocations)) {
+                $allCities = $customLocations;
+            } else {
+                // Define major cities with their coordinates (Fallback)
+                $allCities = [
+                    ['name' => 'Hà Nội', 'lat' => 21.0285, 'lon' => 105.8542, 'country' => 'Vietnam'],
+                    ['name' => 'TP.HCM', 'lat' => 10.8231, 'lon' => 106.6297, 'country' => 'Vietnam'],
+                    ['name' => 'Đà Nẵng', 'lat' => 16.0544, 'lon' => 108.2022, 'country' => 'Vietnam']
+                ];
+            }
+
+            // Filter cities based on bounds if provided
+            $majorCities = $allCities;
+            if ($request->has(['lat_min', 'lat_max', 'lon_min', 'lon_max'])) {
+                $latMin = (float)$request->input('lat_min');
+                $latMax = (float)$request->input('lat_max');
+                $lonMin = (float)$request->input('lon_min');
+                $lonMax = (float)$request->input('lon_max');
+
+                $majorCities = array_filter($allCities, function($city) use ($latMin, $latMax, $lonMin, $lonMax) {
+                    return $city['lat'] >= $latMin && 
+                           $city['lat'] <= $latMax && 
+                           $city['lon'] >= $lonMin && 
+                           $city['lon'] <= $lonMax;
+                });
+            }
+
+            // Re-index array to ensure keys are sequential for loop
+            $majorCities = array_values($majorCities);
+
+            if (empty($majorCities)) {
+                return response()->json([]);
+            }
+
+            // Limit to 50 cities to prevent URL length issues
+            $majorCities = array_slice($majorCities, 0, 50);
+
+            $lats = [];
+            $lons = [];
+
+            foreach ($majorCities as $city) {
+                $lats[] = $city['lat'];
+                $lons[] = $city['lon'];
+            }
 
             $client = new Client([
-                'timeout' => 30, // Increased timeout for bulk request
+                'timeout' => 30,
                 'verify' => false
             ]);
 
+            // Single Batch Request Optimization
+            // Instead of making N requests, we make 1 request with comma-separated coordinates
+            $response = $client->get("https://api.open-meteo.com/v1/forecast", [
+                'query' => [
+                    'latitude' => implode(',', $lats),
+                    'longitude' => implode(',', $lons),
+                    'current' => 'temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,precipitation',
+                    'timezone' => 'auto'
+                ]
+            ]);
+
+            $weatherDataList = json_decode($response->getBody(), true);
+
+            // If only one location is requested, Open-Meteo returns a single object, not an array of objects
+            if (count($majorCities) === 1 && isset($weatherDataList['latitude'])) {
+                $weatherDataList = [$weatherDataList];
+            }
+
             $bulkData = [];
-            $errors = [];
 
-            // Process cities in batches to avoid overwhelming the API
-            $batchSize = 5;
-            $batches = array_chunk($majorCities, $batchSize);
-
-            foreach ($batches as $batchIndex => $batch) {
-                $promises = [];
-                
-                foreach ($batch as $city) {
-                    $promises[$city['name']] = $this->createWeatherPromise($client, $city);
-                }
-
-                // Execute batch requests
-                try {
-                    $responses = \GuzzleHttp\Promise\Utils::settle($promises)->wait();
-                    
-                    foreach ($responses as $cityName => $response) {
-                        if ($response['state'] === 'fulfilled') {
-                            $weatherData = json_decode($response['value']->getBody(), true);
-                            $cityData = $this->findCityByName($majorCities, $cityName);
-                            
-                            $bulkData[] = [
-                                'name' => $cityData['name'],
-                                'lat' => $cityData['lat'],
-                                'lon' => $cityData['lon'],
-                                'country' => $cityData['country'],
-                                'precipitation' => $weatherData['current']['precipitation'] ?? 0,
-                                'temperature' => round($weatherData['current']['temperature_2m'] ?? 0, 1),
-                                'humidity' => $weatherData['current']['relative_humidity_2m'] ?? 0,
-                                'wind_speed' => round($weatherData['current']['wind_speed_10m'] ?? 0, 1),
-                                'weather_description' => $this->getWeatherDescription($weatherData['current']['weather_code'] ?? 0)
-                            ];
-                        } else {
-                            $errors[] = [
-                                'city' => $cityName,
-                                'error' => $response['reason']->getMessage()
-                            ];
-                        }
-                    }
-                } catch (\Exception $e) {
-                    Log::error("Batch {$batchIndex} failed: " . $e->getMessage());
-                    $errors[] = [
-                        'batch' => $batchIndex,
-                        'error' => $e->getMessage()
+            foreach ($weatherDataList as $index => $weatherData) {
+                if (isset($majorCities[$index])) {
+                    $city = $majorCities[$index];
+                    $bulkData[] = [
+                        'name' => $city['name'],
+                        'lat' => $city['lat'],
+                        'lon' => $city['lon'],
+                        'country' => $city['country'] ?? 'Unknown',
+                        'precipitation' => $weatherData['current']['precipitation'] ?? 0,
+                        'temperature' => round($weatherData['current']['temperature_2m'] ?? 0, 1),
+                        'humidity' => $weatherData['current']['relative_humidity_2m'] ?? 0,
+                        'wind_speed' => round($weatherData['current']['wind_speed_10m'] ?? 0, 1),
+                        'weather_description' => $this->getWeatherDescription($weatherData['current']['weather_code'] ?? 0)
                     ];
-                }
-
-                // Small delay between batches to be respectful to the API
-                if ($batchIndex < count($batches) - 1) {
-                    usleep(200000); // 200ms delay
                 }
             }
 
@@ -670,7 +672,6 @@ class WeatherController extends Controller
                 'success' => true,
                 'data' => $bulkData,
                 'total_cities' => count($bulkData),
-                'errors' => $errors,
                 'timestamp' => now()->toISOString()
             ]);
 
@@ -679,7 +680,7 @@ class WeatherController extends Controller
             return response()->json([
                 'success' => false,
                 'error' => 'Failed to fetch bulk weather data',
-                'message' => 'An error occurred while fetching weather data for multiple cities',
+                'message' => 'An error occurred while fetching weather data',
                 'timestamp' => now()->toISOString()
             ], 500);
         }

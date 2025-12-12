@@ -7,6 +7,23 @@
     /* height: 100%; Removed to prevent stretching */
 }
 
+/* Responsive: Make selector more compact on mobile if needed */
+@media (max-width: 768px) {
+    .location-selector-panel {
+        padding: 16px;
+        margin-bottom: 0; /* Handled by grid gap */
+    }
+    
+    .selector-actions {
+        flex-direction: row; /* Side by side buttons on mobile */
+        margin-bottom: 16px;
+    }
+    
+    .action-button {
+        flex: 1;
+    }
+}
+
 .selector-header h3 {
     margin: 0 0 16px 0;
     font-size: 16px;
@@ -109,12 +126,34 @@
     }
 
     .action-button {
-        padding: 8px 12px;
+        padding: 10px 14px; /* Larger touch target */
         font-size: 13px;
     }
 
     .location-chip {
-        padding: 4px 10px;
-        font-size: 12px;
+        padding: 8px 12px; /* Larger touch target */
+        font-size: 13px; /* Readable font size */
     }
+}
+
+/* Explicit Dark Mode Overrides */
+body.theme-dark .location-selector-panel {
+    background-color: #1E1E1E !important;
+    border-color: #333333;
+    color: #E0E0E0;
+}
+
+body.theme-dark .selector-header h3 {
+    color: #E0E0E0;
+}
+
+body.theme-dark .location-chip {
+    background-color: #2D2D2D;
+    border-color: #404040;
+    color: #A0A0A0;
+}
+
+body.theme-dark .location-chip:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
 }

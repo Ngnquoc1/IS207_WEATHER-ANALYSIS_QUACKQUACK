@@ -160,7 +160,7 @@ const HourlyForecastChart = ({ data, dailyData }) => {
                 backgroundColor: 'rgba(102, 126, 234, 0.1)',
                 fill: true,
                 tension: 0.4,
-                pointRadius: 3,
+                pointRadius: 0, // Remove points to reduce clutter on small screens
                 pointHoverRadius: 6,
                 pointBackgroundColor: 'rgb(102, 126, 234)',
                 pointBorderColor: '#fff',
@@ -298,8 +298,10 @@ const HourlyForecastChart = ({ data, dailyData }) => {
                         <p className="chart-description">
                             Biểu đồ nhiệt độ và xác suất mưa trong 24 giờ tới.
                         </p>
-                        <div className="chart-container">
-                            <Line data={chart24hData} options={chart24hOptions} />
+                        <div className="chart-scroll-wrapper">
+                            <div className="chart-container">
+                                <Line data={chart24hData} options={chart24hOptions} />
+                            </div>
                         </div>
                         {/* Show precipitation warnings if any */}
                         <div className="rain-warning-container">

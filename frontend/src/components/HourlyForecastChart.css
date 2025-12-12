@@ -61,11 +61,18 @@
     text-align: center;
 }
 
+/* Chart Scroll Wrapper */
+.chart-scroll-wrapper {
+    width: 100%;
+    position: relative;
+}
+
 /* Chart Container */
 .chart-container {
     height: 300px;
     width: 100%;
     margin-bottom: 20px;
+    position: relative;
 }
 
 /* Rain Warning */
@@ -100,6 +107,18 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .chart-scroll-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 -16px; /* Negative margin to go edge-to-edge */
+        padding: 0 16px; /* Padding to align content start */
+    }
+
+    .chart-container {
+        width: 1000px; /* Force wide chart for scrolling */
+        height: 300px;
+    }
+
     .forecast-tabs-header {
         overflow-x: auto;
         white-space: nowrap;

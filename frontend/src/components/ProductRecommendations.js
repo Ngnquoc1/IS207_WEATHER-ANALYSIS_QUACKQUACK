@@ -75,7 +75,7 @@ const ProductRecommendations = ({ weatherData }) => {
     return (
         <div className="product-recommendations">
             <div className="recommendations-header">
-                <h3>Sản phẩm gợi ý dựa trên thời tiết</h3>
+                {/* Title removed to avoid duplication */}
                 <p className="recommendations-subtitle">
                     Phù hợp với thời tiết {weatherData.current_weather.weather_main} và nhiệt độ {Math.round(weatherData.current_weather.temperature)}°C
                 </p>

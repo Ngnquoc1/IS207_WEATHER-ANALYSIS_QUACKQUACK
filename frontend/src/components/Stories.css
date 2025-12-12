@@ -667,3 +667,18 @@
   font-weight: bold;
 }
 
+/* Explicit Dark Mode Overrides */
+body.theme-dark .stories-container {
+  background-color: #1E1E1E !important;
+  border-color: #333333;
+}
+
+body.theme-dark .story-card {
+  background-color: #2D2D2D;
+  border-color: #404040;
+}
+
+body.theme-dark .story-card:hover {
+  background-color: #333333;
+}
+
