@@ -190,7 +190,7 @@ const MapControls = ({
         <Marker position={currentPosition} icon={blueIcon}>
           <Tooltip direction="top" offset={[0, -10]} opacity={1}>
             <div className="location-tooltip">
-              <strong>📍 Vị trí hiện tại</strong><br/>
+              <strong>Vị trí hiện tại</strong><br/>
               <span>{currentPosition[0].toFixed(4)}, {currentPosition[1].toFixed(4)}</span>
             </div>
           </Tooltip>
@@ -202,7 +202,7 @@ const MapControls = ({
         <Marker position={clickedPosition} icon={redIcon}>
           <Tooltip direction="top" offset={[0, -10]} opacity={1}>
             <div className="location-tooltip">
-              <strong>🎯 Vị trí đã chọn</strong><br/>
+              <strong>Vị trí đã chọn</strong><br/>
               <span>{clickedPosition[0].toFixed(4)}, {clickedPosition[1].toFixed(4)}</span>
             </div>
           </Tooltip>

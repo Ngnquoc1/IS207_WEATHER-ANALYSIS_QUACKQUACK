@@ -17,7 +17,7 @@ const Stories = ({ location }) => {
     try {
       const [allResponse, hotResponse] = await Promise.all([
         newsService.getStories(),
-        newsService.getHotStories(5)
+        newsService.getHotStories(3)
       ]);
       
       setStories(allResponse.stories || []);
@@ -29,10 +29,10 @@ const Stories = ({ location }) => {
     }
   };
 
-  // Get top 5 latest stories sorted by date
+  // Get top 3 latest stories sorted by date
   const latestStories = stories
     .sort((a, b) => new Date(b.published_at) - new Date(a.published_at))
-    .slice(0, 5);
+    .slice(0, 3);
 
   // Stories to display: hot stories if available, otherwise latest stories
   const storiesToDisplay = hotStories.length > 0 ? hotStories : latestStories;
@@ -40,9 +40,9 @@ const Stories = ({ location }) => {
 
   const getCategoryColor = (category) => {
     switch (category) {
-      case 'warning': return '#dc3545'; // Red
-      case 'info': return '#0dcaf0'; // Blue
-      default: return '#6c757d'; // Gray
+      case 'warning': return 'var(--error-color)';
+      case 'info': return 'var(--info-color)';
+      default: return 'var(--text-secondary)';
     }
   };
 
@@ -124,7 +124,7 @@ const Stories = ({ location }) => {
                   {formatPublishedDate(story.published_at)}
                 </div>
                 <div className={`story-badge ${isHotSection ? 'hot-badge' : ''}`}>
-                  {isHotSection ? '🔥 HOT' : getCategoryLabel(story.category)}
+                  {isHotSection ? 'HOT' : getCategoryLabel(story.category)}
                 </div>
                 <div className="story-content">
                   <div className="story-title">{story.title}</div>

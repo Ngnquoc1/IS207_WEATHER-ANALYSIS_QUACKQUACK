@@ -1,31 +1,28 @@
 /* Location Comparator Component */
 .location-comparator {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
+    background-color: var(--surface-color);
+    /* border: 1px solid var(--border-color); */
+    /* border-radius: var(--radius-md); */
+    /* padding: 30px; */ /* Padding handled by grid-cell */
+    /* box-shadow: var(--shadow-md); */
     transition: all 0.3s ease;
+    height: 100%;
 }
 
 /* Light theme */
 .theme-light .location-comparator {
-    background: white;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-    backdrop-filter: none;
+     /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .location-comparator h2 {
     margin: 0 0 25px 0;
     font-size: 24px;
     font-weight: 600;
-    color: white;
+    color: var(--text-primary);
 }
 
 .theme-light .location-comparator h2 {
-    color: #333;
+    color: var(--text-primary);
 }
 
 .comparison-form {
@@ -43,49 +40,47 @@
     margin: 0 0 15px 0;
     font-size: 18px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
 }
 
 .theme-light .location-group h3 {
-    color: #555;
+    color: var(--text-primary);
 }
 
 .location-group input {
     width: 100%;
     padding: 12px 15px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
     font-size: 14px;
     margin-bottom: 10px;
     transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    backdrop-filter: blur(10px);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
 }
 
 .theme-light .location-group input {
-    border: 2px solid #e0e0e0;
-    background: white;
-    color: #333;
-    backdrop-filter: none;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
 }
 
 .location-group input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-muted);
 }
 
 .theme-light .location-group input::placeholder {
-    color: #999;
+    color: var(--text-muted);
 }
 
 .location-group input:focus {
     outline: none;
-    border-color: #667eea;
-    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--primary-color);
+    background-color: var(--surface-color);
 }
 
 .theme-light .location-group input:focus {
-    background: white;
+    background-color: var(--surface-color);
 }
 
 .coord-inputs {
@@ -97,10 +92,91 @@
 .compare-button {
     width: 100%;
     padding: 15px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-color: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.compare-button:hover {
+    background-color: var(--primary-hover);
+}
+
+.comparison-form {
+    margin-bottom: 30px;
+}
+
+.location-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.location-group h3 {
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.theme-light .location-group h3 {
+    color: var(--text-primary);
+}
+
+.location-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.theme-light .location-group input {
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.location-group input::placeholder {
+    color: var(--text-secondary);
+}
+
+.theme-light .location-group input::placeholder {
+    color: var(--text-secondary);
+}
+
+.location-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: var(--surface-color);
+}
+
+.theme-light .location-group input:focus {
+    background-color: var(--surface-color);
+}
+
+.coord-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.compare-button {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
@@ -109,7 +185,8 @@
 
 .compare-button:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: var(--shadow-md);
+    background-color: var(--primary-hover);
 }
 
 .compare-button:disabled {
@@ -119,19 +196,19 @@
 
 .error-message {
     padding: 15px;
-    background: rgba(255, 107, 107, 0.1);
-    border: 1px solid rgba(255, 107, 107, 0.3);
-    border-radius: 10px;
-    color: #ff6b6b;
+    background-color: var(--surface-color);
+    border: 1px solid var(--error-color);
+    border-radius: var(--radius-sm);
+    color: var(--error-color);
     margin-bottom: 20px;
     text-align: center;
-    backdrop-filter: blur(10px);
+    backdrop-filter: none;
 }
 
 .theme-light .error-message {
-    background: #ffebee;
-    border: 1px solid #f44336;
-    color: #c62828;
+    background-color: var(--surface-color);
+    border: 1px solid var(--error-color);
+    color: var(--error-color);
     backdrop-filter: none;
 }
 
@@ -158,20 +235,21 @@
 .comparison-table table {
     width: 100%;
     border-collapse: collapse;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
+    background-color: var(--surface-color);
+    border-radius: var(--radius-sm);
     overflow: hidden;
-    backdrop-filter: blur(10px);
+    backdrop-filter: none;
+    border: 1px solid var(--border-color);
 }
 
 .theme-light .comparison-table table {
-    background: #f8f9fa;
+    background-color: var(--surface-color);
     backdrop-filter: none;
 }
 
 .comparison-table thead {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
 }
 
 .comparison-table th,
@@ -186,11 +264,11 @@
 }
 
 .comparison-table tbody tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .theme-light .comparison-table tbody tr {
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .comparison-table tbody tr:last-child {
@@ -198,29 +276,29 @@
 }
 
 .comparison-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background-color: var(--bg-secondary);
 }
 
 .theme-light .comparison-table tbody tr:hover {
-    background: #f0f0f0;
+    background-color: var(--bg-secondary);
 }
 
 .comparison-table td {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
 }
 
 .theme-light .comparison-table td {
-    color: #333;
+    color: var(--text-primary);
 }
 
 .comparison-table td.positive {
-    color: #ff6b6b;
+    color: var(--error-color);
     font-weight: 600;
 }
 
 .comparison-table td.negative {
-    color: #74b9ff;
+    color: var(--primary-color);
     font-weight: 600;
 }
 
@@ -228,24 +306,25 @@
     margin: 0 0 20px 0;
     font-size: 18px;
     font-weight: 600;
-    color: white;
+    color: var(--text-primary);
 }
 
 .theme-light .comparison-chart h3 {
-    color: #333;
+    color: var(--text-primary);
 }
 
 .comparison-chart .chart-container {
     height: 400px;
     position: relative;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
+    background-color: var(--surface-color);
+    border-radius: var(--radius-sm);
     padding: 20px;
-    backdrop-filter: blur(10px);
+    backdrop-filter: none;
+    border: 1px solid var(--border-color);
 }
 
 .theme-light .comparison-chart .chart-container {
-    background: rgba(0, 0, 0, 0.02);
+    background-color: var(--surface-color);
     backdrop-filter: none;
 }
 

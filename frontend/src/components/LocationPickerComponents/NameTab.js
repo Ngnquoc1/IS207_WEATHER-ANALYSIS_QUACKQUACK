@@ -36,9 +36,9 @@ const NameTab = ({
       setError('');
 
       try {
-        console.log('🔍 Searching for:', searchQuery);
+        console.log('Searching for:', searchQuery);
         const results = await fetchLocationByName(searchQuery);
-        console.log('✅ Search results:', results);
+        console.log('Search results:', results);
         setSearchResults(results);
         
         // If no results, show friendly message
@@ -46,7 +46,7 @@ const NameTab = ({
           setError('Không tìm thấy địa điểm nào phù hợp');
         }
       } catch (err) {
-        console.error('❌ Search error:', err);
+        console.error('Search error:', err);
         setError(err.message || 'Không thể tìm kiếm địa điểm. Vui lòng kiểm tra kết nối mạng.');
         setSearchResults([]);
       } finally {
@@ -132,7 +132,7 @@ const NameTab = ({
                   setTimeout(() => setSearchQuery(searchQuery.trim()), 100);
                 }}
               >
-                🔄 Thử lại
+                Thử lại
               </button>
             )}
           </div>
@@ -152,6 +152,7 @@ const NameTab = ({
                 className="result-item"
                 onClick={() => handleSelectResult(result)}
                 role="option"
+                aria-selected={false}
                 tabIndex={0}
                 onKeyPress={(e) => {
                   if (e.key === 'Enter') handleSelectResult(result);
@@ -162,7 +163,7 @@ const NameTab = ({
                   {result.admin1 && `${result.admin1}, `}{result.country}
                 </div>
                 <div className="result-coords">
-                  📍 {result.latitude.toFixed(4)}°, {result.longitude.toFixed(4)}°
+                  {result.latitude.toFixed(4)}°, {result.longitude.toFixed(4)}°
                 </div>
               </div>
             ))}
@@ -182,7 +183,7 @@ const NameTab = ({
       {/* Selected Location Display */}
       {selectedLocation && (
         <div className="selected-location-display">
-          <h4>📍 Địa điểm đã chọn</h4>
+          <h4>Địa điểm đã chọn</h4>
           <div className="selected-location-info">
             <p className="location-name">{selectedLocation.name}</p>
             {selectedLocation.admin1 && (
@@ -200,7 +201,7 @@ const NameTab = ({
             onClick={onSelectLocation}
             disabled={!selectedLocation}
           >
-            ✅ Chọn vị trí này
+            Chọn vị trí này
           </button>
         </div>
       )}

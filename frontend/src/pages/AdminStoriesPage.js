@@ -6,7 +6,7 @@ const AdminStoriesPage = () => {
   return (
     <div className="admin-stories-page">
       <div className="page-header">
-        <h2>📰 Stories Management</h2>
+        <h2>Stories Management</h2>
         <p>Quản lý và đăng bài viết tin tức thời tiết</p>
       </div>
       <StoryManagement />

@@ -37,8 +37,6 @@ services:
     depends_on:
       backend:
         condition: service_healthy
-    networks:
-      - weather-network
     restart: unless-stopped
     networks:
       - weather-network
@@ -62,15 +60,11 @@ services:
     depends_on:
       - backend
       - frontend
-    networks:
-      - weather-network
     restart: unless-stopped
     networks:
       - weather-network
 
 networks:
-  weather-network:
-    driver: bridge
 
 volumes:
   weather-storage:

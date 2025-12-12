@@ -75,7 +75,7 @@ const ProductRecommendations = ({ weatherData }) => {
     return (
         <div className="product-recommendations">
             <div className="recommendations-header">
-                <h3>🛒 Sản phẩm gợi ý dựa trên thời tiết</h3>
+                <h3>Sản phẩm gợi ý dựa trên thời tiết</h3>
                 <p className="recommendations-subtitle">
                     Phù hợp với thời tiết {weatherData.current_weather.weather_main} và nhiệt độ {Math.round(weatherData.current_weather.temperature)}°C
                 </p>
@@ -109,7 +109,7 @@ const ProductRecommendations = ({ weatherData }) => {
                                 
                                 {product.temp_range.min !== null && product.temp_range.max !== null && (
                                     <div className="temp-range">
-                                        <span>🌡️ {product.temp_range.min}°C - {product.temp_range.max}°C</span>
+                                        <span>{product.temp_range.min}°C - {product.temp_range.max}°C</span>
                                     </div>
                                 )}
                             </div>

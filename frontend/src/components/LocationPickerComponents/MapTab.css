@@ -7,7 +7,7 @@
 }
 
 .leaflet-container {
-  background-color: #fff !important; 
+  background-color: var(--surface-color) !important; 
 }
 
 /* Map Tab Container */
@@ -15,27 +15,25 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: white;
-  border-radius: 0 0 8px 8px;
-  /* margin-top: 60px; - Removed to fix overflow */
-  min-height: 600px; /* Set minimum height for map tab */
-  width: 100%; /* Ensure full width */
+  background-color: var(--surface-color);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  min-height: 600px;
+  width: 100%;
 }
 
 .theme-dark .map-tab {
-  background: #2d2d2d;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 /* Popular Locations */
 .popular-locations {
   display: flex;
   gap: 12px;
-  padding: 20px 24px; /* Standardize horizontal padding */
+  padding: 20px 24px;
   overflow-x: auto;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e0e0e0;
-  flex-shrink: 0; /* Don't shrink this element */
-  /* Extend to full width by counteracting parent padding */
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
   margin-left: -24px;
   margin-right: -24px;
   width: calc(100% + 48px);
@@ -43,30 +41,29 @@
 }
 
 .theme-dark .popular-locations {
-  background: #3d3d3d;
-  border-bottom-color: #555;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .location-chip {
   padding: 10px 20px;
-  border: 2px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   border-radius: 25px;
-  background: white;
+  background-color: var(--surface-color);
   cursor: pointer;
   white-space: nowrap;
   font-size: 14px;
   font-weight: 500;
-  color: #666;
+  color: var(--text-secondary);
   transition: all 0.3s ease;
   min-width: fit-content;
-  flex-shrink: 0; /* Prevent chips from shrinking */
+  flex-shrink: 0;
 }
 
 .location-chip:hover {
-  border-color: #007bff;
-  color: #007bff;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+  box-shadow: var(--shadow-sm);
 }
 
 .location-chip:active {
@@ -74,14 +71,11 @@
 }
 
 .theme-dark .location-chip {
-  background: #4d4d4d;
-  border-color: #666;
-  color: #ccc;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .theme-dark .location-chip:hover {
-  border-color: #0d6efd;
-  color: #0d6efd;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 /* Map and Location Wrapper */
@@ -90,14 +84,14 @@
   gap: 20px;
   flex: 1;
   min-height: 500px;
-  align-items: flex-start; /* Align items to top */
+  align-items: flex-start;
 }
 
 /* Map Container */
 .map-container {
   flex: 1;
   position: relative;
-  min-height: 500px; /* Ensure map has minimum height */
+  min-height: 500px;
   margin: 0;
   border-radius: 0;
   overflow: hidden;
@@ -123,7 +117,7 @@
 .crosshair-horizontal,
 .crosshair-vertical {
   position: absolute;
-  background: #ff0000;
+  background-color: var(--error-color);
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
 }
 
@@ -146,20 +140,19 @@
   position: absolute;
   top: 20px;
   left: 20px;
-  background: rgba(255, 255, 255, 0.95);
+  background-color: var(--surface-color);
   backdrop-filter: blur(10px);
   padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
   z-index: 1000;
   min-width: 200px;
+  opacity: 0.95;
 }
 
 .theme-dark .floating-card {
-  background: rgba(45, 45, 45, 0.95);
-  border-color: rgba(255, 255, 255, 0.1);
-  color: white;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .coordinate-display {
@@ -171,35 +164,36 @@
 .coordinate-display span {
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: var(--text-primary);
   font-family: 'Courier New', monospace;
 }
 
 .theme-dark .coordinate-display span {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 /* Search Button */
 .search-button {
   width: 100%;
   padding: 18px;
-  background: #007bff;
+  background-color: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 20px;
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-  flex-shrink: 0; /* Don't shrink this element */
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
 }
 
 .search-button:hover:not(:disabled) {
-  background: #0056b3;
+  background-color: var(--primary-hover);
+  opacity: 0.9;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+  box-shadow: var(--shadow-md);
 }
 
 .search-button:active:not(:disabled) {
@@ -207,29 +201,29 @@
 }
 
 .search-button:disabled {
-  background: #6c757d;
+  background-color: var(--text-secondary);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  opacity: 0.7;
 }
 
 .theme-dark .search-button {
-  background: #0d6efd;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .theme-dark .search-button:hover:not(:disabled) {
-  background: #0b5ed7;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 /* Selected Location Display */
 .selected-location {
-  /* No fixed width - full width by default */
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
   color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  flex-shrink: 0; /* Don't shrink this element */
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   height: fit-content;
@@ -237,17 +231,17 @@
   overflow-y: auto;
 }
 
-/* Custom width styling - can be applied externally */
+/* Custom width styling */
 .selected-location.sidebar {
-  width: 30%; /* Custom width for sidebar layout */
+  width: 30%;
 }
 
 .selected-location.full-width {
-  width: 100%; /* Explicit full width */
+  width: 100%;
 }
 
 .theme-dark .selected-location {
-  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
 }
 
 .selected-location h3 {
@@ -277,18 +271,18 @@
   backdrop-filter: blur(10px);
   color: white;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .select-button:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
 }
 
 .select-button:active:not(:disabled) {

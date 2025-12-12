@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { fetchWeatherData, getCurrentLocation } from '../services/weatherService';
 import authService from '../services/authService';
 import Header from '../components/Header';
+import LocationSelector from '../components/LocationSelector';
 import CurrentWeather from '../components/CurrentWeather';
 import HourlyForecastChart from '../components/HourlyForecastChart';
 import AnomalyDisplay from '../components/AnomalyDisplay';
@@ -16,7 +17,6 @@ import './DashboardPage.css';
 
 /**
  * DashboardPage Component
- * Main dashboard that displays all weather information and components
  */
 const DashboardPage = () => {
     const location = useLocation();
@@ -87,7 +87,6 @@ const DashboardPage = () => {
     }, [location.state]);
 
     const [resolvedLocationName, setResolvedLocationName] = useState(null);
-
     // Fetch weather data when component mounts or location changes
     useEffect(() => {
         if (!selectedLocation) return; // Don't fetch if location is not set yet
@@ -134,11 +133,8 @@ const DashboardPage = () => {
 
     return (
         <div className="dashboard-page">
-            {/* Header with Dropdown */}
-            <Header 
-                onLocationSelect={handleLocationSelect}
-                currentLocation={resolvedLocationName ? { ...selectedLocation, name: resolvedLocationName } : selectedLocation}
-            />
+            {/* Header*/}
+            <Header />
 
             {/* Location Error Alert */}
             {locationError && (
@@ -151,104 +147,131 @@ const DashboardPage = () => {
                 </div>
             )}
 
-            {/* Main Content */}
-            <main className="dashboard-content">
-                {loading && (
-                    <div className="loading-container">
-                        <div className="loading-spinner"></div>
-                        <p>
-                            {selectedLocation
-                                ? (resolvedLocationName
-                                    ? `Đang tải dữ liệu thời tiết cho ${resolvedLocationName}...`
-                                    : 'Đang tải dữ liệu thời tiết...')
-                                : 'Đang lấy vị trí hiện tại...'
-                            }
-                        </p>
-                    </div>
-                )}
+            {/* Main Dashboard Container */}
+            <div className="dashboard-container">
+                <aside className="dashboard-sidebar">
+                    <LocationSelector 
+                        onLocationSelect={handleLocationSelect}
+                        currentLocation={resolvedLocationName ? { ...selectedLocation, name: resolvedLocationName } : selectedLocation}
+                    />
+                    
+                    {/* Location Info Card */}
+                    {weatherData && (
+                        <div className="location-info-card">
+                            <h3>Thông tin chi tiết</h3>
+                            <div className="info-row">
+                                <span className="label">Vĩ độ:</span>
+                                <span className="value">{weatherData.location?.latitude}°</span>
+                            </div>
+                            <div className="info-row">
+                                <span className="label">Kinh độ:</span>
+                                <span className="value">{weatherData.location?.longitude}°</span>
+                            </div>
+                            <div className="info-row">
+                                <span className="label">Múi giờ:</span>
+                                <span className="value">{weatherData.location?.timezone}</span>
+                            </div>
+                        </div>
+                    )}
 
-                {error && (
-                    <div className="error-container">
-                        <div className="error-icon">⚠️</div>
-                        <p>{error}</p>
-                        <button onClick={() => window.location.reload()} className="retry-button">
-                            Thử lại
-                        </button>
-                    </div>
-                )}
+                    {/* Login Prompt in Sidebar for Guests */}
+                    {!isAuthenticated && (
+                        <div className="sidebar-login-prompt">
+                            <LoginPrompt onLoginClick={() => setIsLoginModalOpen(true)} />
+                        </div>
+                    )}
+                </aside>
 
-                {!loading && !error && weatherData && (
-                    <>
-                        {/* Current Location Display */}
-                        <div className="current-location-banner">
-                            <h2>📍 {resolvedLocationName || selectedLocation?.name}</h2>
+                {/* Main Content Area */}
+                <main className="dashboard-main">
+                    {loading && (
+                        <div className="loading-container">
+                            <div className="loading-spinner"></div>
                             <p>
-                                Vĩ độ: {weatherData.location?.latitude}° | 
-                                Kinh độ: {weatherData.location?.longitude}° | 
-                                Múi giờ: {weatherData.location?.timezone}
+                                {selectedLocation
+                                    ? (resolvedLocationName
+                                        ? `Đang tải dữ liệu thời tiết cho ${resolvedLocationName}...`
+                                        : 'Đang tải dữ liệu thời tiết...')
+                                    : 'Đang lấy vị trí hiện tại...'
+                                }
                             </p>
                         </div>
+                    )}
 
-                        {/* Login Prompt for Guest Users */}
-                        {!isAuthenticated && (
-                            <div className="grid-row">
-                                <LoginPrompt onLoginClick={() => setIsLoginModalOpen(true)} />
-                            </div>
-                        )}
-
-                        {/* Stories Section - Only for authenticated users */}
-                        {isAuthenticated && (
-                            <div className="grid-row">
-                                <Stories location={selectedLocation?.name} />
-                            </div>
-                        )}
-
-                        {/* Section 1: Current Weather - Available for all users */}
-                        <div className="grid-row">
-                            <CurrentWeather data={weatherData.current_weather} />
+                    {error && (
+                        <div className="error-container">
+                            <div className="error-icon">⚠️</div>
+                            <p>{error}</p>
+                            <button onClick={() => window.location.reload()} className="retry-button">
+                                Thử lại
+                            </button>
                         </div>
+                    )}
 
-                        {/* Product Recommendations - Available for all users */}
-                        <div className="grid-row">
-                            <ProductRecommendations weatherData={weatherData} />
+                    {!loading && !error && weatherData && (
+                        <div className="dashboard-grid">
+                            <div className="grid-row top-row">
+                                <div className="grid-cell hero-cell">
+                                    <div className="location-header">
+                                        <h2>{resolvedLocationName || selectedLocation?.name}</h2>
+                                    </div>
+                                    <CurrentWeather data={weatherData.current_weather} />
+                                </div>
+                                
+                                {isAuthenticated && (
+                                    <div className="grid-cell anomaly-cell">
+                                        <AnomalyDisplay 
+                                            anomalyData={weatherData.anomaly} 
+                                            location={selectedLocation}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Middle Row: Forecast Chart (Full Width) */}
+                            {isAuthenticated && (
+                                <div className="grid-row middle-row">
+                                    <div className="grid-cell chart-cell">
+                                        <HourlyForecastChart 
+                                            data={weatherData.hourly_forecast} 
+                                            dailyData={weatherData.daily_forecast}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Bottom Section: Split Layout */}
+                            <div className="grid-row bottom-section">
+                                {/* Left Column (2/3): Products & Comparison */}
+                                <div className="bottom-left-col">
+                                    <div className="grid-cell">
+                                        <ProductRecommendations weatherData={weatherData} />
+                                    </div>
+                                    
+                                    {isAuthenticated && (
+                                        <div className="grid-cell">
+                                            <LocationComparator />
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Right Column (1/3): Insights & Stories */}
+                                {isAuthenticated && (
+                                    <div className="bottom-right-col">
+                                        <div className="grid-cell">
+                                            <Recommendation recommendation={weatherData.recommendation} />
+                                        </div>
+                                        
+                                        <div className="grid-cell flex-grow">
+                                            <Stories location={selectedLocation?.name} />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-
-                        {/* Hourly Forecast Chart - Only for authenticated users */}
-                        {isAuthenticated && (
-                            <div className="grid-row">
-                                <HourlyForecastChart 
-                                    data={weatherData.hourly_forecast} 
-                                    dailyData={weatherData.daily_forecast}
-                                />
-                            </div>
-                        )}
-
-                        {/* Section 2: Anomaly Analysis - Only for authenticated users */}
-                        {isAuthenticated && (
-                            <div className="grid-row">
-                                <AnomalyDisplay 
-                                anomalyData={weatherData.anomaly} 
-                                location={selectedLocation}
-                            />
-                            </div>
-                        )}
-
-                        {/* Section 3: Smart Recommendations - Only for authenticated users */}
-                        {isAuthenticated && (
-                            <div className="grid-row">
-                                <Recommendation recommendation={weatherData.recommendation} />
-                            </div>
-                        )}
-
-                        {/* Location Comparator - Only for authenticated users */}
-                        {isAuthenticated && (
-                            <div className="grid-row">
-                                <LocationComparator />
-                            </div>
-                        )}
-                    </>
-                )}
-            </main>
+                    )}
+                </main>
+            </div>
 
             {/* Footer */}
             <footer className="dashboard-footer">

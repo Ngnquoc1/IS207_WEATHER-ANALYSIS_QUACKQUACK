@@ -1,3 +1,63 @@
+:root {
+    --bg-color: #F8F9FA;
+    --surface-color: #FFFFFF;
+    --primary-color: #0066CC;
+    --secondary-color: #5C6BC0;
+    --text-primary: #1A1A1A;
+    --text-secondary: #6C757D;
+    --border-color: #E9ECEF;
+    --success-color: #28A745;
+    --warning-color: #FFC107;
+    --error-color: #DC3545;
+    
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.05);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.05);
+    
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+
+    /* Background Variants */
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F1F3F5;
+
+    /* Weather Colors (Light Mode - Darker for visibility) */
+    --weather-sunny: #D97706; /* Amber 600 */
+    --weather-rain: #0369A1; /* Sky 700 - Darker for contrast */
+    --weather-storm: #DC2626; /* Red 600 */
+    --weather-cloud: #374151; /* Gray 700 - Darker for contrast */
+    --weather-default: #1F2937; /* Gray 800 */
+}
+
+body.theme-dark {
+    --bg-color: #121212;
+    --surface-color: #1E1E1E;
+    --primary-color: #4D90FE;
+    --secondary-color: #7986CB;
+    --text-primary: #E0E0E0;
+    --text-secondary: #A0A0A0;
+    --border-color: #333333;
+    --success-color: #4CAF50;
+    --warning-color: #FFD54F;
+    --error-color: #EF5350;
+    
+    --shadow-sm: none;
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.2);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.3);
+
+    /* Background Variants */
+    --bg-primary: #2C2C2C;
+    --bg-secondary: #333333;
+
+    /* Weather Colors (Dark Mode - Lighter for visibility) */
+    --weather-sunny: #FFD700; /* Gold */
+    --weather-rain: #87CEEB; /* SkyBlue */
+    --weather-storm: #FF6347; /* Tomato */
+    --weather-cloud: #E0E0E0; /* Light Gray */
+    --weather-default: #FFFFFF; /* White */
+}
+
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,6 +65,10 @@ body {
         sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 code {

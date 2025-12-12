@@ -1,6 +1,6 @@
 .stories-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: var(--bg-color);  
 }
 
 .stories-page-content {
@@ -12,7 +12,7 @@
 .stories-page-header {
   text-align: center;
   margin-bottom: 40px;
-  color: white;
+  color: var(--text-primary);
 }
 
 .stories-page-header h1 {
@@ -23,14 +23,15 @@
 .stories-page-header p {
   font-size: 16px;
   opacity: 0.9;
+  color: var(--text-secondary);
 }
 
 .back-button {
   padding: 10px 20px;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 14px;
   transition: all 0.2s;
@@ -38,14 +39,14 @@
 }
 
 .back-button:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
+  background-color: var(--bg-secondary);
+  border-color: var(--primary-color);
 }
 
 .loading {
   text-align: center;
   padding: 60px;
-  color: white;
+  color: var(--text-primary);
   font-size: 18px;
 }
 
@@ -62,7 +63,7 @@
 }
 
 .hot-section-header .section-title {
-  color: #dc3545;
+  color: var(--error-color);
   font-size: 24px;
   font-weight: 700;
   display: flex;
@@ -78,11 +79,11 @@
 .red-divider {
   flex: 1;
   height: 2px;
-  background: #dc3545;
+  background-color: var(--error-color);
 }
 
 .view-all-link {
-  color: #dc3545;
+  color: var(--error-color);
   text-decoration: none;
   font-size: 16px;
   font-weight: 500;
@@ -99,9 +100,9 @@
 }
 
 .featured-story {
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  background-color: var(--primary-color);
   min-height: 400px;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -144,10 +145,11 @@
 
 /* Latest News Section */
 .all-stories-section {
-  background: white;
-  border-radius: 20px;
+  background-color: var(--surface-color);
+  border-radius: var(--radius-md);
   padding: 30px;
   margin-bottom: 40px;
+  border: 1px solid var(--border-color);
 }
 
 .latest-news-header {
@@ -158,7 +160,7 @@
 }
 
 .all-stories-section .section-title {
-  color: #1a1a1a;
+  color: var(--text-primary);
   font-size: 28px;
   font-weight: 700;
   margin: 0;
@@ -167,11 +169,11 @@
 .gray-divider {
   flex: 1;
   height: 1px;
-  background: #e0e0e0;
+  background-color: var(--border-color);
 }
 
 .discover-more-link {
-  color: #666;
+  color: var(--text-secondary);
   text-decoration: none;
   font-size: 16px;
   background: none;
@@ -203,9 +205,9 @@
   width: 100px;
   height: 80px;
   flex-shrink: 0;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
-  background: #2196F3;
+  background-color: var(--primary-color);
 }
 
 .news-thumbnail img {
@@ -232,7 +234,7 @@
 .news-title {
   font-size: 16px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--text-primary);
   margin: 0 0 8px 0;
   line-height: 1.4;
 }
@@ -242,7 +244,7 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .news-category {
@@ -257,10 +259,10 @@
 .view-more-news-btn {
   width: 100%;
   padding: 15px;
-  background: white;
-  border: 2px dashed #d0d0d0;
-  border-radius: 12px;
-  color: #666;
+  background-color: var(--surface-color);
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
@@ -268,8 +270,8 @@
 }
 
 .view-more-news-btn:hover {
-  border-color: #2196F3;
-  color: #2196F3;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 /* Hot Stories Grid */
@@ -281,21 +283,22 @@
 
 .hot-story-card {
   min-height: 200px;
-  border: 2px solid #dc3545;
-  box-shadow: 0 0 15px rgba(220, 53, 69, 0.2);
+  border: 2px solid var(--error-color);
+  box-shadow: var(--shadow-md);
 }
 
 .hot-story-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(220, 53, 69, 0.3);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Latest News Section wrapper */
 .latest-news-section {
-  background: white;
-  border-radius: 20px;
+  background-color: var(--surface-color);
+  border-radius: var(--radius-md);
   padding: 30px;
   margin-bottom: 40px;
+  border: 1px solid var(--border-color);
 }
 
 /* Responsive */

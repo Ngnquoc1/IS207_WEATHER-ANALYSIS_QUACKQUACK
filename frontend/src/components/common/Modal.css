@@ -9,17 +9,15 @@
   pointer-events: none;
 }
 
-/* Overlay - Lớp nền mờ & Căn giữa */
 .custom-modal-overlay {
   position: fixed !important;
   top: 0;
   left: 0;
   width: 100vw !important;
   height: 100vh !important;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 100000;
-  
-  /* Flexbox Căn giữa thần thánh */
+
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
@@ -28,20 +26,19 @@
   box-sizing: border-box;
   pointer-events: auto;
   animation: cmFadeIn 0.2s ease-out;
-  backdrop-filter: blur(2px); /* Làm mờ nền phía sau */
+  backdrop-filter: blur(2px);
 }
 
-/* Container - Khung trắng chính */
 .custom-modal-container {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  background-color: var(--surface-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
   
-  /* Layout dọc: Header trên, Body dưới */
   display: flex;
   flex-direction: column;
   
-  max-height: 90vh; /* Không cao quá màn hình */
+  max-height: 90vh;
   width: 100%;
   position: relative;
   overflow: hidden;
@@ -59,40 +56,42 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  background-color: #fff;
-  border-bottom: 1px solid #eee;
-  flex-shrink: 0; /* Không bị co lại khi body dài */
+  background-color: var(--surface-color);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
 }
 
 .custom-modal-title {
   margin: 0;
   font-size: 1.25rem;
-  font-weight: 700;
-  color: #333;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .custom-modal-close {
   background: transparent;
   border: none;
-  font-size: 28px;
+  font-size: 24px;
   line-height: 1;
-  color: #888;
+  color: var(--text-secondary);
   cursor: pointer;
-  padding: 0 8px;
+  padding: 4px;
   transition: color 0.2s;
+  border-radius: var(--radius-sm);
 }
 
 .custom-modal-close:hover {
-  color: #000;
+  color: var(--text-primary);
+  background-color: var(--bg-color);
 }
 
-/* Body - Nội dung cuộn */
 .custom-modal-body {
   padding: 24px;
-  overflow-y: auto; /* Cuộn dọc nếu nội dung dài */
+  overflow-y: auto;
   overflow-x: hidden;
-  flex: 1; /* Chiếm hết khoảng trống còn lại */
-  background-color: #fff;
+  flex: 1;
+  background-color: var(--surface-color);
+  color: var(--text-primary);
 }
 
 /* Animation */
@@ -104,22 +103,4 @@
 @keyframes cmZoomIn {
   from { opacity: 0; transform: scale(0.95) translateY(10px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-/* Dark Mode Support (Nếu cần) */
-@media (prefers-color-scheme: dark) {
-  .custom-modal-container {
-    background: #1f2937;
-    color: #fff;
-  }
-  .custom-modal-header {
-    background: #1f2937;
-    border-bottom-color: #374151;
-  }
-  .custom-modal-title {
-    color: #fff;
-  }
-  .custom-modal-body {
-    background: #1f2937;
-  }
 }

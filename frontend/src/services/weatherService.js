@@ -23,7 +23,7 @@ const API_BASE_URL = "http://localhost:8000/api"
  */
 export const fetchLocationByName = async (query) => {
     try {
-        console.log('🌐 Calling Geocoding API (via Laravel proxy) for:', query);
+        console.log('Calling Geocoding API (via Laravel proxy) for:', query);
         
         // Use Laravel backend as proxy to avoid CORS issues
         const response = await axios.get(`${API_BASE_URL}/location/search`, {
@@ -33,7 +33,7 @@ export const fetchLocationByName = async (query) => {
             timeout: 10000
         });
 
-        console.log('📦 API Response:', response.data);
+        console.log('API Response:', response.data);
 
         if (!response.data.results || response.data.results.length === 0) {
             throw new Error('Không tìm thấy địa điểm nào');
@@ -50,10 +50,10 @@ export const fetchLocationByName = async (query) => {
             displayName: `${location.name}${location.admin1 ? ', ' + location.admin1 : ''}, ${location.country}`
         }));
         
-        console.log('✨ Transformed results:', transformedResults);
+        console.log('Transformed results:', transformedResults);
         return transformedResults;
     } catch (error) {
-        console.error('❌ Error searching location:', error);
+        console.error('Error searching location:', error);
         console.error('Error details:', {
             message: error.message,
             code: error.code,

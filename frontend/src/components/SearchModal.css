@@ -1,5 +1,5 @@
 /* SearchModal.css - Styles for the Search Modal */
-.search-modal .modal-container {
+.search-modal .custom-modal-container {
     max-width: 1200px;
     width: 95vw;
     height: 90vh;
@@ -7,81 +7,85 @@
     min-height: 0; /* Important for flex children */
     display: flex;
     flex-direction: column;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
 }
 
 /* Dark theme styles - Apply to modal-overlay */
-.modal-overlay.search-modal.theme-dark {
-    --text-primary: rgba(255, 255, 255, 0.9);
-    --text-secondary: rgba(255, 255, 255, 0.7);
-    --text-muted: rgba(255, 255, 255, 0.6);
-    --bg-primary: rgba(255, 255, 255, 0.1);
-    --bg-secondary: rgba(255, 255, 255, 0.05);
-    --border-primary: rgba(255, 255, 255, 0.2);
-    --border-secondary: rgba(255, 255, 255, 0.3);
-    --accent-color: #74b9ff;
-    --accent-hover: #0984e3;
-    --error-color: #e74c3c;
-    --success-color: rgba(116, 185, 255, 0.1);
-    --success-border: rgba(116, 185, 255, 0.3);
+.custom-modal-overlay.search-modal.theme-dark {
+    --text-primary: #E0E0E0;
+    --text-secondary: #A0A0A0;
+    --text-muted: #6C757D;
+    --bg-primary: #1E1E1E;
+    --bg-secondary: #121212;
+    --border-primary: #333333;
+    --border-secondary: #444444;
+    --accent-color: #4D90FE;
+    --accent-hover: #357ABD;
+    --error-color: #EF5350;
+    --success-color: rgba(76, 175, 80, 0.1);
+    --success-border: rgba(76, 175, 80, 0.3);
     
     /* Modal specific variables */
-    --modal-bg: rgba(30, 30, 30, 0.95);
-    --modal-header-bg: rgba(40, 40, 40, 0.95);
-    --modal-border: rgba(255, 255, 255, 0.2);
-    --modal-text: rgba(255, 255, 255, 0.9);
-    --modal-text-secondary: rgba(255, 255, 255, 0.7);
-    --modal-text-hover: rgba(255, 255, 255, 0.8);
-    --modal-hover-bg: rgba(255, 255, 255, 0.1);
+    --modal-bg: #1E1E1E;
+    --modal-header-bg: #1E1E1E;
+    --modal-border: #333333;
+    --modal-text: #E0E0E0;
+    --modal-text-secondary: #A0A0A0;
+    --modal-text-hover: #FFFFFF;
+    --modal-hover-bg: #2C2C2C;
 }
 
 /* Light theme styles - Apply to modal-overlay */
-.modal-overlay.search-modal.theme-light {
-    --text-primary: #333;
-    --text-secondary: rgba(0, 0, 0, 0.6);
-    --text-muted: rgba(0, 0, 0, 0.5);
-    --bg-primary: rgba(255, 255, 255, 0.9);
-    --bg-secondary: rgba(255, 255, 255, 0.8);
-    --border-primary: rgba(0, 0, 0, 0.1);
-    --border-secondary: rgba(0, 0, 0, 0.2);
-    --accent-color: #74b9ff;
-    --accent-hover: #0984e3;
-    --error-color: #e74c3c;
-    --success-color: rgba(116, 185, 255, 0.1);
-    --success-border: rgba(116, 185, 255, 0.3);
+.custom-modal-overlay.search-modal.theme-light {
+    --text-primary: #1A1A1A;
+    --text-secondary: #6C757D;
+    --text-muted: #ADB5BD;
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F8F9FA;
+    --border-primary: #E9ECEF;
+    --border-secondary: #DEE2E6;
+    --accent-color: #0066CC;
+    --accent-hover: #0052A3;
+    --error-color: #DC3545;
+    --success-color: rgba(40, 167, 69, 0.1);
+    --success-border: rgba(40, 167, 69, 0.3);
     
     /* Modal specific variables */
-    --modal-bg: rgba(255, 255, 255, 0.95);
-    --modal-header-bg: rgba(249, 250, 251, 0.95);
-    --modal-border: rgba(0, 0, 0, 0.1);
-    --modal-text: #111827;
-    --modal-text-secondary: #6b7280;
-    --modal-text-hover: #374151;
-    --modal-hover-bg: #f3f4f6;
+    --modal-bg: #FFFFFF;
+    --modal-header-bg: #FFFFFF;
+    --modal-border: #E9ECEF;
+    --modal-text: #1A1A1A;
+    --modal-text-secondary: #6C757D;
+    --modal-text-hover: #000000;
+    --modal-hover-bg: #F8F9FA;
 }
 
 /* Fallback styles for when theme is not applied - Default to light theme */
 .search-modal {
-    --text-primary: #333;
-    --text-secondary: rgba(0, 0, 0, 0.6);
-    --text-muted: rgba(0, 0, 0, 0.5);
-    --bg-primary: rgba(255, 255, 255, 0.9);
-    --bg-secondary: rgba(255, 255, 255, 0.8);
-    --border-primary: rgba(0, 0, 0, 0.1);
-    --border-secondary: rgba(0, 0, 0, 0.2);
-    --accent-color: #74b9ff;
-    --accent-hover: #0984e3;
-    --error-color: #e74c3c;
-    --success-color: rgba(116, 185, 255, 0.1);
-    --success-border: rgba(116, 185, 255, 0.3);
+    --text-primary: #1A1A1A;
+    --text-secondary: #6C757D;
+    --text-muted: #ADB5BD;
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F8F9FA;
+    --border-primary: #E9ECEF;
+    --border-secondary: #DEE2E6;
+    --accent-color: #0066CC;
+    --accent-hover: #0052A3;
+    --error-color: #DC3545;
+    --success-color: rgba(40, 167, 69, 0.1);
+    --success-border: rgba(40, 167, 69, 0.3);
     
     /* Modal specific variables */
-    --modal-bg: rgba(255, 255, 255, 0.95);
-    --modal-header-bg: rgba(249, 250, 251, 0.95);
-    --modal-border: rgba(0, 0, 0, 0.1);
-    --modal-text: #111827;
-    --modal-text-secondary: #6b7280;
-    --modal-text-hover: #374151;
-    --modal-hover-bg: #f3f4f6;
+    --modal-bg: #FFFFFF;
+    --modal-header-bg: #FFFFFF;
+    --modal-border: #E9ECEF;
+    --modal-text: #1A1A1A;
+    --modal-text-secondary: #6C757D;
+    --modal-text-hover: #000000;
+    --modal-hover-bg: #F8F9FA;
 }
 
 .search-modal-content {
@@ -91,12 +95,14 @@
     overflow-x: hidden;
     box-sizing: border-box;
     min-height: 0; /* Important for flex */
+    background-color: var(--surface-color);
+    color: var(--text-primary);
 }
 
 .content-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    gap: 24px;
     height: 100%;
 }
 

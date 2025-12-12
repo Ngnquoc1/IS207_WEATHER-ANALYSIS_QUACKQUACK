@@ -44,9 +44,9 @@ const StoriesPage = () => {
 
   const getCategoryColor = (category) => {
     switch (category) {
-      case 'warning': return '#dc3545';
-      case 'info': return '#0dcaf0';
-      default: return '#6c757d';
+      case 'warning': return 'var(--error-color)';
+      case 'info': return 'var(--info-color)';
+      default: return 'var(--text-secondary)';
     }
   };
 
@@ -175,7 +175,7 @@ const StoriesPage = () => {
                           <span className="news-category">{getCategoryLabel(story.category)}</span>
                           <span className="dot-separator">•</span>
                           <span className="news-date">
-                            🕐 {formatPublishedDate(story.published_at)}
+                            {formatPublishedDate(story.published_at)}
                           </span>
                         </div>
                       </div>
@@ -210,7 +210,7 @@ const StoriesPage = () => {
                     </div>
                     <div className="news-content">
                       <h3 className="news-title">
-                        {story.is_hot && '🔥 '}
+                        {story.is_hot && ''}
                         {story.title}
                       </h3>
                       <div className="news-meta">

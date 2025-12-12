@@ -321,7 +321,7 @@ const StoryManagement = () => {
   // Render Statistics Section
   const renderStatistics = () => (
     <div className="statistics-section">
-      <h3>📊 Thống kê</h3>
+      <h3>Thống kê</h3>
       <div className="statistics-grid">
         <div 
           className={`stat-card stat-total ${filter === null ? 'active' : ''}`}
@@ -443,12 +443,12 @@ const StoryManagement = () => {
     <div className="story-list-view">
       {/* Header with Create Button */}
       <div className="view-header">
-        <h2>📋 Danh sách bài viết</h2>
+        <h2>Danh sách bài viết</h2>
         <button 
           className="create-story-button"
           onClick={() => setCurrentView('create')}
         >
-          ➕ Tạo bài viết mới
+          + Tạo bài viết mới
         </button>
       </div>
 
@@ -472,13 +472,13 @@ const StoryManagement = () => {
             className="create-story-button-alt"
             onClick={() => setCurrentView('create')}
           >
-            ➕ Tạo bài viết đầu tiên
+            + Tạo bài viết đầu tiên
           </button>
         </div>
       ) : (
         <>
           <h3 style={{ marginTop: '30px', marginBottom: '20px', color: '#333' }}>
-            📰 {filter === null ? 'Tất cả bài viết' : 
+            {filter === null ? 'Tất cả bài viết' : 
                 filter === 'hot' ? 'Bài viết Hot' :
                 filter === 'warning' ? 'Bài viết Cảnh báo' :
                 filter === 'info' ? 'Bài viết Thông tin' :
@@ -520,7 +520,7 @@ const StoryManagement = () => {
                         {getCategoryLabel(story.category)}
                       </span>
                       <span className="story-date">
-                        📅 {formatPublishedDate(story.published_at)}
+                        {formatPublishedDate(story.published_at)}
                       </span>
                       <span className="story-source">{story.source}</span>
                     </div>
@@ -531,13 +531,13 @@ const StoryManagement = () => {
                     className="edit-story-button"
                     onClick={() => handleEditStory(story)}
                   >
-                    ✏️ Chỉnh sửa
+                    Chỉnh sửa
                   </button>
                   <button
                     className="delete-story-button"
                     onClick={() => handleDeleteStory(story.id)}
                   >
-                    🗑️ Xóa
+                    Xóa
                   </button>
                 </div>
               </div>
@@ -575,7 +575,7 @@ const StoryManagement = () => {
         >
           ← Quay lại danh sách
         </button>
-        <h2>➕ Tạo bài viết mới</h2>
+        <h2>+ Tạo bài viết mới</h2>
       </div>
 
       {/* Search Section */}
@@ -589,7 +589,7 @@ const StoryManagement = () => {
             onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
           />
           <button onClick={handleSearch} disabled={loading}>
-            {loading ? 'Đang tìm...' : '🔍 Tìm kiếm'}
+            {loading ? 'Đang tìm...' : 'Tìm kiếm'}
           </button>
         </div>
         {message && (
@@ -625,10 +625,10 @@ const StoryManagement = () => {
                         {new Date(article.publishedAt).toLocaleDateString('vi-VN')}
                       </span>
                       {isSelected && (
-                        <span className="selected-badge">✓ Đã chọn</span>
+                        <span className="selected-badge">Đã chọn</span>
                       )}
                       {isExists && (
-                        <span className="exists-badge">✓ Đã thêm</span>
+                        <span className="exists-badge">Đã thêm</span>
                       )}
                     </div>
                   </div>
@@ -676,7 +676,7 @@ const StoryManagement = () => {
               onClick={handleSaveAll}
               disabled={loading}
             >
-              {loading ? 'Đang lưu...' : `💾 Lưu ${selectedArticles.length} bài viết`}
+              {loading ? 'Đang lưu...' : `Lưu ${selectedArticles.length} bài viết`}
             </button>
           </div>
         </div>
@@ -697,7 +697,7 @@ const StoryManagement = () => {
         >
           ← Quay lại danh sách
         </button>
-        <h2>✏️ Chỉnh sửa bài viết</h2>
+        <h2>Chỉnh sửa bài viết</h2>
       </div>
 
       {message && (
@@ -719,7 +719,7 @@ const StoryManagement = () => {
                 {getCategoryLabel(editingStory.category)}
               </span>
               <span className="story-date">
-                📅 {formatPublishedDate(editingStory.published_at)}
+                {formatPublishedDate(editingStory.published_at)}
               </span>
               <span className="story-source">{editingStory.source}</span>
             </div>
@@ -760,7 +760,7 @@ const StoryManagement = () => {
               className="save-button"
               onClick={handleUpdateStory}
             >
-              💾 Lưu thay đổi
+              Lưu thay đổi
             </button>
             <button 
               className="cancel-button"
@@ -769,7 +769,7 @@ const StoryManagement = () => {
                 setEditingStory(null);
               }}
             >
-              ❌ Hủy
+              Hủy
             </button>
           </div>
         </div>

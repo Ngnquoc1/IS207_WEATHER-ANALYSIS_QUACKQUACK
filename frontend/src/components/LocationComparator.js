@@ -180,7 +180,7 @@ const LocationComparator = () => {
 
     return (
         <div className="location-comparator">
-            <h2>🔍 So Sánh Thời Tiết</h2>
+            <h2>So Sánh Thời Tiết</h2>
 
             <form onSubmit={handleCompare} className="comparison-form">
                 <div className="location-inputs">

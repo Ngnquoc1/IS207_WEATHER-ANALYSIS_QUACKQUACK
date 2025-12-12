@@ -1,13 +1,13 @@
 /* Search Page Styles */
 .search-page {
     min-height: 100vh;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background-color: var(--bg-color);
     padding: 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .search-page.theme-light {
-    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    background-color: var(--bg-color);
 }
 
 .search-container {
@@ -24,29 +24,29 @@
 }
 
 .back-button {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
     padding: 12px 20px;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     font-size: 16px;
     font-weight: 600;
     transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+    backdrop-filter: none;
 }
 
 .back-button:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background-color: var(--bg-secondary);
     transform: translateY(-2px);
 }
 
 .page-header h1 {
-    color: white;
+    color: var(--text-primary);
     font-size: 32px;
     font-weight: 700;
     margin: 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: none;
 }
 
 /* Content Grid */
@@ -65,23 +65,23 @@
 }
 
 .form-card, .quick-locations-card {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
     padding: 30px;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: none;
+    box-shadow: var(--shadow-md);
 }
 
 .theme-light .form-card,
 .theme-light .quick-locations-card {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
 }
 
 .form-card h2, .quick-locations-card h3 {
-    color: white;
+    color: var(--text-primary);
     margin: 0 0 20px 0;
     font-size: 24px;
     font-weight: 600;
@@ -89,7 +89,7 @@
 
 .theme-light .form-card h2,
 .theme-light .quick-locations-card h3 {
-    color: #333;
+    color: var(--text-primary);
 }
 
 /* Coordinate Inputs */
@@ -109,33 +109,31 @@
 
 .search-input {
     flex: 1;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
     padding: 15px;
-    color: white;
+    color: var(--text-primary);
     font-size: 16px;
     transition: all 0.3s ease;
 }
 
 .theme-light .search-input {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    color: #333;
+     /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .search-input:focus {
     outline: none;
-    border-color: #74b9ff;
-    box-shadow: 0 0 0 3px rgba(116, 185, 255, 0.3);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
 }
 
 .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-muted);
 }
 
 .theme-light .search-input::placeholder {
-    color: rgba(0, 0, 0, 0.5);
+     /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 /* Search Results */
@@ -145,14 +143,14 @@
 }
 
 .search-results h3 {
-    color: white;
+    color: var(--text-primary);
     font-size: 16px;
     margin-bottom: 15px;
     font-weight: 600;
 }
 
 .theme-light .search-results h3 {
-    color: #333;
+    color: var(--text-primary);
 }
 
 .results-list {
@@ -168,61 +166,60 @@
 }
 
 .results-list::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
+    background-color: var(--bg-primary);
     border-radius: 10px;
 }
 
 .results-list::-webkit-scrollbar-thumb {
-    background: rgba(116, 185, 255, 0.5);
+    background-color: var(--primary-color);
     border-radius: 10px;
 }
 
 .results-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(116, 185, 255, 0.7);
+    background-color: var(--primary-hover);
 }
 
 .result-item {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
     padding: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .theme-light .result-item {
-    background: rgba(255, 255, 255, 0.6);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+     /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .result-item:hover {
-    background: rgba(116, 185, 255, 0.3);
-    border-color: rgba(116, 185, 255, 0.5);
+    background-color: var(--bg-secondary);
+    border-color: var(--primary-color);
     transform: translateX(5px);
 }
 
 .theme-light .result-item:hover {
-    background: rgba(116, 185, 255, 0.2);
+     /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .result-name {
-    color: white;
+    color: var(--text-primary);
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 5px;
 }
 
 .theme-light .result-name {
-    color: #333;
+    color: var(--text-primary);
 }
 
 .result-coords {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-secondary);
     font-size: 13px;
 }
 
 .theme-light .result-coords {
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--text-secondary);
 }
 
 @keyframes fadeIn {
@@ -243,72 +240,70 @@
 }
 
 .input-group label {
-    color: white;
+    color: var(--text-primary);
     font-weight: 600;
     font-size: 14px;
 }
 
 .theme-light .input-group label {
-    color: #333;
+    color: var(--text-primary);
 }
 
 .input-group input {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
     padding: 15px;
-    color: white;
+    color: var(--text-primary);
     font-size: 16px;
     transition: all 0.3s ease;
 }
 
 .theme-light .input-group input {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    color: #333;
+     /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .input-group input:focus {
     outline: none;
-    border-color: #74b9ff;
-    box-shadow: 0 0 0 3px rgba(116, 185, 255, 0.3);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
 }
 
 .input-group input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-muted);
 }
 
 .theme-light .input-group input::placeholder {
-    color: rgba(0, 0, 0, 0.5);
+     /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .input-group small {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-secondary);
     font-size: 12px;
 }
 
 .theme-light .input-group small {
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--text-secondary);
 }
 
 /* Error Message */
 .error-message {
-    background: rgba(231, 76, 60, 0.2);
-    border: 1px solid rgba(231, 76, 60, 0.4);
-    color: #e74c3c;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--error-color);
+    color: var(--error-color);
     padding: 12px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     margin-bottom: 15px;
     font-size: 14px;
 }
 
 /* Buttons */
 .search-button, .select-button {
-    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    background-color: var(--primary-color);
     border: none;
     color: white;
     padding: 15px 30px;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
@@ -329,7 +324,8 @@
 
 .search-button:hover, .select-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.4);
+    box-shadow: var(--shadow-md);
+    background-color: var(--primary-hover);
 }
 
 .search-button:disabled {
@@ -340,31 +336,31 @@
 
 /* Selected Location */
 .selected-location {
-    background: rgba(116, 185, 255, 0.1);
-    border: 1px solid rgba(116, 185, 255, 0.3);
-    border-radius: 15px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--primary-color);
+    border-radius: var(--radius-md);
     padding: 20px;
     margin-top: 20px;
 }
 
 .selected-location h3 {
-    color: white;
+    color: var(--text-primary);
     margin: 0 0 15px 0;
     font-size: 18px;
 }
 
 .theme-light .selected-location h3 {
-    color: #333;
+    color: var(--text-primary);
 }
 
 .location-info p {
-    color: white;
+    color: var(--text-primary);
     margin: 8px 0;
     font-size: 14px;
 }
 
 .theme-light .location-info p {
-    color: #333;
+    color: var(--text-primary);
 }
 
 /* Quick Locations */
@@ -375,11 +371,11 @@
 }
 
 .quick-location-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
     padding: 12px 16px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
@@ -388,13 +384,12 @@
 }
 
 .theme-light .quick-location-btn {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    color: #333;
+     /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .quick-location-btn:hover {
-    background: rgba(116, 185, 255, 0.3);
+    background-color: var(--bg-secondary);
+    border-color: var(--primary-color);
     transform: translateY(-2px);
 }
 
@@ -406,38 +401,36 @@
 }
 
 .map-card {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
     padding: 30px;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
 }
 
 .theme-light .map-card {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+     /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .map-card h2 {
-    color: white;
+    color: var(--text-primary);
     margin: 0 0 15px 0;
     font-size: 24px;
     font-weight: 600;
 }
 
 .theme-light .map-card h2 {
-    color: #333;
+    color: var(--text-primary);
 }
 
 .map-instruction {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-secondary);
     margin: 0 0 20px 0;
     font-size: 14px;
 }
 
 .theme-light .map-instruction {
-    color: rgba(0, 0, 0, 0.7);
+    color: var(--text-secondary);
 }
 
 /* World Map */
@@ -445,16 +438,15 @@
     position: relative;
     width: 100%;
     height: 500px;
-    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-    border-radius: 15px;
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-md);
     cursor: crosshair;
     overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--border-color);
 }
 
 .theme-light .world-map {
-    background: linear-gradient(135deg, #a8e6cf 0%, #74b9ff 100%);
-    border: 2px solid rgba(0, 0, 0, 0.1);
+     /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .map-overlay {
@@ -476,7 +468,7 @@
 
 .grid-line {
     position: absolute;
-    background: rgba(255, 255, 255, 0.2);
+    background-color: var(--border-color);
 }
 
 .grid-line.horizontal {
@@ -490,7 +482,7 @@
 }
 
 .theme-light .grid-line {
-    background: rgba(0, 0, 0, 0.1);
+     /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 /* City Markers */
@@ -506,16 +498,16 @@
     position: absolute;
     width: 8px;
     height: 8px;
-    background: #e74c3c;
-    border: 2px solid white;
+    background-color: var(--error-color);
+    border: 2px solid var(--surface-color);
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-sm);
     animation: pulse 2s infinite;
 }
 
 .theme-light .city-marker {
-    border: 2px solid #333;
+    border: 2px solid var(--surface-color);
 }
 
 @keyframes pulse {
@@ -536,24 +528,24 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: white;
+    color: var(--text-primary);
     font-size: 14px;
 }
 
 .theme-light .legend-item {
-    color: #333;
+    color: var(--text-primary);
 }
 
 .legend-dot {
     width: 8px;
     height: 8px;
-    background: #e74c3c;
+    background-color: var(--error-color);
     border-radius: 50%;
-    border: 2px solid white;
+    border: 2px solid var(--surface-color);
 }
 
 .theme-light .legend-dot {
-    border: 2px solid #333;
+    border: 2px solid var(--surface-color);
 }
 
 .legend-cross {
@@ -566,7 +558,7 @@
 .legend-cross::after {
     content: '';
     position: absolute;
-    background: white;
+    background-color: var(--text-primary);
 }
 
 .legend-cross::before {
@@ -583,7 +575,7 @@
 
 .theme-light .legend-cross::before,
 .theme-light .legend-cross::after {
-    background: #333;
+    background-color: var(--text-primary);
 }
 
 /* Responsive Design */

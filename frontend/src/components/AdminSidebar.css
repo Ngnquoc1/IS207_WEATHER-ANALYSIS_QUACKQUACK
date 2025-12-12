@@ -1,21 +1,22 @@
 .admin-sidebar {
   width: 250px;
   height: 100vh;
-  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background-color: var(--surface-color);
+  color: var(--text-primary);
   position: fixed;
   left: 0;
   top: 0;
   display: flex;
   flex-direction: column;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   z-index: 200;
   transition: transform 0.3s ease-in-out;
+  border-right: 1px solid var(--border-color);
 }
 
 .sidebar-header {
   padding: 24px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -25,13 +26,14 @@
   margin: 0;
   font-size: 20px;
   font-weight: 600;
+  color: var(--text-primary);
 }
 
 .sidebar-close-btn {
   display: none;
   background: none;
   border: none;
-  color: white;
+  color: var(--text-primary);
   font-size: 24px;
   cursor: pointer;
   padding: 4px 8px;
@@ -56,7 +58,7 @@
   padding: 12px 20px;
   background: none;
   border: none;
-  color: white;
+  color: var(--text-secondary);
   font-size: 15px;
   cursor: pointer;
   transition: all 0.2s;
@@ -65,13 +67,15 @@
 }
 
 .nav-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background-color: var(--bg-color);
+  color: var(--text-primary);
 }
 
 .nav-item.active {
-  background: rgba(255, 255, 255, 0.2);
-  border-left: 4px solid white;
+  background-color: rgba(0, 102, 204, 0.1); /* Primary color with opacity */
+  border-left: 4px solid var(--primary-color);
   font-weight: 600;
+  color: var(--primary-color);
 }
 
 .nav-icon {

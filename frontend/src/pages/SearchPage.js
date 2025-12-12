@@ -134,7 +134,7 @@ const SearchPage = () => {
                     <div className="form-section">
                         {/* City Name Search */}
                         <div className="form-card">
-                            <h2>🔍 Tìm Kiếm Theo Tên</h2>
+                            <h2>Tìm Kiếm Theo Tên</h2>
                             <div className="search-input-group">
                                 <input
                                     type="text"
@@ -149,7 +149,7 @@ const SearchPage = () => {
                                     onClick={handleSearchByName}
                                     disabled={searchLoading}
                                 >
-                                    {searchLoading ? '🔄 Đang tìm...' : '🔍 Tìm kiếm'}
+                                    {searchLoading ? 'Đang tìm...' : 'Tìm kiếm'}
                                 </button>
                             </div>
 
@@ -165,7 +165,7 @@ const SearchPage = () => {
                                                 onClick={() => handleSelectSearchResult(location)}
                                             >
                                                 <div className="result-name">
-                                                    📍 {location.displayName}
+                                                    {location.displayName}
                                                 </div>
                                                 <div className="result-coords">
                                                     {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
@@ -179,7 +179,7 @@ const SearchPage = () => {
 
                         {/* Coordinate Input */}
                         <div className="form-card">
-                            <h2>📍 Nhập Tọa Độ</h2>
+                            <h2>Nhập Tọa Độ</h2>
                             <div className="coordinate-inputs">
                                 <div className="input-group">
                                     <label>Vĩ độ (Latitude)</label>

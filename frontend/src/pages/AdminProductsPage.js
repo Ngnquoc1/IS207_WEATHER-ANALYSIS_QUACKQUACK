@@ -194,7 +194,7 @@ const AdminProductsPage = () => {
       {/* Header */}
       <div className="page-header">
         <div>
-          <h2>🛍️ Product Management</h2>
+          <h2>Product Management</h2>
           <p>Quản lý sản phẩm affiliate cho gợi ý thời tiết</p>
         </div>
         <button onClick={openCreateModal} className="btn-primary">
@@ -294,7 +294,7 @@ const AdminProductsPage = () => {
                       onClick={() => handleToggleActive(product.id, product.is_active)}
                       className={`status-badge ${product.is_active ? 'active' : 'inactive'}`}
                     >
-                      {product.is_active ? '✓ Active' : '✗ Inactive'}
+                      {product.is_active ? 'Active' : 'Inactive'}
                     </button>
                   </td>
                   <td>

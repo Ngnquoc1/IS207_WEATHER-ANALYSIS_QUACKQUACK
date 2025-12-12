@@ -24,7 +24,7 @@ const AdminPage = () => {
   return (
     <div className="admin-users-page">
       <div className="page-header">
-        <h2>👥 User Management</h2>
+        <h2>User Management</h2>
         <p>Quản lý người dùng hệ thống</p>
       </div>
 

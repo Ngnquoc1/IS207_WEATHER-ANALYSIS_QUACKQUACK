@@ -16,31 +16,30 @@
   position: relative;
   display: flex;
   align-items: center;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
   padding: 10px 12px;
-  background: white;
+  background-color: var(--bg-primary);
   transition: all 0.3s ease;
 }
 
 .theme-dark .search-input-wrapper {
-  background: #2d2d2d;
-  border-color: #444;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .search-input-wrapper:focus-within {
-  border-color: #4CAF50;
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
 }
 
 .search-icon {
   font-size: 18px;
   margin-right: 8px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .theme-dark .search-icon {
-  color: #aaa;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .search-input {
@@ -49,47 +48,46 @@
   outline: none;
   font-size: 16px;
   background: transparent;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .theme-dark .search-input {
-  color: #fff;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .search-input::placeholder {
-  color: #999;
+  color: var(--text-muted);
 }
 
 .clear-button {
   background: none;
   border: none;
   font-size: 18px;
-  color: #999;
+  color: var(--text-muted);
   cursor: pointer;
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   transition: all 0.2s;
 }
 
 .clear-button:hover {
-  background: #f0f0f0;
-  color: #333;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .theme-dark .clear-button:hover {
-  background: #444;
-  color: #fff;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .search-hint {
   margin-top: 8px;
   font-size: 13px;
-  color: #666;
+  color: var(--text-secondary);
   font-style: italic;
 }
 
 .theme-dark .search-hint {
-  color: #aaa;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 /* Loading State */
@@ -99,26 +97,25 @@
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .theme-dark .search-loading {
-  color: #aaa;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #4CAF50;
+  border: 4px solid var(--border-color);
+  border-top: 4px solid var(--success-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 12px;
 }
 
 .theme-dark .loading-spinner {
-  border-color: #444;
-  border-top-color: #4CAF50;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 @keyframes spin {
@@ -131,16 +128,15 @@
   display: flex;
   align-items: flex-start;
   padding: 12px 16px;
-  background: #ffebee;
-  border-left: 4px solid #f44336;
-  border-radius: 4px;
+  background-color: var(--bg-secondary);
+  border-left: 4px solid var(--error-color);
+  border-radius: var(--radius-sm);
   margin-bottom: 16px;
-  color: #c62828;
+  color: var(--error-color);
 }
 
 .theme-dark .error-message {
-  background: rgba(244, 67, 54, 0.1);
-  color: #ef5350;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .error-icon {
@@ -158,11 +154,11 @@
 }
 
 .retry-button {
-  background: #f44336;
+  background-color: var(--error-color);
   color: white;
   border: none;
   padding: 6px 12px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
   cursor: pointer;
   transition: all 0.2s;
@@ -170,16 +166,16 @@
 }
 
 .retry-button:hover {
-  background: #d32f2f;
+  opacity: 0.9;
   transform: translateY(-1px);
 }
 
 .theme-dark .retry-button {
-  background: #ef5350;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .theme-dark .retry-button:hover {
-  background: #e53935;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 /* Search Results */
@@ -190,37 +186,36 @@
 
 .results-count {
   font-size: 14px;
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 8px;
   font-weight: 500;
 }
 
 .theme-dark .results-count {
-  color: #aaa;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .results-list {
   max-height: 300px;
   overflow-y: auto;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-color);
 }
 
 .theme-dark .results-list {
-  background: #2d2d2d;
-  border-color: #444;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .result-item {
   padding: 12px 16px;
   cursor: pointer;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-color);
   transition: all 0.2s;
 }
 
 .theme-dark .result-item {
-  border-bottom-color: #444;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .result-item:last-child {
@@ -229,55 +224,55 @@
 
 .result-item:hover,
 .result-item:focus {
-  background: #f5f5f5;
+  background-color: var(--bg-secondary);
   outline: none;
 }
 
 .theme-dark .result-item:hover,
 .theme-dark .result-item:focus {
-  background: #3d3d3d;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .result-name {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .theme-dark .result-name {
-  color: #fff;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .result-details {
   font-size: 14px;
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 4px;
 }
 
 .theme-dark .result-details {
-  color: #aaa;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .result-coords {
   font-size: 12px;
-  color: #999;
+  color: var(--text-muted);
   font-family: monospace;
 }
 
 .theme-dark .result-coords {
-  color: #888;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 /* No Results */
 .no-results {
   text-align: center;
   padding: 40px 20px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .theme-dark .no-results {
-  color: #aaa;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .no-results-icon {
@@ -304,21 +299,20 @@
 .selected-location-display {
   margin-top: 20px;
   padding: 16px;
-  background: #f5f5f5;
-  border: 2px solid #4CAF50;
-  border-radius: 8px;
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--success-color);
+  border-radius: var(--radius-md);
   animation: fadeIn 0.3s ease;
 }
 
 .theme-dark .selected-location-display {
-  background: #2d2d2d;
-  border-color: #4CAF50;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .selected-location-display h4 {
   margin: 0 0 12px 0;
   font-size: 16px;
-  color: #4CAF50;
+  color: var(--success-color);
 }
 
 .selected-location-info {
@@ -328,42 +322,42 @@
 .location-name {
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
   margin: 0 0 4px 0;
 }
 
 .theme-dark .location-name {
-  color: #fff;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .location-region {
   font-size: 14px;
-  color: #666;
+  color: var(--text-secondary);
   margin: 0 0 8px 0;
 }
 
 .theme-dark .location-region {
-  color: #aaa;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .location-coords {
   font-size: 13px;
-  color: #999;
+  color: var(--text-muted);
   margin: 0;
   font-family: monospace;
 }
 
 .theme-dark .location-coords {
-  color: #888;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .confirm-button {
   width: 100%;
   padding: 12px 24px;
-  background: #4CAF50;
+  background-color: var(--success-color);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -371,13 +365,13 @@
 }
 
 .confirm-button:hover:not(:disabled) {
-  background: #45a049;
+  opacity: 0.9;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+  box-shadow: var(--shadow-md);
 }
 
 .confirm-button:disabled {
-  background: #ccc;
+  background-color: var(--text-secondary);
   cursor: not-allowed;
   opacity: 0.6;
 }
@@ -386,11 +380,11 @@
 .empty-state {
   text-align: center;
   padding: 40px 20px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .theme-dark .empty-state {
-  color: #aaa;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .empty-state-icon {
@@ -403,11 +397,11 @@
 .empty-state h3 {
   margin: 0 0 8px 0;
   font-size: 20px;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .theme-dark .empty-state h3 {
-  color: #fff;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .empty-state > p {
@@ -422,12 +416,12 @@
 .examples-title {
   font-size: 13px;
   font-weight: 600;
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 8px;
 }
 
 .theme-dark .examples-title {
-  color: #aaa;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .example-chips {
@@ -439,28 +433,27 @@
 
 .example-chip {
   padding: 6px 12px;
-  background: #e3f2fd;
-  color: #1976d2;
+  background-color: var(--bg-secondary);
+  color: var(--primary-color);
   border-radius: 16px;
   font-size: 13px;
   cursor: pointer;
   transition: all 0.2s;
+  border: 1px solid var(--primary-color);
 }
 
 .theme-dark .example-chip {
-  background: rgba(25, 118, 210, 0.2);
-  color: #64b5f6;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .example-chip:hover {
-  background: #1976d2;
+  background-color: var(--primary-color);
   color: white;
   transform: translateY(-2px);
 }
 
 .theme-dark .example-chip:hover {
-  background: #1976d2;
-  color: white;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 /* Animation */
@@ -513,18 +506,19 @@
 }
 
 .results-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background-color: var(--bg-secondary);
 }
 
 .theme-dark .results-list::-webkit-scrollbar-track {
-  background: #2d2d2d;
+   /* biến tự chỉnh, vui lòng không sửa U・ᴥ・U */
 }
 
 .results-list::-webkit-scrollbar-thumb {
-  background: #888;
+  background-color: var(--text-secondary);
   border-radius: 4px;
 }
 
 .results-list::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background-color: var(--text-primary);
+  opacity: 0.8;
 }

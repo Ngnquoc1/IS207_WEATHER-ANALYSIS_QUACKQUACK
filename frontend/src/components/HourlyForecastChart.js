@@ -77,10 +77,11 @@ const HourlyForecastChart = ({ data, dailyData }) => {
 
     // Get weather color based on condition
     const getWeatherColor = (code) => {
-        if (code === 0 || code === 1) return '#FFD700'; // Sunny - Yellow
-        if (code >= 51 && code <= 82) return '#87CEEB'; // Rain - Light Blue
-        if (code >= 95 && code <= 99) return '#FF6347'; // Storm - Red
-        return '#FFFFFF'; // Default - White
+        if (code === 0 || code === 1) return 'var(--weather-sunny)'; // Sunny
+        if (code >= 51 && code <= 82) return 'var(--weather-rain)'; // Rain
+        if (code >= 95 && code <= 99) return 'var(--weather-storm)'; // Storm
+        if (code > 1 && code < 51) return 'var(--weather-cloud)'; // Cloudy/Fog
+        return 'var(--weather-default)'; // Default
     };
 
     // Handle day click to open modal
@@ -338,7 +339,7 @@ const HourlyForecastChart = ({ data, dailyData }) => {
                                         Mưa: {day.precipitation_probability_max || day.precipitation_probability || 0}%
                                     </div>
                                     <div className="click-hint">
-                                        👆 Nhấn để xem chi tiết
+                                        Nhấn để xem chi tiết
                                     </div>
                                 </div>
                             ))}
@@ -461,28 +462,28 @@ const HourlyForecastChart = ({ data, dailyData }) => {
                                 <h4>💡 Khuyến nghị</h4>
                                 <ul>
                                     {details.temperature.max > 30 && (
-                                        <li>🌡️ Nhiệt độ cao, nên mặc quần áo mát mẻ và uống nhiều nước</li>
+                                        <li>Nhiệt độ cao, nên mặc quần áo mát mẻ và uống nhiều nước</li>
                                     )}
                                     {details.precipitation.probability > 50 && (
-                                        <li>☔ Khả năng mưa cao, nên mang theo ô hoặc áo mưa</li>
+                                        <li>Khả năng mưa cao, nên mang theo ô hoặc áo mưa</li>
                                     )}
                                     {details.precipitation.sum > 10 && (
-                                        <li>🌧️ Lượng mưa lớn, tránh đi đường ngập nước</li>
+                                        <li>Lượng mưa lớn, tránh đi đường ngập nước</li>
                                     )}
                                     {details.uv.max > 6 && (
-                                        <li>☀️ Chỉ số UV cao, nên sử dụng kem chống nắng</li>
+                                        <li>Chỉ số UV cao, nên sử dụng kem chống nắng</li>
                                     )}
                                     {details.wind.speed > 20 && (
-                                        <li>💨 Gió mạnh, cẩn thận khi đi đường</li>
+                                        <li>Gió mạnh, cẩn thận khi đi đường</li>
                                     )}
                                     {details.temperature.min < 15 && (
-                                        <li>🧥 Nhiệt độ thấp vào sáng sớm, nên mặc áo ấm</li>
+                                        <li>Nhiệt độ thấp vào sáng sớm, nên mặc áo ấm</li>
                                     )}
                                     {details.humidity.max > 80 && (
-                                        <li>💧 Độ ẩm cao, có thể gây khó chịu</li>
+                                        <li>Độ ẩm cao, có thể gây khó chịu</li>
                                     )}
                                     {details.pressure.mean < 1000 && (
-                                        <li>🌬️ Áp suất thấp, có thể ảnh hưởng đến sức khỏe</li>
+                                        <li>Áp suất thấp, có thể ảnh hưởng đến sức khỏe</li>
                                     )}
                                 </ul>
                             </div>
