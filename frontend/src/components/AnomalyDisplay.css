@@ -112,6 +112,32 @@
     box-shadow: var(--shadow-md);
 }
 
+/* Responsive Design */
+@media (max-width: 768px) {
+    .anomaly-section .section-title {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    .anomaly-card, .stable-card {
+        padding: 20px;
+    }
+
+    .anomaly-value {
+        font-size: 36px;
+    }
+
+    .anomaly-description {
+        font-size: 14px;
+    }
+
+    .anomaly-link {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+    }
+}
+
 .theme-light .stable-card:hover {
     box-shadow: var(--shadow-md);
 }

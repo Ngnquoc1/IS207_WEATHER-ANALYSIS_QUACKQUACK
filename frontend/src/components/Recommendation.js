@@ -17,8 +17,11 @@ const Recommendation = ({ recommendation }) => {
         );
     }
 
-    // Split recommendations by double newline (each recommendation is separated)
-    const recommendations = recommendation.split('\n\n').filter(item => item.trim());
+    // Split recommendations by delimiter "|||" or newline (fallback)
+    const recommendations = recommendation.split(/\|\|\||\n+/)
+        .map(item => item.trim())
+        .filter(item => item.length > 0)
+        .map(item => item.replace(/^[-*•]\s*/, '')); // Remove leading bullets if any remain
 
     return (
         <div className="recommendation-card">

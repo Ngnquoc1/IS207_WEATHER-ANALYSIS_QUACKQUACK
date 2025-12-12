@@ -30,6 +30,10 @@
     --weather-default: #1F2937; /* Gray 800 */
 }
 
+* {
+    box-sizing: border-box;
+}
+
 body.theme-dark {
     --bg-color: #121212;
     --surface-color: #1E1E1E;

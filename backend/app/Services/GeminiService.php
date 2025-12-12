@@ -62,7 +62,7 @@ class GeminiService
     public function generateRecommendation($currentWeather, $dailyForecast)
     {
         // Create cache key
-        $cacheKey = 'recommendation_' . md5(json_encode([
+        $cacheKey = 'recommendation_v3_' . md5(json_encode([
             'temp' => $currentWeather['temperature_2m'],
             'weather' => $currentWeather['weather_code'],
             'uv' => $dailyForecast['uv_index_max'][0] ?? 0
@@ -154,6 +154,9 @@ Bạn là trợ lý thời tiết thông minh. Hãy đưa ra lời khuyên thự
 - Sử dụng emoji phù hợp
 - Không quá 3-4 câu
 - Thực tế và hữu ích
+- BẮT BUỘC: Ngăn cách các ý bằng chuỗi ký tự "|||". Không sử dụng xuống dòng.
+
+Ví dụ: ☔ Mang theo ô nhé. ||| 🧥 Mặc áo ấm khi ra đường. ||| 🏠 Hạn chế ra ngoài.
 
 Chỉ trả về text khuyên nghị, không thêm tiêu đề hay giải thích.
 PROMPT;

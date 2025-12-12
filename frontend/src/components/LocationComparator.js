@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -9,7 +9,7 @@ import {
     Tooltip,
     Legend
 } from 'chart.js';
-import { fetchComparisonData } from '../services/weatherService';
+import { fetchComparisonData, fetchLocationByName } from '../services/weatherService';
 import { useTheme } from '../contexts/ThemeContext';
 import './LocationComparator.css';
 
@@ -22,6 +22,106 @@ ChartJS.register(
     Tooltip,
     Legend
 );
+
+const LocationSearchInput = ({ label, location, onLocationChange, placeholder }) => {
+    const [query, setQuery] = useState(location.name);
+    const [results, setResults] = useState([]);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [isSearching, setIsSearching] = useState(false);
+    const wrapperRef = useRef(null);
+
+    // Update query when location name changes externally
+    useEffect(() => {
+        setQuery(location.name);
+    }, [location.name]);
+
+    // Handle click outside to close dropdown
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    // Debounced search
+    useEffect(() => {
+        const timer = setTimeout(async () => {
+            if (!query || query.length < 2 || query === location.name) {
+                setResults([]);
+                return;
+            }
+
+            setIsSearching(true);
+            try {
+                const data = await fetchLocationByName(query);
+                setResults(data || []);
+                setShowDropdown(true);
+            } catch (error) {
+                console.error('Search error:', error);
+                setResults([]);
+            } finally {
+                setIsSearching(false);
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [query, location.name]);
+
+    const handleSelect = (item) => {
+        onLocationChange({
+            name: item.name,
+            lat: item.latitude,
+            lon: item.longitude
+        });
+        setQuery(item.name);
+        setShowDropdown(false);
+    };
+
+    const handleInputChange = (e) => {
+        setQuery(e.target.value);
+        // Reset lat/lon if user changes name manually to prevent mismatch
+        // But we keep the name so they can type
+        if (e.target.value !== location.name) {
+             // We don't update parent immediately to avoid clearing lat/lon while typing
+             // But effectively the "current" lat/lon is now potentially invalid for the new name
+        }
+    };
+
+    return (
+        <div className="location-group" ref={wrapperRef}>
+            <h3>{label}</h3>
+            <div className="search-input-wrapper">
+                <input
+                    type="text"
+                    placeholder={placeholder}
+                    value={query}
+                    onChange={handleInputChange}
+                    onFocus={() => {
+                        if (results.length > 0) setShowDropdown(true);
+                    }}
+                    className="location-search-input"
+                />
+                {isSearching && <div className="search-spinner"></div>}
+                
+                {showDropdown && results.length > 0 && (
+                    <ul className="search-dropdown">
+                        {results.map((item) => (
+                            <li key={item.id} onClick={() => handleSelect(item)}>
+                                <div className="location-name">{item.name}</div>
+                                <div className="location-detail">
+                                    {item.admin1 ? `${item.admin1}, ` : ''}{item.country}
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+        </div>
+    );
+};
 
 /**
  * LocationComparator Component
@@ -60,7 +160,7 @@ const LocationComparator = () => {
         setError(null);
 
         if (!validateCoordinates(location1) || !validateCoordinates(location2)) {
-            setError('Tọa độ không hợp lệ. Vĩ độ [-90, 90], Kinh độ [-180, 180].');
+            setError('Vui lòng chọn địa điểm hợp lệ từ danh sách gợi ý.');
             return;
         }
 
@@ -81,12 +181,13 @@ const LocationComparator = () => {
             );
             setComparisonData(data);
         } catch (err) {
-            setError('Không thể so sánh thời tiết. Vui lòng kiểm tra lại tọa độ.');
+            setError('Không thể so sánh thời tiết. Vui lòng thử lại.');
             console.error('Comparison error:', err);
         } finally {
             setLoading(false);
         }
     };
+
 
     // Prepare chart data
     const getChartData = () => {
@@ -184,65 +285,19 @@ const LocationComparator = () => {
 
             <form onSubmit={handleCompare} className="comparison-form">
                 <div className="location-inputs">
-                    {/* Location 1 */}
-                    <div className="location-group">
-                        <h3>Địa điểm 1</h3>
-                        <input
-                            type="text"
-                            placeholder="Tên địa điểm"
-                            value={location1.name}
-                            onChange={(e) => setLocation1({ ...location1, name: e.target.value })}
-                            required
-                        />
-                        <div className="coord-inputs">
-                            <input
-                                type="number"
-                                step="any"
-                                placeholder="Vĩ độ (Latitude)"
-                                value={location1.lat}
-                                onChange={(e) => setLocation1({ ...location1, lat: e.target.value })}
-                                required
-                            />
-                            <input
-                                type="number"
-                                step="any"
-                                placeholder="Kinh độ (Longitude)"
-                                value={location1.lon}
-                                onChange={(e) => setLocation1({ ...location1, lon: e.target.value })}
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    {/* Location 2 */}
-                    <div className="location-group">
-                        <h3>Địa điểm 2</h3>
-                        <input
-                            type="text"
-                            placeholder="Tên địa điểm"
-                            value={location2.name}
-                            onChange={(e) => setLocation2({ ...location2, name: e.target.value })}
-                            required
-                        />
-                        <div className="coord-inputs">
-                            <input
-                                type="number"
-                                step="any"
-                                placeholder="Vĩ độ (Latitude)"
-                                value={location2.lat}
-                                onChange={(e) => setLocation2({ ...location2, lat: e.target.value })}
-                                required
-                            />
-                            <input
-                                type="number"
-                                step="any"
-                                placeholder="Kinh độ (Longitude)"
-                                value={location2.lon}
-                                onChange={(e) => setLocation2({ ...location2, lon: e.target.value })}
-                                required
-                            />
-                        </div>
-                    </div>
+                    <LocationSearchInput 
+                        label="Địa điểm 1"
+                        location={location1}
+                        onLocationChange={setLocation1}
+                        placeholder="Nhập tên thành phố (VD: Hà Nội)"
+                    />
+                    
+                    <LocationSearchInput 
+                        label="Địa điểm 2"
+                        location={location2}
+                        onLocationChange={setLocation2}
+                        placeholder="Nhập tên thành phố (VD: Đà Nẵng)"
+                    />
                 </div>
 
                 <button type="submit" className="compare-button" disabled={loading}>
@@ -325,6 +380,7 @@ const LocationComparator = () => {
                     </div>
                 </div>
             )}
+            {/* Search Modal Removed */}
         </div>
     );
 };

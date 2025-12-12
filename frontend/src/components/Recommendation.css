@@ -18,12 +18,6 @@
     color: var(--primary-color);
 }
 
-.recommendation-item {
-    background-color: var(--bg-primary);
-    border-left: 4px solid var(--primary-color);
-    backdrop-filter: none;
-}
-
 /* Light theme */
 .theme-light .recommendation-card {
     background-color: var(--surface-color);

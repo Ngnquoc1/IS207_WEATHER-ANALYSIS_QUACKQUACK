@@ -37,7 +37,7 @@ const ProductRecommendations = ({ weatherData }) => {
                 const data = await fetchRecommendations(
                     weatherMain,
                     Math.round(temperature),
-                    5
+                    10
                 );
                 
                 setRecommendations(data.recommendations || []);

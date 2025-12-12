@@ -147,6 +147,15 @@ const DashboardPage = () => {
                 </div>
             )}
 
+            {/* Login Prompt Banner */}
+            {!isAuthenticated && (
+                <div className="dashboard-login-banner">
+                    <div className="login-banner-content">
+                        <LoginPrompt onLoginClick={() => setIsLoginModalOpen(true)} />
+                    </div>
+                </div>
+            )}
+
             {/* Main Dashboard Container */}
             <div className="dashboard-container">
                 <aside className="dashboard-sidebar">
@@ -174,10 +183,10 @@ const DashboardPage = () => {
                         </div>
                     )}
 
-                    {/* Login Prompt in Sidebar for Guests */}
-                    {!isAuthenticated && (
-                        <div className="sidebar-login-prompt">
-                            <LoginPrompt onLoginClick={() => setIsLoginModalOpen(true)} />
+                    {/* Stories Section - Moved to Sidebar */}
+                    {isAuthenticated && (
+                        <div className="sidebar-stories">
+                            <Stories location={selectedLocation?.name} />
                         </div>
                     )}
                 </aside>
@@ -210,27 +219,19 @@ const DashboardPage = () => {
 
                     {!loading && !error && weatherData && (
                         <div className="dashboard-grid">
-                            <div className="grid-row top-row">
+                            {/* Row 1: Current Weather (Full Width) */}
+                            <div className="grid-row full-width-row">
                                 <div className="grid-cell hero-cell">
                                     <div className="location-header">
                                         <h2>{resolvedLocationName || selectedLocation?.name}</h2>
                                     </div>
                                     <CurrentWeather data={weatherData.current_weather} />
                                 </div>
-                                
-                                {isAuthenticated && (
-                                    <div className="grid-cell anomaly-cell">
-                                        <AnomalyDisplay 
-                                            anomalyData={weatherData.anomaly} 
-                                            location={selectedLocation}
-                                        />
-                                    </div>
-                                )}
                             </div>
 
-                            {/* Middle Row: Forecast Chart (Full Width) */}
+                            {/* Row 2: Forecast Chart (Full Width) */}
                             {isAuthenticated && (
-                                <div className="grid-row middle-row">
+                                <div className="grid-row full-width-row">
                                     <div className="grid-cell chart-cell">
                                         <HourlyForecastChart 
                                             data={weatherData.hourly_forecast} 
@@ -240,34 +241,36 @@ const DashboardPage = () => {
                                 </div>
                             )}
 
-                            {/* Bottom Section: Split Layout */}
-                            <div className="grid-row bottom-section">
-                                {/* Left Column (2/3): Products & Comparison */}
-                                <div className="bottom-left-col">
-                                    <div className="grid-cell">
-                                        <ProductRecommendations weatherData={weatherData} />
+                            {/* Row 3: Anomaly & Smart Recommendations (Split Row) */}
+                            {isAuthenticated && (
+                                <div className="grid-row analysis-row">
+                                    <div className="grid-cell anomaly-cell">
+                                        <AnomalyDisplay 
+                                            anomalyData={weatherData.anomaly} 
+                                            location={selectedLocation}
+                                        />
                                     </div>
-                                    
-                                    {isAuthenticated && (
-                                        <div className="grid-cell">
-                                            <LocationComparator />
-                                        </div>
-                                    )}
+                                    <div className="grid-cell recommendation-cell">
+                                        <Recommendation recommendation={weatherData.recommendation} />
+                                    </div>
                                 </div>
+                            )}
 
-                                {/* Right Column (1/3): Insights & Stories */}
-                                {isAuthenticated && (
-                                    <div className="bottom-right-col">
-                                        <div className="grid-cell">
-                                            <Recommendation recommendation={weatherData.recommendation} />
-                                        </div>
-                                        
-                                        <div className="grid-cell flex-grow">
-                                            <Stories location={selectedLocation?.name} />
-                                        </div>
-                                    </div>
-                                )}
+                            {/* Row 4: Product Recommendations (Full Width) */}
+                            <div className="grid-row full-width-row">
+                                <div className="grid-cell">
+                                    <ProductRecommendations weatherData={weatherData} />
+                                </div>
                             </div>
+                            
+                            {/* Row 5: Location Comparison (Full Width) */}
+                            {isAuthenticated && (
+                                <div className="grid-row full-width-row">
+                                    <div className="grid-cell">
+                                        <LocationComparator />
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </main>

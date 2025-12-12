@@ -246,41 +246,76 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     .header {
-        padding: 1rem;
+        padding: 0.75rem 1rem;
     }
     
     .header-container {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: stretch;
+        flex-direction: row; /* Keep row on tablet/mobile, but wrap if needed */
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .header-title {
+        flex: 1 1 auto; /* Allow title to shrink/grow */
+    }
+
+    .header-title h1 {
+        font-size: 1.1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
     .header-controls {
-        justify-content: space-between;
+        gap: 0.5rem;
+        flex: 0 0 auto; /* Don't shrink controls */
     }
     
     .location-dropdown-button {
-        min-width: 200px;
-    }
-    
-    .header-title h1 {
-        font-size: 1.25rem;
-        text-align: center;
+        min-width: auto; /* Allow it to shrink */
+        max-width: 180px;
     }
 }
 
 @media (max-width: 480px) {
     .header {
-        padding: 0.75rem;
+        padding: 0.5rem;
     }
     
     .header-title h1 {
-        font-size: 1.1rem;
+        font-size: 1rem;
+    }
+
+    /* Hide less important elements on very small screens */
+    .user-role {
+        display: none;
+    }
+
+    .user-name {
+        font-size: 0.8rem;
+        max-width: 80px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .logout-button {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.8rem;
     }
     
-    .location-dropdown-button {
-        min-width: 150px;
-        padding: 0.4rem 0.6rem;
+    .theme-toggle {
+        padding: 0.3rem;
+        font-size: 1rem;
+        min-width: 32px;
+    }
+    
+    .language-selector {
+        padding: 0.3rem;
+        font-size: 0.8rem;
+        min-width: 32px;
     }
 }
 

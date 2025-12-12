@@ -96,3 +96,25 @@
     color: var(--primary-color);
     font-weight: 500;
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .location-selector-panel {
+        padding: 16px;
+    }
+
+    .selector-header h3 {
+        font-size: 15px;
+        margin-bottom: 12px;
+    }
+
+    .action-button {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .location-chip {
+        padding: 4px 10px;
+        font-size: 12px;
+    }
+}
