@@ -20,6 +20,13 @@ class GeminiService
             'timeout' => 15,
             'verify' => false
         ]);
+        
+        // Log initialization
+        Log::info('🤖 GeminiService initialized', [
+            'api_key_configured' => !empty($this->apiKey),
+            'api_key_length' => $this->apiKey ? strlen($this->apiKey) : 0,
+            'endpoint' => self::API_ENDPOINT
+        ]);
     }
 
     /**
@@ -61,22 +68,49 @@ class GeminiService
      */
     public function generateRecommendation($currentWeather, $dailyForecast)
     {
+        Log::info('💡 Starting recommendation generation', [
+            'temp' => $currentWeather['temperature_2m'] ?? 'N/A',
+            'weather_code' => $currentWeather['weather_code'] ?? 'N/A',
+            'uv_index' => $dailyForecast['uv_index_max'][0] ?? 'N/A'
+        ]);
+
         // Create cache key
         $cacheKey = 'recommendation_v3_' . md5(json_encode([
             'temp' => $currentWeather['temperature_2m'],
             'weather' => $currentWeather['weather_code'],
             'uv' => $dailyForecast['uv_index_max'][0] ?? 0
         ]));
+        
+        Log::info('📦 Cache key generated for recommendation', ['cache_key' => $cacheKey]);
 
         // Try to get from cache (2 hours)
-        return Cache::remember($cacheKey, 7200, function () use ($currentWeather, $dailyForecast) {
+        return Cache::remember($cacheKey, 7200, function () use ($currentWeather, $dailyForecast, $cacheKey) {
+            Log::info('❌ Cache MISS - Calling Gemini API for recommendation', ['cache_key' => $cacheKey]);
+            
             try {
                 $prompt = $this->buildRecommendationPrompt($currentWeather, $dailyForecast);
+                
+                Log::info('📝 Recommendation prompt built', [
+                    'prompt_length' => strlen($prompt),
+                    'prompt_preview' => substr($prompt, 0, 150) . '...'
+                ]);
+                
                 $response = $this->callGeminiAPI($prompt);
                 
-                return $this->parseRecommendationResponse($response);
+                $result = $this->parseRecommendationResponse($response);
+                
+                Log::info('✅ Recommendation generated successfully via Gemini AI', [
+                    'recommendation_length' => strlen($result),
+                    'recommendation_preview' => substr($result, 0, 100) . '...'
+                ]);
+                
+                return $result;
             } catch (\Exception $e) {
-                Log::error('Gemini Recommendation Error: ' . $e->getMessage());
+                Log::error('❌ Gemini Recommendation Error', [
+                    'error_message' => $e->getMessage(),
+                    'error_code' => $e->getCode(),
+                    'trace' => substr($e->getTraceAsString(), 0, 500)
+                ]);
                 // Fallback to simple rule-based recommendation
                 return $this->fallbackRecommendation($currentWeather, $dailyForecast);
             }
@@ -169,11 +203,21 @@ PROMPT;
      */
     private function callGeminiAPI($prompt)
     {
+        Log::info('🚀 Calling Gemini API', [
+            'endpoint' => self::API_ENDPOINT,
+            'prompt_length' => strlen($prompt),
+            'timestamp' => now()->toIso8601String()
+        ]);
+
         if (empty($this->apiKey)) {
+            Log::error('❌ Gemini API key not configured');
             throw new \Exception('Gemini API key not configured');
         }
 
-        $response = $this->client->post(self::API_ENDPOINT, [
+        $requestStartTime = microtime(true);
+
+        try {
+            $response = $this->client->post(self::API_ENDPOINT, [
             'query' => ['key' => $this->apiKey],
             'json' => [
                 'contents' => [
@@ -193,15 +237,49 @@ PROMPT;
             'headers' => [
                 'Content-Type' => 'application/json'
             ]
-        ]);
+            ]);
 
-        $data = json_decode($response->getBody(), true);
-        
-        if (!isset($data['candidates'][0]['content']['parts'][0]['text'])) {
-            throw new \Exception('Invalid Gemini API response');
+            $requestDuration = (microtime(true) - $requestStartTime) * 1000;
+
+            Log::info('✅ Gemini API call successful', [
+                'status_code' => $response->getStatusCode(),
+                'response_size' => strlen($response->getBody()),
+                'duration_ms' => round($requestDuration, 2)
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+            
+            if (!isset($data['candidates'][0]['content']['parts'][0]['text'])) {
+                Log::error('❌ Invalid Gemini API response structure', [
+                    'response_keys' => array_keys($data ?? []),
+                    'response_preview' => substr(json_encode($data), 0, 200)
+                ]);
+                throw new \Exception('Invalid Gemini API response');
+            }
+
+            $responseText = $data['candidates'][0]['content']['parts'][0]['text'];
+
+            Log::info('📄 Gemini response extracted', [
+                'response_length' => strlen($responseText),
+                'response_preview' => substr($responseText, 0, 150) . '...'
+            ]);
+
+            return $responseText;
+
+        } catch (GuzzleException $e) {
+            $requestDuration = (microtime(true) - $requestStartTime) * 1000;
+
+            Log::error('❌ Gemini API HTTP request failed', [
+                'error_message' => $e->getMessage(),
+                'error_code' => $e->getCode(),
+                'duration_ms' => round($requestDuration, 2),
+                'response_body' => method_exists($e, 'getResponse') && $e->getResponse() 
+                    ? substr($e->getResponse()->getBody(), 0, 500) 
+                    : 'No response body'
+            ]);
+
+            throw $e;
         }
-
-        return $data['candidates'][0]['content']['parts'][0]['text'];
     }
 
     /**
@@ -501,6 +579,12 @@ MARKDOWN;
      */
     private function fallbackRecommendation($currentWeather, $dailyForecast)
     {
+        Log::info('🔧 Using fallback recommendation (rule-based, NO AI)', [
+            'temp' => $currentWeather['temperature_2m'] ?? 'N/A',
+            'uv_index' => $dailyForecast['uv_index_max'][0] ?? 'N/A',
+            'weather_code' => $currentWeather['weather_code'] ?? 'N/A'
+        ]);
+
         $temp = $currentWeather['temperature_2m'];
         $uvIndex = $dailyForecast['uv_index_max'][0] ?? 0;
         $weatherCode = $currentWeather['weather_code'];
@@ -534,7 +618,14 @@ MARKDOWN;
             $recommendations[] = "✨ Thời tiết thuận lợi, thích hợp cho các hoạt động ngoài trời!";
         }
 
-        return implode(' ', $recommendations);
+        $result = implode(' ', $recommendations);
+        
+        Log::info('✅ Fallback recommendation generated', [
+            'recommendation_length' => strlen($result),
+            'recommendation' => $result
+        ]);
+
+        return $result;
     }
 
     /**
