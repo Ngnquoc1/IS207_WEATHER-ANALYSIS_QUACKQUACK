@@ -48,7 +48,7 @@ const AnomalyDisplay = ({ anomalyData, location }) => {
     return (
         <>
             <div className="anomaly-section">
-                <h2 className="section-title">Phân Tích Anomaly Nhiệt Độ</h2>
+                {/* Title removed to avoid duplication */}
                 
                 {hasAnomaly ? (
                     <div className="anomaly-card">

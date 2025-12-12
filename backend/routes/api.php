@@ -25,6 +25,10 @@ Route::prefix('weather')->group(function () {
     Route::get('/{lat}/{lon}', [WeatherController::class, 'getWeatherData']);
     // Generate detailed AI-powered weather report
     Route::get('/report/{lat}/{lon}', [WeatherController::class, 'getDetailedReport']);
+    
+    // Get weather data for multiple cities in bulk (for RainMap)
+    // Returns weather data for 24 major cities worldwide
+    Route::match(['get', 'post'], '/bulk', [WeatherController::class, 'getBulkWeatherData']);
 });
 
 // Location search API - proxy for Open-Meteo Geocoding API to avoid CORS
@@ -46,10 +50,6 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Protected Weather API Routes - requires authentication
     Route::prefix('weather')->group(function () {
-        // Get weather data for multiple cities in bulk (for RainMap)
-        // Returns weather data for 24 major cities worldwide
-        Route::get('/bulk', [WeatherController::class, 'getBulkWeatherData']);
-        
         // Compare weather data between two locations
         // Expects JSON body: { "location1": {"lat": ..., "lon": ..., "name": "..."}, "location2": {"lat": ..., "lon": ..., "name": "..."} }
         Route::post('/comparison', [WeatherController::class, 'compareLocations']);

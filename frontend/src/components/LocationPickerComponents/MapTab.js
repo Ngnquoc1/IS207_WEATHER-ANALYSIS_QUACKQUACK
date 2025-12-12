@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Tooltip, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Tooltip, useMap, useMapEvents, ZoomControl } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './MapTab.css';
@@ -366,7 +366,9 @@ const MapTab = ({
             center={[21.0285, 105.8542]} // Default center, will be changed by setView
             zoom={10}
             className="location-picker-map"
+            zoomControl={false}
           >
+            <ZoomControl position="bottomleft" />
             <TileLayer
               url={currentMapConfig.url}
               attribution={currentMapConfig.attribution}

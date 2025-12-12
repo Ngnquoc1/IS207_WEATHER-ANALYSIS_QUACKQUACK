@@ -3,7 +3,7 @@
     background-color: var(--surface-color);
     /* border: 1px solid var(--border-color); */
     /* border-radius: var(--radius-md); */
-    /* padding: 30px; */ /* Padding handled by grid-cell */
+    padding: 0 24px 24px 24px; /* Add padding here instead of grid-cell */
     /* box-shadow: var(--shadow-md); */
     transition: all 0.3s ease;
     height: 100%;

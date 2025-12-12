@@ -95,12 +95,11 @@ const Stories = ({ location }) => {
     <div className="stories-container">
       <div className="stories-header">
         <h2>
-          <span className="plus-icon">➕</span>
-          Tin tức & Stories Thời tiết 
+          Góc Nhìn Thời Tiết
           {/* tại {location || 'TP.HCM'} */}
         </h2>
         <div className="update-time">
-          Cập nhật lúc: {getCurrentTime()}
+          {getCurrentTime()}
         </div>
       </div>
 

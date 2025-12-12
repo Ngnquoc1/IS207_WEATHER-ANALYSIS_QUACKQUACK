@@ -1,0 +1,125 @@
+.weather-map-container {
+    position: absolute; /* Absolute to fill hero-cell */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; /* Fill parent */
+    border-radius: 0; /* Remove radius as parent handles it */
+    margin-top: 0; /* Remove margin */
+    border: none; /* Remove border */
+    z-index: 1;
+}
+
+.weather-map-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    background-color: var(--surface-color);
+    padding: 8px;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.weather-map-controls select {
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.weather-map-controls select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.map-city-tag {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
+    /* Positioning */
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    transform: translate(-50%, -12px); /* Shift up to make room for arrow */
+    
+    /* Flex layout */
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: max-content; /* Allow auto-scaling */
+    pointer-events: none;
+}
+
+/* Arrow pointer */
+.map-city-tag::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 10px;
+    height: 10px;
+    background-color: inherit;
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.05);
+}
+
+.map-city-tag.highlighted {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    z-index: 1001;
+}
+
+.map-city-tag.highlighted::after {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Leaflet overrides */
+.leaflet-popup-content-wrapper {
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+    .weather-map-controls {
+        top: 10px;
+        right: 10px;
+        padding: 4px;
+        gap: 6px;
+    }
+    
+    .weather-map-controls select {
+        padding: 4px 8px;
+        font-size: 12px;
+        max-width: 120px;
+    }
+}
+
+.leaflet-popup-tip {
+    background-color: var(--surface-color);
+}
+
+.leaflet-container {
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-secondary);
+}

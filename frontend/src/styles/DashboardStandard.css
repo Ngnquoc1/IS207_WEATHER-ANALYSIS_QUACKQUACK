@@ -1,0 +1,64 @@
+/* Global Typography & Colors */
+:root {
+    --section-title-size: 18px;
+    --section-title-weight: 600;
+    --section-title-color: var(--text-primary);
+    
+    /* Define card variables that map to theme variables */
+    --card-bg: var(--surface-color);
+    --card-border: 1px solid var(--border-color);
+    --card-shadow: var(--shadow-sm);
+}
+
+/* Explicitly update for dark mode to ensure variables are re-evaluated */
+body.theme-dark {
+    --section-title-color: var(--text-primary);
+    --card-bg: #1E1E1E; /* Hardcode to ensure it works */
+    --card-border: 1px solid var(--border-color);
+    --card-shadow: none;
+}
+
+/* Standardize Section Titles */
+.section-title, 
+.location-info-card h3,
+.stories-header h2,
+.recommendation-card h2,
+.anomaly-section h2,
+.product-recommendations h3,
+.location-comparator h2,
+.selector-header h3 {
+    font-size: var(--section-title-size) !important;
+    font-weight: var(--section-title-weight) !important;
+    color: var(--section-title-color) !important;
+    margin-bottom: 16px !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Standardize Cards */
+.location-info-card,
+.grid-cell,
+.stories-container,
+.recommendation-card,
+.anomaly-card,
+.location-selector-panel {
+    background-color: var(--card-bg) !important;
+    border: var(--card-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--card-shadow);
+    padding: 20px;
+    color: var(--text-primary); /* Ensure text color is correct */
+}
+
+/* Remove specific overrides that might cause inconsistency */
+.location-info-card h3 {
+    margin: 0 0 16px 0;
+}
+
+/* Ensure dark mode consistency */
+body.theme-dark .section-title,
+body.theme-dark .location-info-card h3,
+body.theme-dark .stories-header h2 {
+    color: var(--text-primary);
+}

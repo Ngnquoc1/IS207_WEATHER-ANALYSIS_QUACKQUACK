@@ -94,11 +94,6 @@ const Header = () => {
                             Đăng nhập
                         </button>
                     )}
-
-                    {/* Language Selector */}
-                    <button className="language-selector">
-                        VI
-                    </button>
                 </div>
             </div>
 

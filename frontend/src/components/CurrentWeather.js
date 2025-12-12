@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './CurrentWeather.css';
 
 /**
@@ -6,10 +6,12 @@ import './CurrentWeather.css';
  * Displays current weather conditions including temperature, humidity, wind speed, etc.
  */
 const CurrentWeather = ({ data }) => {
+    const [isExpanded, setIsExpanded] = useState(true);
+
     if (!data) {
         return (
             <div className="current-weather loading">
-                <p>Đang tải dữ liệu thời tiết...</p>
+                <p>Đang tải...</p>
             </div>
         );
     }
@@ -30,9 +32,15 @@ const CurrentWeather = ({ data }) => {
     };
 
     return (
-        <div className="current-weather">
-            <h2>Thời Tiết Hiện Tại</h2>
-            
+        <div className={`current-weather ${isExpanded ? 'expanded' : 'collapsed'}`}>
+            <button 
+                className="toggle-weather-btn"
+                onClick={() => setIsExpanded(!isExpanded)}
+                title={isExpanded ? "Thu nhỏ" : "Mở rộng"}
+            >
+                {isExpanded ? '−' : '+'}
+            </button>
+
             <div className="weather-main">
                 <div className="weather-icon">
                     {getWeatherIcon(data.weather_code)}
@@ -40,47 +48,51 @@ const CurrentWeather = ({ data }) => {
                 
                 <div className="temperature-display">
                     <div className="main-temp">{data.temperature}°C</div>
-                    <div className="weather-desc">{data.weather_description}</div>
+                    {isExpanded && <div className="weather-desc">{data.weather_description}</div>}
                 </div>
             </div>
 
-            <div className="weather-details">
-                <div className="detail-item">
-                    <span className="detail-icon">🌡️</span>
-                    <div className="detail-content">
-                        <span className="detail-label">Cảm giác như</span>
-                        <span className="detail-value">{data.apparent_temperature}°C</span>
-                    </div>
-                </div>
+            {isExpanded && (
+                <>
+                    <div className="weather-details">
+                        <div className="detail-item">
+                            <span className="detail-icon">🌡️</span>
+                            <div className="detail-content">
+                                <span className="detail-label">Cảm giác</span>
+                                <span className="detail-value">{data.apparent_temperature}°</span>
+                            </div>
+                        </div>
 
-                <div className="detail-item">
-                    <span className="detail-icon">💧</span>
-                    <div className="detail-content">
-                        <span className="detail-label">Độ ẩm</span>
-                        <span className="detail-value">{data.humidity}%</span>
-                    </div>
-                </div>
+                        <div className="detail-item">
+                            <span className="detail-icon">💧</span>
+                            <div className="detail-content">
+                                <span className="detail-label">Độ ẩm</span>
+                                <span className="detail-value">{data.humidity}%</span>
+                            </div>
+                        </div>
 
-                <div className="detail-item">
-                    <span className="detail-icon">💨</span>
-                    <div className="detail-content">
-                        <span className="detail-label">Tốc độ gió</span>
-                        <span className="detail-value">{data.wind_speed} km/h</span>
-                    </div>
-                </div>
+                        <div className="detail-item">
+                            <span className="detail-icon">💨</span>
+                            <div className="detail-content">
+                                <span className="detail-label">Gió</span>
+                                <span className="detail-value">{data.wind_speed} km/h</span>
+                            </div>
+                        </div>
 
-                <div className="detail-item">
-                    <span className="detail-icon">🌧️</span>
-                    <div className="detail-content">
-                        <span className="detail-label">Lượng mưa</span>
-                        <span className="detail-value">{data.precipitation} mm</span>
+                        <div className="detail-item">
+                            <span className="detail-icon">🌧️</span>
+                            <div className="detail-content">
+                                <span className="detail-label">Mưa</span>
+                                <span className="detail-value">{data.precipitation} mm</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            <div className="weather-time">
-                Cập nhật lúc: {new Date(data.time).toLocaleString('vi-VN')}
-            </div>
+                    <div className="weather-time">
+                        Cập nhật: {new Date(data.time).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'})}
+                    </div>
+                </>
+            )}
         </div>
     );
 };

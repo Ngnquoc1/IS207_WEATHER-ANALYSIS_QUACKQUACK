@@ -9,7 +9,7 @@ const Recommendation = ({ recommendation }) => {
     if (!recommendation) {
         return (
             <div className="recommendation-card">
-                <h2 className="section-title">Gợi Ý Thông Minh</h2>
+                {/* Title removed to avoid duplication */}
                 <div className="no-recommendation">
                     <p>Không có khuyến nghị đặc biệt cho thời tiết hiện tại.</p>
                 </div>
@@ -25,7 +25,7 @@ const Recommendation = ({ recommendation }) => {
 
     return (
         <div className="recommendation-card">
-            <h2 className="section-title">Gợi Ý Thông Minh</h2>
+            {/* Title removed to avoid duplication */}
             
             <div className="recommendation-content">
                 {recommendations.map((item, index) => (
