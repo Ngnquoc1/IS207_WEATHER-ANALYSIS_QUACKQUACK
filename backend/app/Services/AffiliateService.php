@@ -64,9 +64,8 @@ class AffiliateService
     
     $finalList = $exactMatches;
 
-    if ($exactMatches->isEmpty()) {
-        Log::info("Priority 1 empty. Fallback to Tag matches.");
-        $finalList = $candidates;
+    if ($finalList->isEmpty()) {
+        return collect([]); 
     }
 
     // BƯỚC 4: Format và trả về

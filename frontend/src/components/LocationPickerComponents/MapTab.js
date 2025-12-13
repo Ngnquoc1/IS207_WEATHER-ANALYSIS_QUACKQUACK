@@ -126,7 +126,7 @@ const MapControls = ({
         },
         {
           enableHighAccuracy: true,
-          timeout: 5000,
+          timeout: 15000, // 15 second timeout
           maximumAge: 0 // Always get fresh location
         }
       );
@@ -271,7 +271,7 @@ const MapTab = ({
         },
         {
           enableHighAccuracy: true,
-          timeout: 10000,
+          timeout: 20000, // 20 second timeout
           maximumAge: 300000 // 5 minutes
         }
       );

@@ -40,7 +40,7 @@ const ProductRecommendations = ({ weatherData }) => {
                     10
                 );
                 
-                setRecommendations(data.recommendations || []);
+                setRecommendations(data.recommendations);
             } catch (err) {
                 console.error('Failed to load recommendations:', err);
                 setError(err.message);
@@ -68,8 +68,20 @@ const ProductRecommendations = ({ weatherData }) => {
         );
     }
 
-    if (!recommendations.length) {
-        return null;
+    // Show message if no recommendations available
+    if (!recommendations || !Array.isArray(recommendations) || recommendations.length === 0) {
+        return (
+            <div className="product-recommendations">
+                <div className="recommendations-header">
+                    <p className="recommendations-subtitle">
+                        Phù hợp với thời tiết {weatherData?.current_weather?.weather_main} và nhiệt độ {Math.round(weatherData?.current_weather?.temperature)}°C
+                    </p>
+                </div>
+                <div className="no-products-message">
+<p>Tạm thời không có sản phẩm phù hợp</p>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -80,7 +92,6 @@ const ProductRecommendations = ({ weatherData }) => {
                     Phù hợp với thời tiết {weatherData.current_weather.weather_main} và nhiệt độ {Math.round(weatherData.current_weather.temperature)}°C
                 </p>
             </div>
-            
             <div className="product-grid">
                 {recommendations.map((product) => (
                     <div key={product.id} className="product-card">

@@ -30,7 +30,7 @@ export const fetchLocationByName = async (query) => {
             params: {
                 query: query
             },
-            timeout: 10000
+            timeout: 20000 // 20 second timeout
         });
 
         console.log('API Response:', response.data);
@@ -86,7 +86,7 @@ export const fetchLocationByName = async (query) => {
 export const fetchWeatherData = async (lat, lon) => {
     try {
         const response = await axios.get(`${API_BASE_URL}/weather/${lat}/${lon}`, {
-            timeout: 10000, // 10 second timeout
+            timeout: 20000, // 20 second timeout
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ export const fetchWeatherData = async (lat, lon) => {
 export const fetchDetailedReport = async (lat, lon) => {
     try {
         const response = await axios.get(`${API_BASE_URL}/weather/report/${lat}/${lon}`, {
-            timeout: 30000, // 30 second timeout for AI generation
+            timeout: 60000, // 60 second timeout for AI generation
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ export const fetchDetailedReport = async (lat, lon) => {
 export const fetchBulkWeatherData = async () => {
     try {
         const response = await axios.get(`${API_BASE_URL}/weather/bulk`, {
-            timeout: 30000, // 30 second timeout for bulk request
+            timeout: 60000, // 60 second timeout for bulk request
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',

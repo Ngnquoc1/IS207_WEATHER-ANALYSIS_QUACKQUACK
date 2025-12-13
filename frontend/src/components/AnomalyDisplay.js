@@ -53,7 +53,7 @@ const AnomalyDisplay = ({ anomalyData, location }) => {
                 {hasAnomaly ? (
                     <div className="anomaly-card">
                         <div className="anomaly-value">
-                            {displayData.difference > 0 ? '+' : ''}{displayData.difference}°C
+                            {displayData.type == 'hot' ? '+' : '-'}{displayData.difference}°C
                         </div>
                         <div className="anomaly-description">
                             {displayData.message}
