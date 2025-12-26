@@ -90,6 +90,8 @@ const DashboardPage = () => {
     }, [location.state]);
 
     const [resolvedLocationName, setResolvedLocationName] = useState(null);
+    const [locationDetails, setLocationDetails] = useState(null);
+
     // Fetch weather data when component mounts or location changes
     useEffect(() => {
         if (!selectedLocation) return; // Don't fetch if location is not set yet
@@ -100,7 +102,15 @@ const DashboardPage = () => {
             try {
                 const data = await fetchWeatherData(selectedLocation.lat, selectedLocation.lon);
                 setWeatherData(data);
-                setResolvedLocationName(data?.location?.name || selectedLocation?.name);
+                
+                // Get detailed location info
+                if (data?.location?.details) {
+                    setLocationDetails(data.location.details);
+                    setResolvedLocationName(data.location.details.display_name);
+                } else {
+                    setLocationDetails(null);
+                    setResolvedLocationName(data?.location?.name || selectedLocation?.name);
+                }
             } catch (err) {
                 setError('Không thể tải dữ liệu thời tiết. Vui lòng thử lại sau.');
                 console.error('Error loading weather data:', err);
@@ -209,83 +219,116 @@ const DashboardPage = () => {
                         </div>
                     )}
 
-                    {!loading && !error && weatherData && (
-                        <div className="dashboard-grid">
-                            {/* Row 1: Current Weather (Full Width) */}
-                            <div className="grid-row full-width-row">
-                                <div className="grid-cell hero-cell">
-                                    {/* Interactive Weather Map (Background) */}
-                                    <WeatherMap 
-                                        selectedLocation={selectedLocation ? { ...selectedLocation, name: resolvedLocationName || selectedLocation.name } : null}
-                                        currentWeatherData={weatherData.current_weather}
-                                    />
+                {!loading && !error && weatherData && (
+                    <>
+                        {/* Current Location Display */}
+                        <div className="current-location-banner">
+                            <h2>📍 {resolvedLocationName || selectedLocation?.name}</h2>
+                            {locationDetails?.address && Object.keys(locationDetails.address).length > 0 && (
+                                <div className="location-details">
+                                    {locationDetails.address.road && (
+                                        <p><strong>Đường:</strong> {locationDetails.address.road}</p>
+                                    )}
+                                    {locationDetails.address.suburb && (
+                                        <p><strong>Phường/Xã:</strong> {locationDetails.address.suburb}</p>
+                                    )}
+                                    {locationDetails.address.city && (
+                                        <p><strong>Thành phố/Quận:</strong> {locationDetails.address.city}</p>
+                                    )}
+                                    {locationDetails.address.postcode && (
+                                        <p><strong>Mã bưu điện:</strong> {locationDetails.address.postcode}</p>
+                                    )}
+                                </div>
+                            )}
+                            <p>
+                                Vĩ độ: {weatherData.location?.latitude}° | 
+                                Kinh độ: {weatherData.location?.longitude}° | 
+                                Múi giờ: {weatherData.location?.timezone}
+                            </p>
+                        </div>
 
-                                    {/* Floating Content Overlay */}
-                                    <div className="hero-content-overlay">
-                                        <div className="location-header">
-                                            <h2>{resolvedLocationName || selectedLocation?.name}</h2>
-                                        </div>
-                                        <CurrentWeather data={weatherData.current_weather} />
+                        {/* Login Prompt for Guest Users */}
+                        {!isAuthenticated && (
+                            <div className="grid-row">
+                                <LoginPrompt onLoginClick={() => setIsLoginModalOpen(true)} />
+                            </div>
+                        )}
+
+                        {/* Mobile Only: Location Info Card (Appears after Map) */}
+                        {weatherData && (
+                            <div className="grid-row full-width-row show-on-mobile">
+                                <LocationInfo data={weatherData} />
+                            </div>
+                        )}
+
+                        {/* Row 1: Current Weather (Full Width) */}
+                        <div className="grid-row full-width-row">
+                            <div className="grid-cell hero-cell">
+                                {/* Interactive Weather Map (Background) */}
+                                <WeatherMap 
+                                    selectedLocation={selectedLocation ? { ...selectedLocation, name: resolvedLocationName || selectedLocation.name } : null}
+                                    currentWeatherData={weatherData.current_weather}
+                                />
+
+                                {/* Floating Content Overlay */}
+                                <div className="hero-content-overlay">
+                                    <div className="location-header">
+                                        <h2>{resolvedLocationName || selectedLocation?.name}</h2>
                                     </div>
+                                    <CurrentWeather data={weatherData.current_weather} />
                                 </div>
                             </div>
+                        </div>
 
-                            {/* Mobile Only: Location Info Card (Appears after Map) */}
-                            {weatherData && (
-                                <div className="grid-row full-width-row show-on-mobile">
-                                    <LocationInfo data={weatherData} />
+                        {/* Row 2: Forecast Chart (Full Width) */}
+                        {isAuthenticated && (
+                            <div className="grid-row full-width-row">
+                                <div className="grid-cell chart-cell">
+                                    <h2 className="section-title">Dự Báo Chi Tiết</h2>
+                                    <HourlyForecastChart 
+                                        data={weatherData.hourly_forecast} 
+                                        dailyData={weatherData.daily_forecast}
+                                    />
                                 </div>
-                            )}
+                            </div>
+                        )}
 
-                            {/* Row 2: Forecast Chart (Full Width) */}
-                            {isAuthenticated && (
-                                <div className="grid-row full-width-row">
-                                    <div className="grid-cell chart-cell">
-                                        <h2 className="section-title">Dự Báo Chi Tiết</h2>
-                                        <HourlyForecastChart 
-                                            data={weatherData.hourly_forecast} 
-                                            dailyData={weatherData.daily_forecast}
-                                        />
-                                    </div>
+                        {/* Row 3: Anomaly & Smart Recommendations (Split Row) */}
+                        {isAuthenticated && (
+                            <div className="grid-row analysis-row">
+                                <div className="grid-cell anomaly-cell">
+                                    <h2 className="section-title">Phân Tích Bất Thường</h2>
+                                    <AnomalyDisplay 
+                                        anomalyData={weatherData.anomaly} 
+                                        location={selectedLocation}
+                                    />
                                 </div>
-                            )}
-
-                            {/* Row 3: Anomaly & Smart Recommendations (Split Row) */}
-                            {isAuthenticated && (
-                                <div className="grid-row analysis-row">
-                                    <div className="grid-cell anomaly-cell">
-                                        <h2 className="section-title">Phân Tích Bất Thường</h2>
-                                        <AnomalyDisplay 
-                                            anomalyData={weatherData.anomaly} 
-                                            location={selectedLocation}
-                                        />
-                                    </div>
-                                    <div className="grid-cell recommendation-cell">
-                                        <h2 className="section-title">Lời Khuyên Hôm Nay</h2>
-                                        <Recommendation recommendation={weatherData.recommendation} />
-                                    </div>
+                                <div className="grid-cell recommendation-cell">
+                                    <h2 className="section-title">Lời Khuyên Hôm Nay</h2>
+                                    <Recommendation recommendation={weatherData.recommendation} />
                                 </div>
-                            )}
+                            </div>
+                        )}
 
-                            {/* Row 4: Product Recommendations (Full Width) */}
+                        {/* Row 4: Product Recommendations (Full Width) */}
+                        <div className="grid-row full-width-row">
+                            <div className="grid-cell no-padding">
+                                <h2 className="section-title padding-24">Đề Xuất Cho Bạn</h2>
+                                <ProductRecommendations weatherData={weatherData} />
+                            </div>
+                        </div>
+                        
+                        {/* Row 5: Location Comparison (Full Width) */}
+                        {isAuthenticated && (
                             <div className="grid-row full-width-row">
                                 <div className="grid-cell no-padding">
-                                    <h2 className="section-title padding-24">Đề Xuất Cho Bạn</h2>
-                                    <ProductRecommendations weatherData={weatherData} />
+                                    <h2 className="section-title padding-24">So Sánh Địa Điểm</h2>
+                                    <LocationComparator />
                                 </div>
                             </div>
-                            
-                            {/* Row 5: Location Comparison (Full Width) */}
-                            {isAuthenticated && (
-                                <div className="grid-row full-width-row">
-                                    <div className="grid-cell no-padding">
-                                        <h2 className="section-title padding-24">So Sánh Địa Điểm</h2>
-                                        <LocationComparator />
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
+                        )}
+                    </>
+                )}
                 </main>
             </div>
 
